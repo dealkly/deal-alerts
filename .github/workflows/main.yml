@@ -1,0 +1,32 @@
+name: Daily Price Check
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape-and-alert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 pandas
+      - name: Run scraper
+        run: python test_engine.py
+      - name: Run price detector
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python price_detector.py
+      - name: Commit updated CSV
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add books_today.csv
+          git diff --staged --quiet || git commit -m "Update daily prices [skip ci]"
+          git push
