@@ -11,7 +11,6 @@ TODAY_CSV = "books_today.csv"
 SUBSCRIBERS_FILE = "subscribers.json"
 SENDER = "tesfawtsions@gmail.com"
 SENDER_NAME = "Dealkly Alerts"
-# Get password from environment (set in GitHub Secrets)
 PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
 if not PASSWORD:
     raise ValueError("GMAIL_APP_PASSWORD environment variable not set.")
@@ -20,33 +19,36 @@ if not PASSWORD:
 def load_subscribers():
     with open(SUBSCRIBERS_FILE, "r") as f:
         data = json.load(f)
-    return data  # list of email addresses
+    return data
 
 def detect_price_drops():
-    # Read both CSVs
+    # Check if yesterday's file exists
+    if not os.path.exists(YESTERDAY_CSV):
+        print("No yesterday data found. Skipping comparison (first run).")
+        return None  # No comparison to do
+
     yest = pd.read_csv(YESTERDAY_CSV)
     today = pd.read_csv(TODAY_CSV)
 
-    # Merge on book title or unique ID (assuming title is unique)
     merged = pd.merge(yest, today, on="title", suffixes=("_yest", "_today"))
-    # Calculate price difference
     merged["drop"] = merged["price_today"] - merged["price_yest"]
-    # Filter only drops (negative difference)
     drops = merged[merged["drop"] < 0]
     return drops
 
 def send_alert(drops):
+    if drops is None:
+        print("No comparison performed. Exiting gracefully.")
+        return
+
     if drops.empty:
         print("No price drops today.")
         return
 
-    # Build email content
     subject = "Dealkly Alert: Price Drops Detected!"
     body = "The following books have dropped in price:\n\n"
     for _, row in drops.iterrows():
         body += f"- {row['title']}: from ${row['price_yest']:.2f} to ${row['price_today']:.2f} (drop: ${-row['drop']:.2f})\n"
 
-    # Send to all subscribers
     subscribers = load_subscribers()
     if not subscribers:
         print("No subscribers. Email not sent.")
