@@ -1,251 +1,470 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Custom Expert Logo: A stylized "D" where the inner negative space is a downward price-drop arrow -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23f7971e'/%3E%3Cstop offset='100%25' stop-color='%23e65c00'/%3E%3C/linearGradient%3E%3Cfilter id='shadow'%3E%3CfeDropShadow dx='0' dy='3' stdDeviation='3' flood-color='%23000' flood-opacity='0.3'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Cpath d='M26 22L50 22C65.5 22 78 34.5 78 50C78 65.5 65.5 78 50 78L26 78Z M45 34L55 34L55 46L62 46L50 62L38 46L45 46Z' fill='%23fff' fill-rule='evenodd' filter='url(%23shadow)'/%3E%3C/svg%3E">
+  <!-- Pro Developer Favicon - Isometric Tech Hexagon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 2L3 9.5V22.5L16 30L29 22.5V9.5L16 2Z' fill='url(%23techGrad)' /%3E%3Cpath d='M16 2L29 9.5L16 17L3 9.5L16 2Z' fill='%23ffffff' fill-opacity='0.2' /%3E%3Cpath d='M16 30V17L3 9.5V22.5L16 30Z' fill='%23000000' fill-opacity='0.15' /%3E%3Cpath d='M16 17L22.5 13.25V20.75L16 24.5V17Z' fill='%23ffffff' /%3E%3Cdefs%3E%3ClinearGradient id='techGrad' x1='3' y1='2' x2='29' y2='30' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23FF7F50'/%3E%3Cstop offset='1' stop-color='%2300CED1'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dealkly – Smart Deal Alerts for Popular Products</title>
-  <!-- Load professional icons from Font Awesome (free) -->
+  <title>Dealkly – Smart Deal Finder</title>
+  
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Modern sans-serif Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
+    :root {
+      --color-primary: #FF7F50; 
+      --color-secondary: #00CED1;
+      --color-cta: #FF7F50;
+      --color-cta-hover: #E86A3E;
+      --color-text-main: #111827; /* Darker, slate-like pro text */
+      --color-text-muted: #64748b;
+      --color-bg-light: #F8FAFC;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: #ffffff;
-      color: #1a1a1a;
-      min-height: 100vh;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--color-text-main);
+      background-color: #ffffff;
+      line-height: 1.5;
     }
+
+    /* Standard high-trust header */
     .header {
-      background: linear-gradient(135deg, #f7971e, #f0c040);
-      padding: 1.5rem 2rem;
-      text-align: center;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .logo {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #000;
-      letter-spacing: -1px;
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      justify-content: space-between;
     }
-    /* This applies the new SVG logo right next to your brand name */
-    .logo-img {
-      width: 40px;
-      height: 40px;
-    }
-    .hero {
-      background: #f9f9f9;
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-    .hero h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .hero p {
-      font-size: 1.2rem;
-      color: #444;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .categories {
-      padding: 3rem 2rem;
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1.5rem;
-      text-align: center;
-    }
-    .category-card {
-      background: #fff;
-      border-radius: 1rem;
-      padding: 1.5rem 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .category-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-    .category-card i {
-      font-size: 2.5rem;
-      color: #f7971e;
-      margin-bottom: 0.5rem;
-    }
-    .category-card .cat-title {
-      font-weight: 600;
-      color: #333;
-    }
-    .how-it-works {
-      background: #fff;
-      padding: 3rem 2rem;
-      max-width: 1100px;
-      margin: 0 auto;
+    
+    .logo-container {
       display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+    
+    .logo-img {
+      width: 36px;
+      height: 36px;
+    }
+    
+    .brand-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--color-text-main);
+      line-height: 1.1;
+    }
+
+    .brand-slogan {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { color: var(--color-text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.2s;}
+    .nav-links a:hover { color: var(--color-text-main); }
+
+    /* Conversion Hero */
+    .hero {
+      padding: 6rem 2rem 5rem 2rem;
       text-align: center;
-    }
-    .step {
-      flex: 1 1 200px;
-      background: #f9f9f9;
-      border-radius: 1rem;
-      padding: 2rem 1rem;
-    }
-    .step i {
-      font-size: 2.5rem;
-      color: #f7971e;
-      margin-bottom: 0.5rem;
-    }
-    .step-number { font-weight: 700; font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .signup {
-      background: #f9f9f9;
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-    .signup-box {
-      max-width: 400px;
+      max-width: 850px;
       margin: 0 auto;
     }
-    input[type="email"] {
-      width: 100%;
-      padding: 0.9rem 1.5rem;
-      border-radius: 3rem;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      outline: none;
-      margin-bottom: 1rem;
+    
+    .hero h1 {
+      font-size: 3.8rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1.5px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
     }
-    button {
-      background: #f7971e;
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--color-text-muted);
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+    
+    .btn-cta {
+      background: var(--color-text-main);
+      color: white;
       border: none;
-      padding: 0.9rem 2.5rem;
-      border-radius: 3rem;
+      padding: 1.1rem 3rem;
+      border-radius: 6px; /* Developer tools usually use tighter border radii */
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
-      color: #000;
+      transition: all 0.2s ease-in-out;
       width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    button:hover { background: #e68a00; transform: scale(1.02); }
-    .footer {
-      background: #1a1a1a;
-      color: #ccc;
+    
+    .btn-cta:hover {
+      background: #000000;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+
+    /* Trust Section */
+    .trust-section {
+      background-color: var(--color-bg-light);
+      padding: 4rem 2rem;
+      border-top: 1px solid rgba(0,0,0,0.03);
       text-align: center;
-      padding: 2rem;
-      font-size: 0.85rem;
     }
-    .footer a { color: #f7971e; text-decoration: none; }
-    @media (max-width: 600px) {
-      .hero h2 { font-size: 1.5rem; }
-      .categories { grid-template-columns: repeat(2, 1fr); }
+
+    .trust-section h2 { font-size: 2rem; margin-bottom: 3rem; font-weight: 800; letter-spacing: -0.5px;}
+
+    .stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      margin: 0 auto 3rem auto;
+    }
+
+    .stat-item { flex: 1 1 250px; }
+    .stat-item h3 { font-size: 3.5rem; color: var(--color-text-main); font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -2px;}
+    .stat-item p { color: var(--color-text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;}
+
+    /* Step Process */
+    .how-it-works {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section-h2 {
+      text-align: center;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 4rem;
+    }
+
+    .steps-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .step-card {
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 8px;
+      padding: 3rem 2rem;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; /* Left-aligned is more common in dev tools */
+    }
+    
+    .step-card:hover {
+      border-color: var(--color-secondary);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .step-card i {
+      font-size: 2rem;
+      color: var(--color-text-main);
+      margin-bottom: 1.5rem;
+    }
+    
+    .step-number {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--color-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .step-text { color: var(--color-text-muted); font-size: 1rem; line-height: 1.6;}
+
+    /* Category Monitored Grid */
+    .categories {
+      padding: 6rem 2rem;
+      background-color: var(--color-bg-light);
+      text-align: center;
+    }
+    
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .category-card {
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 8px;
+      padding: 2.5rem 1.5rem;
+      transition: all 0.2s;
+    }
+    
+    .category-card:hover {
+      border-color: var(--color-primary);
+      transform: translateY(-2px);
+    }
+
+    .category-card i { font-size: 1.8rem; color: var(--color-text-main); margin-bottom: 1rem; }
+    .category-card p { font-weight: 600; color: var(--color-text-muted); font-size: 0.95rem; }
+
+    /* Final Conversion Signup Area */
+    .signup {
+      padding: 7rem 2rem;
+      background-color: #ffffff;
+      text-align: center;
+    }
+    
+    .signup-h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    
+    .signup-box {
+      max-width: 440px;
+      margin: 3rem auto 0 auto;
+    }
+    
+    input[type="email"] {
+      width: 100%;
+      padding: 1.1rem 1.6rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #333;
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    
+    input[type="email"]:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(255, 127, 80, 0.1); }
+
+    /* --- GUMROAD PREMIUM / TIER UPGRADE SECTION --- */
+    .tier-section {
+      margin-top: 3rem;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      padding-top: 3rem;
+      text-align: left;
+    }
+    
+    .tier-p { color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6;}
+
+    .btn-tier {
+      display: inline-block;
+      background: #ffffff;
+      color: var(--color-text-main);
+      border: 1px solid #cbd5e1;
+      padding: 1rem 2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.2s;
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    
+    .btn-tier:hover {
+      border-color: var(--color-secondary);
+      color: var(--color-secondary);
+      background: rgba(0, 206, 209, 0.02);
+    }
+    
+    /* Footer Section */
+    .footer {
+      background-color: #0f172a;
+      color: #94a3b8;
+      padding: 4rem 2rem;
+      font-size: 0.9rem;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    
+    .footer-a { color: #cbd5e1; text-decoration: none; display: block; margin-bottom: 0.8rem; transition: color 0.2s;}
+    .footer-a:hover { color: #ffffff; }
+    
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.8rem; }
+      .nav-links { display: none; }
+      .footer-content { flex-direction: column; }
     }
   </style>
 </head>
 <body>
+
   <!-- Header -->
   <div class="header">
-    <div class="logo">
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23f7971e'/%3E%3Cstop offset='100%25' stop-color='%23e65c00'/%3E%3C/linearGradient%3E%3Cfilter id='shadow'%3E%3CfeDropShadow dx='0' dy='3' stdDeviation='3' flood-color='%23000' flood-opacity='0.3'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Cpath d='M26 22L50 22C65.5 22 78 34.5 78 50C78 65.5 65.5 78 50 78L26 78Z M45 34L55 34L55 46L62 46L50 62L38 46L45 46Z' fill='%23fff' fill-rule='evenodd' filter='url(%23shadow)'/%3E%3C/svg%3E" class="logo-img" alt="Dealkly Logo">
-      Dealkly
+    <div class="header-content">
+      <a href="#" class="logo-container">
+        <!-- New Isometric Tech Hexagon Logo -->
+        <svg class="logo-img" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2L3 9.5V22.5L16 30L29 22.5V9.5L16 2Z" fill="url(#techGrad)" />
+          <path d="M16 2L29 9.5L16 17L3 9.5L16 2Z" fill="#ffffff" fill-opacity="0.2" />
+          <path d="M16 30V17L3 9.5V22.5L16 30Z" fill="#000000" fill-opacity="0.15" />
+          <path d="M16 17L22.5 13.25V20.75L16 24.5V17Z" fill="#ffffff" />
+          <defs>
+            <linearGradient id="techGrad" x1="3" y1="2" x2="29" y2="30" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF7F50"/>
+              <stop offset="1" stop-color="#00CED1"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div style="display: flex; flex-direction: column;">
+          <span class="brand-name">Dealkly</span>
+          <span class="brand-slogan">Engineered Alert System</span>
+        </div>
+      </a>
+      
+      <div class="nav-links">
+        <a href="#how">Architecture</a>
+        <a href="#save">Monitoring Nodes</a>
+        <a href="#free">Initialize Alerts</a>
+      </div>
     </div>
   </div>
 
-  <!-- Hero -->
+  <!-- Hero Content -->
   <div class="hero">
-    <h2>Never Miss a Price Drop Again</h2>
-    <p>We monitor eBay daily and alert you when popular products drop in price. It's free, and we only email you when there's a real deal.</p>
+    <h1>Never Miss a Price Drop.</h1>
+    <p>Join our free alert infrastructure. We monitor top online retailers continuously. When the price of your target gear drops, an instant alert is pushed straight to your inbox.</p>
   </div>
 
-  <!-- Categories we monitor -->
-  <div class="categories">
-    <div class="category-card">
-      <i class="fas fa-laptop"></i>
-      <div class="cat-title">Laptops</div>
-    </div>
-    <div class="category-card">
-      <i class="fas fa-headphones"></i>
-      <div class="cat-title">Headphones</div>
-    </div>
-    <div class="category-card">
-      <i class="fas fa-tablet-alt"></i>
-      <div class="cat-title">Tablets</div>
-    </div>
-    <div class="category-card">
-      <i class="fas fa-shoe-prints"></i>
-      <div class="cat-title">Sneakers</div>
-    </div>
-    <div class="category-card">
-      <i class="fas fa-gamepad"></i>
-      <div class="cat-title">Gaming</div>
-    </div>
-    <div class="category-card">
-      <i class="fas fa-baby"></i>
-      <div class="cat-title">Baby Gear</div>
-    </div>
-    <div class="category-card">
-      <i class="fas fa-blender"></i>
-      <div class="cat-title">Home Appliances</div>
-    </div>
-    <div class="category-card">
-      <i class="fas fa-book"></i>
-      <div class="cat-title">Textbooks</div>
+  <!-- Trust Section -->
+  <div class="trust-section">
+    <h2>System Capabilities</h2>
+    <div class="stats-grid">
+      <div class="stat-item"><h3>24/7</h3><p>Active Monitoring</p></div>
+      <div class="stat-item"><h3>50+</h3><p>Nodes Tracked</p></div>
+      <div class="stat-item"><h3>100%</h3><p>Free Tier Available</p></div>
     </div>
   </div>
 
-  <!-- How it works -->
-  <div class="how-it-works">
-    <div class="step">
-      <i class="fas fa-search-dollar"></i>
-      <div class="step-number">1</div>
-      <div>We monitor eBay prices daily</div>
-    </div>
-    <div class="step">
-      <i class="fas fa-chart-line"></i>
-      <div class="step-number">2</div>
-      <div>We detect price drops automatically</div>
-    </div>
-    <div class="step">
-      <i class="fas fa-envelope-open-text"></i>
-      <div class="step-number">3</div>
-      <div>You receive an email with the new deal</div>
+  <!-- Step Process Guide -->
+  <div class="how-it-works" id="how">
+    <h2 class="section-h2">Pipeline Architecture</h2>
+    <div class="steps-flow">
+      <div class="step-card">
+        <div class="step-number">Phase 01</div>
+        <i class="fas fa-terminal"></i>
+        <div class="step-text">Register your email address to authenticate and join the Dealkly tracking queue.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">Phase 02</div>
+        <i class="fas fa-database"></i>
+        <div class="step-text">Our backend scripts constantly scrape pricing data across major retailer APIs and storefronts.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">Phase 03</div>
+        <i class="fas fa-chart-line"></i>
+        <div class="step-text">The system algorithms flag significant percentage drops below the standard market average.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">Phase 04</div>
+        <i class="fas fa-bolt"></i>
+        <div class="step-text">An automated webhook triggers, pushing an immediate alert directly to your authenticated email.</div>
+      </div>
     </div>
   </div>
 
-  <!-- Signup form -->
-  <div class="signup">
-    <h3 style="margin-bottom:1rem;">Join now – free, no spam</h3>
+  <!-- Categories Monitored Matrix -->
+  <div class="categories" id="save">
+    <h2 class="section-h2">Active Monitoring Clusters</h2>
+    <div class="categories-grid">
+      <div class="category-card"><i class="fas fa-laptop-code"></i><p>Computing Hardware</p></div>
+      <div class="category-card"><i class="fas fa-server"></i><p>Networking Gear</p></div>
+      <div class="category-card"><i class="fas fa-mobile-alt"></i><p>Mobile & Tablets</p></div>
+      <div class="category-card"><i class="fas fa-keyboard"></i><p>Peripherals</p></div>
+      <div class="category-card"><i class="fas fa-microchip"></i><p>Components</p></div>
+      <div class="category-card"><i class="fas fa-headset"></i><p>Audio Systems</p></div>
+    </div>
+  </div>
+
+  <!-- Free Setup Capture -->
+  <div class="signup" id="free">
+    <h2 class="signup-h2">Deploy Your Alert Profile</h2>
+    <p style="color: var(--color-text-muted); margin-bottom: 2rem;">Input your endpoint destination to begin receiving automated price drop notifications.</p>
+    
     <div class="signup-box">
+      <!-- High-Conversion Formspree Integration -->
       <form action="https://formspree.io/f/mwvdklly" method="POST">
-        <input type="email" name="email" placeholder="Your email address" required>
-        <button type="submit">Get Deal Alerts</button>
+        <input type="email" name="email" placeholder="Enter delivery email address" required>
+        <button type="submit" class="btn-cta">Initialize Free Account</button>
       </form>
-      <p style="font-size:0.8rem; color:#666; margin-top:1rem;">
-        We respect your privacy. Unsubscribe anytime.
-      </p>
-      <!-- Gumroad subscription button -->
-      <div style="margin-top: 1.5rem;">
-        <p style="color:#444; font-size:0.9rem; margin-bottom:0.5rem;">
-          Or get <strong>unlimited alerts</strong> for only $3/month:
-        </p>
-        <a href="https://dealkly.gumroad.com/l/premium-alerts" 
-           target="_blank" rel="noopener noreferrer"
-           style="display: inline-block; background: #f7971e; color: #000; padding: 0.8rem 2rem; 
-                  border-radius: 3rem; text-decoration: none; font-weight: 700; transition: 0.2s;">
-          Subscribe for $3/month
+      
+      <!-- Tier Conversion Block (Gumroad Integration) -->
+      <div class="tier-section">
+        <h4 style="margin-bottom: 0.5rem; font-weight: 800; color: var(--color-text-main);">Pro Tier Access</h4>
+        <p class="tier-p">Require zero-latency notifications and unlimited alert parameters? Upgrade your instance to our premium infrastructure.</p>
+        <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="btn-tier">
+          Upgrade Instance – $3/mo
         </a>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Operational Footer -->
   <div class="footer">
-    &copy; 2026 Dealkly. All rights reserved. <br>
-    <a href="#">How we make money (affiliate disclosure)</a>
+    <div class="footer-content">
+      <div>
+        <h3 style="color:white; font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem;">DEALKLY SYSTEMS</h3>
+        <p>Automated Price Tracking Infrastructure.</p>
+        <p style="margin-top: 0.5rem;">&copy; 2026 Dealkly. All rights reserved.</p>
+      </div>
+      <div>
+        <a href="#" class="footer-a">System Status</a>
+        <a href="#" class="footer-a">API Documentation</a>
+        <a href="#" class="footer-a">Privacy Protocol</a>
+      </div>
+    </div>
   </div>
+
 </body>
 </html>
