@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 YESTERDAY_CSV = "books_yesterday.csv"
 TODAY_CSV = "books_today.csv"
 SUBSCRIBERS_FILE = "paid_subscribers.json"
-SENDER = "tesfawtsions@gmail.com"
+SENDER = "dealkly.contact@gmail.com"
 SENDER_NAME = "Dealkly Alerts"
 PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
 if not PASSWORD:
