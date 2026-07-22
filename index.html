@@ -494,85 +494,106 @@
       box-shadow: 0 0 20px rgba(0, 206, 209, 0.3);
     }
 
-    .footer {
-      background-color: #0f172a;
-      color: #94a3b8;
-      padding: 4rem 2rem;
-      font-size: 0.9rem;
+    /* =====================
+       MATTE / SUBDUED TECH FOOTER
+       ===================== */
+    .matte-footer {
+      background-color: #0F172A;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 3.5rem 2rem 3rem 2rem;
+      color: #64748B;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
-    .footer-content {
-      max-width: 1200px;
+    .footer-container {
+      max-width: 1100px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: flex-start;
       flex-wrap: wrap;
-      gap: 2rem;
+      gap: 2.5rem;
     }
 
-    .footer-left { display: flex; flex-direction: column; }
-    .footer-brand-area { display: flex; align-items: center; gap: 12px; }
-    .footer-logo { width: 38px; height: 38px; }
+    .footer-brand-col { max-width: 400px; }
 
-    .footer-text-group {
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0.8rem;
+    }
+
+    .brand-icon { width: 24px; height: 24px; }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;
+      color: #CBD5E1;
+    }
+
+    .brand-desc {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #64748B;
+      margin-bottom: 1.2rem;
+    }
+
+    .copyright {
+      font-size: 0.78rem;
+      color: #475569;
+    }
+
+    .footer-nav-col {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      width: max-content;
+      align-items: flex-end;
+      gap: 1.5rem;
     }
 
-    .footer-text-group h3 {
-      color: white;
-      font-family: Georgia, serif;
-      font-weight: 400;
-      font-size: 1.35rem;
-      line-height: 1;
-      margin: 0;
-      letter-spacing: 0.5px;
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #94A3B8;
+      font-size: 0.78rem;
+      font-weight: 500;
     }
 
-    .footer-divider { width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.35); margin: 4px 0; }
-
-    .footer-subtitle {
-      color: #ffffff;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      font-weight: 400;
-      font-size: 0.63rem;
-      text-transform: uppercase;
-      letter-spacing: 0;
-      line-height: 1;
-      margin: 0;
-      width: 100%;
-      display: block;
-      text-align-last: justify;
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #22C55E;
+      border-radius: 50%;
     }
 
-    .footer-bottom-text { margin-top: 1.8rem; display: flex; flex-direction: column; }
-    .footer-description { font-family: 'Inter', system-ui, -apple-system, sans-serif; color: #94a3b8; line-height: 1.4; font-size: 0.9rem; margin: 0; text-align: left; }
-    .footer-copyright { font-family: 'Inter', system-ui, -apple-system, sans-serif; color: #94a3b8; line-height: 1.4; font-size: 0.9rem; margin: 0; text-align: left; }
-    .footer-links-group { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0; }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
 
-    .footer-a {
-      color: #cbd5e1;
+    .footer-links a {
+      color: #64748B;
       text-decoration: none;
-      display: block;
-      margin-bottom: 0.8rem;
-      transition: color 0.2s, text-shadow 0.2s;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      line-height: 1.4;
-      text-align: left;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
     }
-    .footer-a:hover { color: #ffffff; text-shadow: 0 0 10px rgba(255, 127, 80, 0.6); }
+
+    .footer-links a:hover {
+      color: #94A3B8;
+    }
 
     /* Fixed Mobile Navigation */
+    @media (max-width: 640px) {
+      .footer-container { flex-direction: column; }
+      .footer-nav-col { align-items: flex-start; }
+      .footer-links { flex-direction: column; gap: 0.8rem; }
+    }
     @media (max-width: 768px) {
       .hero h1 { font-size: 2.8rem; }
       .nav-links a:not(.nav-upgrade-btn) { display: none; }
-      .footer-content { flex-direction: column; align-items: flex-start; }
-      .footer-links-group { align-items: flex-start; margin-top: 2rem; }
-      .footer-a { text-align: left; }
     }
   </style>
 </head>
@@ -675,7 +696,7 @@
         </div>
       </div>
 
-      <!-- Phase 04 with clear smartphone notification image -->
+      <!-- Phase 04 -->
       <div class="step-card reveal delay-1">
         <div class="step-photo">
           <img src="https://images.unsplash.com/photo-1523206489230-c012c64b2b48?w=600&q=80" alt="Instant Alert">
@@ -744,47 +765,41 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <div class="footer">
-    <div class="footer-content reveal">
-      <div class="footer-left">
-        <div class="footer-brand-area">
-          <svg class="footer-logo" aria-hidden="true" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16 2L3 9.5V22.5L16 30L29 22.5V9.5L16 2Z" fill="url(#techGradFoot)" />
-            <path d="M16 2L29 9.5L16 17L3 9.5L16 2Z" fill="#ffffff" fill-opacity="0.2" />
-            <path d="M16 30V17L3 9.5V22.5L16 30Z" fill="#000000" fill-opacity="0.15" />
-            <path d="M16 17L22.5 13.25V20.75L16 24.5V17Z" fill="#ffffff" />
+  <!-- =====================
+       MATTE / SUBDUED TECH FOOTER (Brand Gradient Icon)
+       ===================== -->
+  <footer class="matte-footer">
+    <div class="footer-container">
+      <div class="footer-brand-col">
+        <div class="brand-header">
+          <svg class="brand-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="techGradFoot" x1="3" y1="2" x2="29" y2="30" gradientUnits="userSpaceOnUse">
+              <linearGradient id="footerGrad" x1="3" y1="2" x2="29" y2="30" gradientUnits="userSpaceOnUse">
                 <stop stop-color="#FF7F50"/>
                 <stop offset="1" stop-color="#00CED1"/>
               </linearGradient>
             </defs>
+            <path d="M16 2L3 9.5V22.5L16 30L29 22.5V9.5L16 2Z" fill="url(#footerGrad)" />
+            <path d="M16 17L22.5 13.25V20.75L16 24.5V17Z" fill="#ffffff" />
           </svg>
-          <div class="footer-text-group">
-            <h3>DEALKLY</h3>
-            <div class="footer-divider"></div>
-            <span class="footer-subtitle">PRICE DROP ALERTS</span>
-          </div>
+          <span class="brand-title">DEALKLY</span>
         </div>
-
-        <div class="footer-bottom-text">
-          <p class="footer-description">
-            An autonomous, custom-engineered alert platform for best deals from top online retailers.
-          </p>
-          <p class="footer-copyright">
-            &copy; 2026 Dealkly. All rights reserved.
-          </p>
-        </div>
+        <p class="brand-desc">An autonomous, custom-engineered alert platform tracking real-time price drops across top online retailers.</p>
+        <p class="copyright">&copy; 2026 Dealkly. All rights reserved.</p>
       </div>
-
-      <div class="footer-links-group">
-        <a href="#" class="footer-a">System Status</a>
-        <a href="#" class="footer-a">API Documentation</a>
-        <a href="privacy.html" class="footer-a">Privacy Protocol</a>
+      <div class="footer-nav-col">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span>All Systems Operational</span>
+        </div>
+        <div class="footer-links">
+          <a href="#">System Status</a>
+          <a href="#">API Documentation</a>
+          <a href="privacy.html">Privacy Protocol</a>
+        </div>
       </div>
     </div>
-  </div>
+  </footer>
 
   <!-- Interactive Scroll Reveal Script + Trust Card Drift -->
   <script>
@@ -804,25 +819,19 @@
       const statsSection = document.getElementById('trust');
       const cards = document.querySelectorAll('.stat-card');
       if (statsSection && cards.length === 3) {
-        const maxDrift = 20; // max pixels to shift sideways
+        const maxDrift = 20;
         window.addEventListener('scroll', () => {
           const rect = statsSection.getBoundingClientRect();
           const sectionHeight = rect.height;
           const sectionTop = rect.top;
           const windowHeight = window.innerHeight;
 
-          // Calculate progress: 0 when section just enters bottom, 1 when just leaves top
           let progress = (windowHeight - sectionTop) / (windowHeight + sectionHeight);
           progress = Math.max(0, Math.min(1, progress));
 
-          // Card 0 (24/7) moves left, Card 2 (Free Tier) moves right, Card 1 stays centered
-          const drift0 = -maxDrift * progress;
-          const drift1 = 0;
-          const drift2 = maxDrift * progress;
-
-          cards[0].style.transform = `translateX(${drift0}px)`;
-          cards[1].style.transform = `translateX(${drift1}px)`;
-          cards[2].style.transform = `translateX(${drift2}px)`;
+          cards[0].style.transform = `translateX(${-maxDrift * progress}px)`;
+          cards[1].style.transform = `translateX(0px)`;
+          cards[2].style.transform = `translateX(${maxDrift * progress}px)`;
         }, { passive: true });
       }
     });
