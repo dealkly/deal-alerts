@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dealkly Admin Ping</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; }
+    #lock { display: block; }
+    #button-area { display: none; }
+    input, button { padding: 10px 20px; font-size: 16px; margin: 10px; }
+    .msg { margin-top: 20px; color: green; }
+  </style>
+</head>
+<body>
+  <div id="lock">
+    <h2>Admin Password</h2>
+    <input type="password" id="pw" placeholder="Enter password">
+    <button onclick="unlock()">Unlock</button>
+    <p id="error" style="color:red;"></p>
+  </div>
+
+  <div id="button-area">
+    <h2>Pipeline Health Check</h2>
+    <p>Click the button to send a test email.<br>No workflow minutes used.</p>
+    <form id="test-form" action="https://formspree.io/f/mzdnjepn" method="POST">
+      <input type="hidden" name="subject" value="Dealkly Admin Test – Pipeline Healthy">
+      <input type="hidden" name="message" value="This is a manual admin test. The Dealkly pipeline is working correctly.">
+      <button type="submit">🚀 Send Test Email Now</button>
+    </form>
+    <p class="msg" id="status"></p>
+  </div>
+
+  <script>
+    const REAL_PASSWORD = "11110000"; // change this to your own password
+
+    function unlock() {
+      if (document.getElementById("pw").value === REAL_PASSWORD) {
+        document.getElementById("lock").style.display = "none";
+        document.getElementById("button-area").style.display = "block";
+        document.getElementById("error").innerText = "";
+      } else {
+        document.getElementById("error").innerText = "Wrong password.";
+      }
+    }
+
+    document.getElementById("test-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = e.target;
+      fetch(form.action, { method: "POST", body: new FormData(form) })
+        .then(() => document.getElementById("status").innerText = "Test email sent! Check your inbox.")
+        .catch(() => document.getElementById("status").innerText = "Error. Try again.");
+    });
+  </script>
+</body>
+</html>
