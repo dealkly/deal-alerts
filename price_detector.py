@@ -45,23 +45,23 @@ def send_alert(drops):
         print("No comparison performed. Exiting gracefully.")
         return
 
-    if drops.empty:
-    print("No price drops today. Sending test email.")
-    # Temporary test – will send email anyway
-    subscribers = load_subscribers()
-    if subscribers:
-        msg = MIMEMultipart()
-        msg["From"] = f"{SENDER_NAME} <{SENDER}>"
-        msg["Subject"] = "Dealkly Test – Pipeline Working"
-        body = "This is a test email. The Dealkly pipeline ran successfully and detected no price drops today."
-        msg.attach(MIMEText(body, "plain"))
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(SENDER, PASSWORD)
-            for subscriber in subscribers:
-                msg["To"] = subscriber
-                server.send_message(msg)
-                print(f"Test email sent to {subscriber}")
-    return
+        if drops.empty:
+        print("No price drops today. Sending test email.")
+        # Temporary test – will send email anyway
+        subscribers = load_subscribers()
+        if subscribers:
+            msg = MIMEMultipart()
+            msg["From"] = f"{SENDER_NAME} <{SENDER}>"
+            msg["Subject"] = "Dealkly Test – Pipeline Working"
+            body = "This is a test email. The Dealkly pipeline ran successfully and detected no price drops today."
+            msg.attach(MIMEText(body, "plain"))
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                server.login(SENDER, PASSWORD)
+                for subscriber in subscribers:
+                    msg["To"] = subscriber
+                    server.send_message(msg)
+                    print(f"Test email sent to {subscriber}")
+        return
     subject = "Dealkly Alert: Price Drop Detected"
     body = "A product you’re tracking just got cheaper.\n\n"
     for _, row in drops.iterrows():
