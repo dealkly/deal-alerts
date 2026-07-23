@@ -45,7 +45,7 @@ def send_alert(drops):
         print("No comparison performed. Exiting gracefully.")
         return
 
-        if drops.empty:
+    if drops.empty:
         print("No price drops today. Sending test email.")
         # Temporary test – will send email anyway
         subscribers = load_subscribers()
@@ -62,6 +62,7 @@ def send_alert(drops):
                     server.send_message(msg)
                     print(f"Test email sent to {subscriber}")
         return
+
     subject = "Dealkly Alert: Price Drop Detected"
     body = "A product you’re tracking just got cheaper.\n\n"
     for _, row in drops.iterrows():
