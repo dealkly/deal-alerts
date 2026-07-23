@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 10 * * *'
   workflow_dispatch:
+    inputs:
+      password:
+        description: 'Admin password for test email (optional)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -25,6 +30,8 @@ jobs:
       - name: Run price detector
         env:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          ADMIN_PASSWORD_INPUT: ${{ github.event.inputs.password }}
+          ADMIN_SECRET: ${{ secrets.ADMIN_TEST_PASSWORD }}
         run: python price_detector.py
       - name: Commit updated CSV
         run: |
