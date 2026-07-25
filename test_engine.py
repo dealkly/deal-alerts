@@ -5,11 +5,21 @@ import time
 import random
 import re
 import os
-import json
 
 # ------------------ CONFIG ------------------
 TODAY_CSV = "books_today.csv"
 YESTERDAY_CSV = "books_yesterday.csv"
+
+SEARCH_URLS = [
+    ("laptops", "https://www.ebay.com/sch/i.html?_nkw=laptop&_sop=15&rt=nc&LH_BIN=1"),
+    ("headphones", "https://www.ebay.com/sch/i.html?_nkw=wireless+headphones&_sop=15&rt=nc&LH_BIN=1"),
+    ("sneakers", "https://www.ebay.com/sch/i.html?_nkw=men+sneakers&_sop=15&rt=nc&LH_BIN=1"),
+    ("tablets", "https://www.ebay.com/sch/i.html?_nkw=tablet&_sop=15&rt=nc&LH_BIN=1"),
+    ("gaming", "https://www.ebay.com/sch/i.html?_nkw=video+game+console&_sop=15&rt=nc&LH_BIN=1"),
+    ("baby gear", "https://www.ebay.com/sch/i.html?_nkw=baby+gear&_sop=15&rt=nc&LH_BIN=1"),
+    ("home appliances", "https://www.ebay.com/sch/i.html?_nkw=home+appliance&_sop=15&rt=nc&LH_BIN=1"),
+    ("textbooks", "https://www.ebay.com/sch/i.html?_nkw=textbook&_sop=15&rt=nc&LH_BIN=1"),
+]
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -23,11 +33,14 @@ HEADERS = {
 
 # --------------------------------------------
 
-# Step 1: Rotate CSV files (so pipeline won't break)
+# Step 1: Rotate CSV files
 if os.path.exists(TODAY_CSV):
     if os.path.exists(YESTERDAY_CSV):
         os.remove(YESTERDAY_CSV)
     os.rename(TODAY_CSV, YESTERDAY_CSV)
+
+all_items = []
+total_products = 0
 
 # Step 2: Warm up session
 session = requests.Session()
@@ -40,49 +53,62 @@ try:
 except Exception as e:
     print(f"Warm‑up error (continuing): {e}")
 
-# Step 3: Deep‑inspect only the laptops category
-category = "laptops"
-url = "https://www.ebay.com/sch/i.html?_nkw=laptop&_sop=15&rt=nc&LH_BIN=1"
-print(f"Deep‑inspecting category: {category}")
-try:
-    response = session.get(url, timeout=15)
-    soup = BeautifulSoup(response.text, "html.parser")
+# Step 3: Scrape each category
+for category, url in SEARCH_URLS:
+    print(f"Scraping category: {category}")
+    try:
+        response = session.get(url, timeout=15)
+        soup = BeautifulSoup(response.text, "html.parser")
 
-    # Print a large chunk of the HTML to see what's really there
-    print("----- PAGE HTML SNIPPET (first 2500 chars) -----")
-    print(response.text[:2500])
-    print("----- END SNIPPET -----")
+        # Use the current eBay structure: product cards are div.s-item
+        items = soup.select(".s-item")
+        print(f"  Found {len(items)} .s-item elements")
 
-    # Check for JSON-LD explicitly
-    json_scripts = soup.find_all("script", type="application/ld+json")
-    print(f"Found {len(json_scripts)} JSON-LD script(s)")
-    for i, script in enumerate(json_scripts):
-        print(f"JSON-LD block {i}: {script.string[:300] if script.string else '(empty)'}...")
+        category_items = 0
+        for item in items:
+            # Title: try the standard inner span, or the .s-item__title itself
+            title_elem = item.select_one(".s-item__title span") or item.select_one(".s-item__title")
+            price_elem = item.select_one(".s-item__price")
+            link_elem = item.select_one(".s-item__link") or item.find("a", href=True)
 
-    # List all CSS classes used on <li> elements (common item containers)
-    li_tags = soup.find_all("li")
-    classes = set()
-    for li in li_tags:
-        if li.get("class"):
-            classes.update(li["class"])
-    if classes:
-        print("CSS classes found on <li> elements:")
-        for c in sorted(classes):
-            print(f"  - {c}")
-    else:
-        print("No <li> elements with classes found.")
+            if not title_elem or not price_elem:
+                continue
 
-    # Also check for any elements that might contain product data
-    # Look for common eBay selectors even if not in <li>
-    possible_items = soup.select("[class*='s-item'], [class*='item']")
-    print(f"Elements with class containing 's-item' or 'item': {len(possible_items)}")
+            title = title_elem.text.strip()
+            price_text = price_elem.text.strip()
+            link = link_elem.get("href") if link_elem else ""
 
-except Exception as e:
-    print(f"Error: {e}")
+            # Skip "Shop on eBay" or sponsored items that have no real link
+            if "ebay.com" not in link:
+                continue
 
-# Write an empty CSV so the detector doesn't crash (placeholder)
+            # Extract price number
+            price_match = re.search(r"[\d,]+\.?\d*", price_text)
+            if not price_match:
+                continue
+            price = float(price_match.group().replace(",", ""))
+
+            all_items.append({
+                "title": title,
+                "price": price,
+                "link": link,
+                "category": category
+            })
+            category_items += 1
+
+        total_products += category_items
+
+        time.sleep(random.uniform(2, 4))  # polite delay
+
+    except Exception as e:
+        print(f"  Error scraping {category}: {e}")
+        continue
+
+# Save to CSV
 with open(TODAY_CSV, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=["title", "price", "link"])
     writer.writeheader()
+    for item in all_items:
+        writer.writerow({"title": item["title"], "price": item["price"], "link": item["link"]})
 
-print("Deep inspection complete. Check the log for details.")
+print(f"\nDone. {total_products} products saved to {TODAY_CSV}")
