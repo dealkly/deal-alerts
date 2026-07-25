@@ -34,7 +34,7 @@ def clean_link(url):
         return url.split("?")[0]
     return url
 
-# Rotate CSV files (keep yesterday's data for comparison)
+# Rotate CSV files
 if os.path.exists(TODAY_CSV):
     if os.path.exists(YESTERDAY_CSV):
         os.remove(YESTERDAY_CSV)
@@ -45,8 +45,8 @@ total = 0
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
+    # Let Playwright use its native User-Agent to avoid fingerprint mismatch
     context = browser.new_context(
-        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         viewport={"width": 1920, "height": 1080}
     )
     page = context.new_page()
@@ -58,11 +58,12 @@ with sync_playwright() as p:
     for category, url in CATEGORIES:
         print(f"Scraping category: {category}")
         try:
-            # Wait for the main HTML, ignoring background ad/tracking requests
             page.goto(url, wait_until="domcontentloaded")
+            # Diagnostic: see what page eBay actually served
+            print(f"  Page title seen: {page.title()}")
             
-            # Explicitly wait up to 15 seconds for product cards to render
-            page.wait_for_selector("li.s-item", timeout=15000)
+            # Wait up to 20 seconds for any /itm/ link to appear
+            page.wait_for_selector("a[href*='/itm/']", timeout=20000)
         except Exception as e:
             print(f"  Timeout/error loading {category}: {e}")
             continue
@@ -71,26 +72,46 @@ with sync_playwright() as p:
         page.mouse.wheel(0, 1500)
         time.sleep(random.uniform(2, 4))
 
-        items = page.locator("li.s-item").all()
-        print(f"  Found {len(items)} raw elements")
+        # Get all item links (most robust anchor)
+        item_links = page.locator("a[href*='/itm/']").all()
+        print(f"  Found {len(item_links)} item links")
 
-        for item in items:
+        seen_urls = set()
+        for link_element in item_links:
             try:
-                title = item.locator(".s-item__title").inner_text(timeout=500)
-                if "Shop on eBay" in title:
+                raw_link = link_element.get_attribute("href", timeout=500)
+                if not raw_link or '/itm/' not in raw_link:
                     continue
+                clean_url = clean_link(raw_link)
+                if clean_url in seen_urls:
+                    continue
+                seen_urls.add(clean_url)
 
-                price_text = item.locator(".s-item__price").inner_text(timeout=500)
-                raw_link = item.locator(".s-item__link").get_attribute("href", timeout=500)
+                # Walk up the DOM to find title and price
+                container = link_element
+                title = None
+                price = None
+                for _ in range(10):
+                    if container is None:
+                        break
+                    price_candidate = container.text_content()
+                    price_match = re.search(r'\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?', price_candidate)
+                    if price_match:
+                        price = clean_price(price_match.group())
+                    texts = [el.text_content().strip() for el in container.query_selector_all("span,h3,div")]
+                    for t in sorted(texts, key=len, reverse=True):
+                        if t and len(t) > 15 and not t.startswith("$") and "Shop on eBay" not in t:
+                            title = t
+                            break
+                    if title and price is not None:
+                        break
+                    container = container.evaluate("node => node.parentElement")
 
-                price = clean_price(price_text)
-                link = clean_link(raw_link)
-
-                if title and price is not None and link:
+                if title and price is not None:
                     all_products.append({
                         "title": title,
                         "price": price,
-                        "link": link,
+                        "link": clean_url,
                         "category": category
                     })
                     total += 1
@@ -101,10 +122,10 @@ with sync_playwright() as p:
 
     browser.close()
 
-# Save CSV (same format as before)
+# Save CSV
 if all_products:
     df = pd.DataFrame(all_products)
-    df = df.drop_duplicates(subset=["title"])
+    df = df.drop_duplicates(subset=["link"])
     df[["title", "price", "link"]].to_csv(TODAY_CSV, index=False)
     print(f"\nDone. {len(df)} unique products saved to {TODAY_CSV}")
 else:
