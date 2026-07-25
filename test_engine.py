@@ -1,54 +1,15 @@
-import pandas as pd
 import time
 import random
 import re
-import os
 from playwright.sync_api import sync_playwright
-
-# ------------------ CONFIG ------------------
-TODAY_CSV = "books_today.csv"
-YESTERDAY_CSV = "books_yesterday.csv"
 
 CATEGORIES = [
     ("laptops", "https://www.ebay.com/sch/i.html?_nkw=laptop&_sop=15&rt=nc&LH_BIN=1"),
-    ("headphones", "https://www.ebay.com/sch/i.html?_nkw=wireless+headphones&_sop=15&rt=nc&LH_BIN=1"),
-    ("sneakers", "https://www.ebay.com/sch/i.html?_nkw=men+sneakers&_sop=15&rt=nc&LH_BIN=1"),
-    ("tablets", "https://www.ebay.com/sch/i.html?_nkw=tablet&_sop=15&rt=nc&LH_BIN=1"),
-    ("gaming", "https://www.ebay.com/sch/i.html?_nkw=video+game+console&_sop=15&rt=nc&LH_BIN=1"),
-    ("baby gear", "https://www.ebay.com/sch/i.html?_nkw=baby+gear&_sop=15&rt=nc&LH_BIN=1"),
-    ("home appliances", "https://www.ebay.com/sch/i.html?_nkw=home+appliance&_sop=15&rt=nc&LH_BIN=1"),
-    ("textbooks", "https://www.ebay.com/sch/i.html?_nkw=textbook&_sop=15&rt=nc&LH_BIN=1"),
 ]
-# --------------------------------------------
-
-def clean_price(price_str):
-    first_price = price_str.split("to")[0].split("-")[0]
-    clean_str = re.sub(r'[^\d.]', '', first_price)
-    try:
-        return float(clean_str)
-    except ValueError:
-        return None
-
-def clean_link(url):
-    if "?" in url:
-        return url.split("?")[0]
-    return url
-
-# Rotate CSV files
-if os.path.exists(TODAY_CSV):
-    if os.path.exists(YESTERDAY_CSV):
-        os.remove(YESTERDAY_CSV)
-    os.rename(TODAY_CSV, YESTERDAY_CSV)
-
-all_products = []
-total = 0
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
-    # Native User-Agent (no mismatch) — exactly the discovery code that succeeded
-    context = browser.new_context(
-        viewport={"width": 1920, "height": 1080}
-    )
+    context = browser.new_context(viewport={"width": 1920, "height": 1080})
     page = context.new_page()
 
     print("Warming up session on eBay homepage...")
@@ -60,88 +21,45 @@ with sync_playwright() as p:
         try:
             page.goto(url, wait_until="domcontentloaded")
             print(f"  Page title seen: {page.title()}")
-            
-            # Wait for the exact same /itm/ links that succeeded before
             page.wait_for_selector("a[href*='/itm/']", timeout=20000)
         except Exception as e:
-            print(f"  Timeout/error loading {category}: {e}")
+            print(f"  Timeout: {e}")
             continue
 
-        # Scroll to trigger lazy-load (unchanged)
         page.mouse.wheel(0, 1500)
-        time.sleep(random.uniform(2, 4))
+        time.sleep(2)
 
-        # Get all item links (identical to the working discovery)
         item_links = page.locator("a[href*='/itm/']").all()
-        print(f"  Found {len(item_links)} item links")
+        print(f"  Found {len(item_links)} item links. Examining first 3...\n")
 
-        seen_urls = set()
-        for link_element in item_links:
+        for idx, link_element in enumerate(item_links[:3]):
             try:
-                raw_link = link_element.get_attribute("href", timeout=500)
-                if not raw_link or '/itm/' not in raw_link:
-                    continue
-                clean_url = clean_link(raw_link)
-                if clean_url in seen_urls:
-                    continue
-                seen_urls.add(clean_url)
+                raw_link = link_element.get_attribute("href")
+                print(f"--- Link {idx+1}: {raw_link[:100]}... ---")
 
-                # --- Improved extraction: find the card containing this link ---
-                # Walk up the DOM to a container that likely holds the whole product card.
-                # We'll try to get the standard eBay classes first (they should work now).
-                card = link_element
-                for _ in range(8):
-                    if card is None:
+                # Walk up to find a container with both a price and a meaningful text
+                container = link_element
+                for depth in range(10):
+                    if container is None:
                         break
-                    # Check if we can extract title and price from this container
-                    title = None
-                    price = None
-                    # Try standard selectors within this container
-                    title_elem = card.query_selector(".s-item__title")
-                    price_elem = card.query_selector(".s-item__price")
-                    if title_elem:
-                        title = title_elem.text_content().strip()
-                    if price_elem:
-                        price_text = price_elem.text_content().strip()
-                        price = clean_price(price_text)
-                    # If standard selectors didn't work, try a broad fallback
-                    if not title:
-                        # Look for the longest meaningful text
-                        texts = [el.text_content().strip() for el in card.query_selector_all("span,h3,div")]
-                        for t in sorted(texts, key=len, reverse=True):
-                            if t and len(t) > 15 and not t.startswith("$") and "Shop on eBay" not in t:
-                                title = t
-                                break
-                    if not price:
-                        # Search for a price pattern
-                        price_match = re.search(r'\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?', card.text_content())
-                        if price_match:
-                            price = clean_price(price_match.group())
-                    if title and price is not None:
-                        break  # Found enough data
-                    card = card.evaluate("node => node.parentElement")
-
-                if title and price is not None:
-                    all_products.append({
-                        "title": title,
-                        "price": price,
-                        "link": clean_url,
-                        "category": category
-                    })
-                    total += 1
-            except Exception:
-                continue
-
-        time.sleep(random.uniform(3, 6))
+                    html_snippet = container.evaluate("node => node.outerHTML")
+                    # Check for price pattern
+                    price_match = re.search(r'\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?', html_snippet)
+                    # Collect all text pieces
+                    text_elements = container.query_selector_all("span, h3, div, a")
+                    texts = [el.text_content().strip() for el in text_elements if el.text_content().strip()]
+                    long_texts = [t for t in texts if len(t) > 10 and not t.startswith("$")]
+                    if price_match and long_texts:
+                        print(f"  Found container at depth {depth}:")
+                        print(f"    Price found: {price_match.group()}")
+                        print(f"    Longest text: '{max(long_texts, key=len)}' (len {len(max(long_texts, key=len))})")
+                        print(f"    Container HTML (first 500 chars): {html_snippet[:500]}...")
+                        print()
+                        break
+                    container = container.evaluate("node => node.parentElement")
+                else:
+                    print("  Could not find a container with both price and long text.\n")
+            except Exception as e:
+                print(f"  Error inspecting link: {e}\n")
 
     browser.close()
-
-# Save CSV
-if all_products:
-    df = pd.DataFrame(all_products)
-    df = df.drop_duplicates(subset=["link"])
-    df[["title", "price", "link"]].to_csv(TODAY_CSV, index=False)
-    print(f"\nDone. {len(df)} unique products saved to {TODAY_CSV}")
-else:
-    print("\nNo products found. Creating empty CSV.")
-    pd.DataFrame(columns=["title", "price", "link"]).to_csv(TODAY_CSV, index=False)
