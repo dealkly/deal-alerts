@@ -10,7 +10,6 @@ import os
 TODAY_CSV = "books_today.csv"
 YESTERDAY_CSV = "books_yesterday.csv"
 
-# List of eBay search URLs for different categories
 SEARCH_URLS = [
     ("laptops", "https://www.ebay.com/sch/i.html?_nkw=laptop&_sop=15&rt=nc&LH_BIN=1"),
     ("headphones", "https://www.ebay.com/sch/i.html?_nkw=wireless+headphones&_sop=15&rt=nc&LH_BIN=1"),
@@ -22,29 +21,51 @@ SEARCH_URLS = [
     ("textbooks", "https://www.ebay.com/sch/i.html?_nkw=textbook&_sop=15&rt=nc&LH_BIN=1"),
 ]
 
+# Realistic browser headers (mimics a normal Chrome visit)
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+    "Cache-Control": "max-age=0",
 }
+
 # --------------------------------------------
 
-# Step 1: Rotate the CSV files (same as before)
+# Step 1: Rotate CSV files
 if os.path.exists(TODAY_CSV):
     if os.path.exists(YESTERDAY_CSV):
         os.remove(YESTERDAY_CSV)
     os.rename(TODAY_CSV, YESTERDAY_CSV)
 
-# Step 2: Scrape all categories
+# Step 2: Warm up session and scrape
 all_items = []
 total_products = 0
 
+# Create a session that automatically stores cookies
+session = requests.Session()
+session.headers.update(HEADERS)
+
+# First, visit the eBay homepage to get necessary cookies (bypasses bot detection)
+print("Warming up session (eBay homepage)...")
+try:
+    session.get("https://www.ebay.com", timeout=15)
+    time.sleep(random.uniform(1, 2))
+except Exception as e:
+    print(f"Warm‑up error (continuing): {e}")
+
+# Now scrape each category
 for category, url in SEARCH_URLS:
     print(f"Scraping category: {category}")
     try:
-        response = requests.get(url, headers=HEADERS, timeout=15)
+        response = session.get(url, timeout=15)
+        # eBay might compress – requests handles it
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # DEBUG: show what the page actually looks like
-        print("DEBUG: First 300 chars of page:", response.text[:300])
+        # Optional: still see a snippet to confirm success (remove after test)
+        print("DEBUG: Title tag:", soup.title.string if soup.title else "No title")
 
         listings = soup.select("li.s-item")
         for item in listings:
@@ -77,7 +98,7 @@ for category, url in SEARCH_URLS:
         print(f"  Error scraping {category}: {e}")
         continue
 
-# Save to CSV (now includes the product link)
+# Save to CSV
 with open(TODAY_CSV, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=["title", "price", "link"])
     writer.writeheader()
