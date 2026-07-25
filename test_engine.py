@@ -45,7 +45,7 @@ total = 0
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
-    # Let Playwright use its native User-Agent to avoid fingerprint mismatch
+    # Native User-Agent (no mismatch) — exactly the discovery code that succeeded
     context = browser.new_context(
         viewport={"width": 1920, "height": 1080}
     )
@@ -59,20 +59,19 @@ with sync_playwright() as p:
         print(f"Scraping category: {category}")
         try:
             page.goto(url, wait_until="domcontentloaded")
-            # Diagnostic: see what page eBay actually served
             print(f"  Page title seen: {page.title()}")
             
-            # Wait up to 20 seconds for any /itm/ link to appear
+            # Wait for the exact same /itm/ links that succeeded before
             page.wait_for_selector("a[href*='/itm/']", timeout=20000)
         except Exception as e:
             print(f"  Timeout/error loading {category}: {e}")
             continue
 
-        # Scroll to trigger lazy-load
+        # Scroll to trigger lazy-load (unchanged)
         page.mouse.wheel(0, 1500)
         time.sleep(random.uniform(2, 4))
 
-        # Get all item links (most robust anchor)
+        # Get all item links (identical to the working discovery)
         item_links = page.locator("a[href*='/itm/']").all()
         print(f"  Found {len(item_links)} item links")
 
@@ -87,25 +86,40 @@ with sync_playwright() as p:
                     continue
                 seen_urls.add(clean_url)
 
-                # Walk up the DOM to find title and price
-                container = link_element
-                title = None
-                price = None
-                for _ in range(10):
-                    if container is None:
+                # --- Improved extraction: find the card containing this link ---
+                # Walk up the DOM to a container that likely holds the whole product card.
+                # We'll try to get the standard eBay classes first (they should work now).
+                card = link_element
+                for _ in range(8):
+                    if card is None:
                         break
-                    price_candidate = container.text_content()
-                    price_match = re.search(r'\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?', price_candidate)
-                    if price_match:
-                        price = clean_price(price_match.group())
-                    texts = [el.text_content().strip() for el in container.query_selector_all("span,h3,div")]
-                    for t in sorted(texts, key=len, reverse=True):
-                        if t and len(t) > 15 and not t.startswith("$") and "Shop on eBay" not in t:
-                            title = t
-                            break
+                    # Check if we can extract title and price from this container
+                    title = None
+                    price = None
+                    # Try standard selectors within this container
+                    title_elem = card.query_selector(".s-item__title")
+                    price_elem = card.query_selector(".s-item__price")
+                    if title_elem:
+                        title = title_elem.text_content().strip()
+                    if price_elem:
+                        price_text = price_elem.text_content().strip()
+                        price = clean_price(price_text)
+                    # If standard selectors didn't work, try a broad fallback
+                    if not title:
+                        # Look for the longest meaningful text
+                        texts = [el.text_content().strip() for el in card.query_selector_all("span,h3,div")]
+                        for t in sorted(texts, key=len, reverse=True):
+                            if t and len(t) > 15 and not t.startswith("$") and "Shop on eBay" not in t:
+                                title = t
+                                break
+                    if not price:
+                        # Search for a price pattern
+                        price_match = re.search(r'\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?', card.text_content())
+                        if price_match:
+                            price = clean_price(price_match.group())
                     if title and price is not None:
-                        break
-                    container = container.evaluate("node => node.parentElement")
+                        break  # Found enough data
+                    card = card.evaluate("node => node.parentElement")
 
                 if title and price is not None:
                     all_products.append({
