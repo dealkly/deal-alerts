@@ -60,12 +60,12 @@ with sync_playwright() as p:
             print(f"  Timeout/error loading {category}: {e}")
             continue
 
-        # -------- Gradual scroll to trigger ALL lazy-loaded items --------
+        # Gradual scroll to load all items
         for _ in range(4):
             page.mouse.wheel(0, 2000)
             time.sleep(random.uniform(1.5, 2.5))
 
-        # -------- Enhanced extraction: title, price, condition, and availability --------
+        # -------- Extraction with total price (item + shipping) --------
         products = page.evaluate("""
             () => {
                 const results = [];
@@ -79,7 +79,7 @@ with sync_playwright() as p:
                     let container = link.closest('li') || link.parentElement?.parentElement?.parentElement?.parentElement;
                     if (!container) return;
 
-                    // 1. Title
+                    // Title
                     const heading = container.querySelector('h2, h3, h4');
                     let title = heading ? heading.innerText : link.innerText;
                     if (title) {
@@ -88,8 +88,8 @@ with sync_playwright() as p:
                                      .trim();
                     }
 
-                    // 2. Price (via TreeWalker)
-                    let price = null;
+                    // Item price
+                    let itemPrice = null;
                     const priceRegex = /(?:US\s*\$|\$|£|€)\s?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?/;
                     const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
                     let node;
@@ -97,47 +97,65 @@ with sync_playwright() as p:
                         const text = node.nodeValue.trim();
                         const match = text.match(priceRegex);
                         if (match) {
-                            price = match[0];
+                            itemPrice = match[0];
                             break;
                         }
                     }
 
-                    // 3. Condition (e.g. "Brand New", "Refurbished", "Pre-owned")
-                    let condition = null;
-                    const conditionSelectors = [
-                        '.s-item__subtitle',
-                        '.SECONDARY_INFO',
-                        '[class*="condition"]',
-                        '[class*="subtitle"]'
-                    ];
-                    for (const sel of conditionSelectors) {
-                        const el = container.querySelector(sel);
-                        if (el) {
-                            condition = el.textContent.trim();
-                            break;
+                    // Shipping cost
+                    let shippingText = null;
+                    // Look for a dedicated shipping element
+                    const shippingEl = container.querySelector('.s-item__shipping, .s-item__shipping-cost, .s-item__shipping-price, [class*="shipping"]');
+                    if (shippingEl) {
+                        shippingText = shippingEl.textContent.trim();
+                    } else {
+                        // Search for text like "+$5.00 shipping" or "Free shipping"
+                        const allText = container.innerText;
+                        const shipMatch = allText.match(/(\+?\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?\s*shipping)|(Free\s*shipping)/i);
+                        if (shipMatch) shippingText = shipMatch[0];
+                    }
+
+                    let totalPrice = itemPrice; // default to item price
+                    if (shippingText && !/free/i.test(shippingText)) {
+                        const shipPriceMatch = shippingText.match(/\$[\d,]+\.?\d*/);
+                        if (shipPriceMatch) {
+                            const shipVal = parseFloat(shipPriceMatch[0].replace('$','').replace(',',''));
+                            if (!isNaN(shipVal)) {
+                                const itemVal = parseFloat(itemPrice.replace('$','').replace(',',''));
+                                if (!isNaN(itemVal)) {
+                                    totalPrice = '$' + (itemVal + shipVal).toFixed(2);
+                                }
+                            }
                         }
                     }
+
+                    // Condition
+                    let condition = null;
+                    const condSelectors = ['.s-item__subtitle', '.SECONDARY_INFO', '[class*="condition"]', '[class*="subtitle"]'];
+                    for (const sel of condSelectors) {
+                        const el = container.querySelector(sel);
+                        if (el) { condition = el.textContent.trim(); break; }
+                    }
                     if (!condition) {
-                        // Fallback: search the whole container text for condition keywords
-                        const containerText = container.innerText;
-                        const matches = containerText.match(/(Brand New|New\s*\(Other\)|Open box|Certified Refurbished|Seller Refurbished|Used|Pre-owned|For parts or not working)/i);
+                        const ct = container.innerText;
+                        const matches = ct.match(/(Brand New|New\s*\(Other\)|Open box|Certified Refurbished|Seller Refurbished|Used|Pre-owned|For parts or not working)/i);
                         if (matches) condition = matches[0];
                     }
 
-                    // 4. Availability check: skip if the image is missing or a placeholder
+                    // Image check
                     const img = container.querySelector('img');
                     const imgSrc = img ? (img.getAttribute('src') || '') : '';
                     const hasImage = imgSrc && !imgSrc.includes('placeholder') && !imgSrc.includes('no-image');
-                    
-                    // Also check for out-of-stock text
                     const containerText = container.innerText.toLowerCase();
                     const isOutOfStock = containerText.includes('out of stock') || containerText.includes('sold out');
 
-                    if (title && price && !isOutOfStock) {
+                    if (title && itemPrice && !isOutOfStock) {
                         seenUrls.add(url);
                         results.push({
                             title: title,
-                            price: price,
+                            price: itemPrice,
+                            shipping: shippingText || 'Not specified',
+                            total_price: totalPrice,
                             url: url,
                             condition: condition || 'Unknown',
                             hasImage: hasImage
@@ -148,26 +166,22 @@ with sync_playwright() as p:
             }
         """)
 
-        # Filter and keep only new, available items
+        # Filter new & available items, save total_price as the tracked price
         category_items = 0
         for item in products:
-            # Keep only items clearly marked as new (you can adjust this whitelist)
             condition = item.get("condition", "").lower()
             is_new = any(word in condition for word in ["brand new", "new", "unused"])
-            if not is_new:
-                continue   # skip used, refurbished, etc.
+            if not is_new: continue
+            if not item.get("hasImage", False): continue
 
-            # Skip items with no image (likely placeholder / dead listing)
-            if not item.get("hasImage", False):
-                continue
-
-            price_num = clean_price(item["price"])
-            if price_num is None:
-                continue
+            # Use total_price if available, else fallback to item price
+            price_str = item.get("total_price") or item.get("price")
+            price_num = clean_price(price_str)
+            if price_num is None: continue
 
             all_products.append({
                 "title": item["title"],
-                "price": price_num,
+                "price": price_num,          # now total estimated price (item+shipping)
                 "link": item["url"],
                 "category": category
             })
@@ -178,7 +192,7 @@ with sync_playwright() as p:
 
     browser.close()
 
-# Save CSV
+# Save CSV with 'price' column now representing total estimated price
 if all_products:
     df = pd.DataFrame(all_products)
     df = df.drop_duplicates(subset=["link"])
