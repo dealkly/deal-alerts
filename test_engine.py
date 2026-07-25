@@ -22,8 +22,8 @@ CATEGORIES = [
 # --------------------------------------------
 
 def clean_price(price_str):
-    first_price = price_str.split("to")[0].split("-")[0]
-    clean_str = re.sub(r'[^\d.]', '', first_price)
+    # Remove any non-numeric except dot
+    clean_str = re.sub(r'[^\d.]', '', price_str)
     try:
         return float(clean_str)
     except ValueError:
@@ -56,71 +56,78 @@ with sync_playwright() as p:
         try:
             page.goto(url, wait_until="domcontentloaded")
             print(f"  Page title seen: {page.title()}")
-            # Wait for item links to be present
             page.wait_for_selector("a[href*='/itm/']", timeout=20000)
         except Exception as e:
             print(f"  Timeout/error loading {category}: {e}")
             continue
 
-        # Scroll to trigger lazy‑loaded content
-        page.mouse.wheel(0, 1500)
+        # Scroll all the way to the bottom to trigger all lazy-loaded items
+        page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         time.sleep(random.uniform(2, 4))
 
-        # Use JavaScript to extract products directly from the DOM
+        # -------- Robust extraction logic (No CSS Classes needed) --------
         products = page.evaluate("""
             () => {
-                const items = [];
-                // Grab all anchor tags that link to an eBay item page
+                const results = [];
+                const seenUrls = new Set();
                 const links = document.querySelectorAll('a[href*="/itm/"]');
-                const seen = new Set();
-                for (const link of links) {
-                    const url = link.href.split('?')[0];  // clean URL
-                    if (seen.has(url)) continue;
-                    seen.add(url);
 
-                    // Walk up to find the closest containing card that has both a price and a title
-                    let container = link;
-                    for (let i = 0; i < 10; i++) {
-                        if (!container) break;
-                        // Look for a price inside this container
-                        const priceEl = container.querySelector('.s-item__price');
-                        const titleEl = container.querySelector('.s-item__title');
-                        if (priceEl && titleEl) {
-                            const priceText = priceEl.textContent.trim();
-                            // Extract the first dollar amount
-                            const priceMatch = priceText.match(/\\$[\\d,]+(?:\\.\\d{2})?/);
-                            if (priceMatch) {
-                                const title = titleEl.textContent.trim();
-                                if (title && !title.includes('Shop on eBay')) {
-                                    items.push({
-                                        title: title,
-                                        price: priceMatch[0],
-                                        link: url,
-                                        category: '""" + category + """'
-                                    });
-                                    break;
-                                }
-                            }
-                        }
-                        container = container.parentElement;
+                links.forEach(link => {
+                    const url = link.href.split('?')[0];
+                    if (seenUrls.has(url)) return;
+
+                    let container = link.closest('li') || link.parentElement?.parentElement?.parentElement?.parentElement;
+                    if (!container) return;
+
+                    const heading = container.querySelector('h2, h3, h4');
+                    let title = heading ? heading.innerText : link.innerText;
+                    if (title) {
+                        title = title.replace(/Opens in a new window or tab/gi, '')
+                                     .replace(/^New Listing/i, '')
+                                     .trim();
                     }
-                }
-                return items;
+
+                    let price = null;
+                    const priceRegex = /(?:US\s*\$|\$|£|€)\s?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?/;
+                    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+                    let node;
+                    while ((node = walker.nextNode())) {
+                        const text = node.nodeValue.trim();
+                        const match = text.match(priceRegex);
+                        if (match) {
+                            price = match[0];
+                            break;
+                        }
+                    }
+
+                    if (title && price) {
+                        seenUrls.add(url);
+                        results.push({
+                            title: title,
+                            price: price,
+                            url: url
+                        });
+                    }
+                });
+                return results;
             }
         """)
 
-        # Clean price strings to numbers
-        for prod in products:
-            price_num = clean_price(prod["price"])
-            if price_num is not None:
-                all_products.append({
-                    "title": prod["title"],
-                    "price": price_num,
-                    "link": clean_link(prod["link"]),
-                    "category": category
-                })
-        print(f"  Extracted {len(products)} products")
+        # Process extracted products
+        category_items = 0
+        for item in products:
+            price_num = clean_price(item["price"])
+            if price_num is None:
+                continue
+            all_products.append({
+                "title": item["title"],
+                "price": price_num,
+                "link": item["url"],
+                "category": category
+            })
+            category_items += 1
 
+        print(f"  Extracted {category_items} products")
         time.sleep(random.uniform(3, 6))
 
     browser.close()
