@@ -58,7 +58,11 @@ with sync_playwright() as p:
     for category, url in CATEGORIES:
         print(f"Scraping category: {category}")
         try:
-            page.goto(url, wait_until="networkidle")
+            # Wait for the main HTML, ignoring background ad/tracking requests
+            page.goto(url, wait_until="domcontentloaded")
+            
+            # Explicitly wait up to 15 seconds for product cards to render
+            page.wait_for_selector("li.s-item", timeout=15000)
         except Exception as e:
             print(f"  Timeout/error loading {category}: {e}")
             continue
