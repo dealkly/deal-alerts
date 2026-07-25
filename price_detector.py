@@ -16,10 +16,13 @@ PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
 if not PASSWORD:
     raise ValueError("GMAIL_APP_PASSWORD environment variable not set.")
 
-# Admin test mode via workflow_dispatch password
 ADMIN_PASSWORD_INPUT = os.environ.get("ADMIN_PASSWORD_INPUT", "")
 ADMIN_SECRET = os.environ.get("ADMIN_SECRET", "")
 ADMIN_TEST_MODE = (ADMIN_PASSWORD_INPUT == ADMIN_SECRET) and ADMIN_SECRET != ""
+
+# ---------- QUALITY FILTERS ----------
+MIN_DROP_PERCENT = 10.0      # only alert if price dropped by at least 10%
+MIN_ITEM_PRICE = 5.00        # only track items with total price >= $5 (adjustable)
 # --------------------------------------------
 
 def load_subscribers():
@@ -54,12 +57,23 @@ def send_alert(drops):
         print("No price drops today.")
         return
 
+    # Apply percentage-based drop filter and minimum price
+    filtered = drops[
+        ((-drops["drop"] / drops["price_yest"]) * 100 >= MIN_DROP_PERCENT) &
+        (drops["price_today"] >= MIN_ITEM_PRICE)
+    ]
+
+    if filtered.empty:
+        print(f"No price drops pass quality filters (min {MIN_DROP_PERCENT}% drop, min price ${MIN_ITEM_PRICE:.2f}).")
+        return
+
     subject = "Dealkly Alert: Price Drop Detected"
     body = "A product you’re tracking just got cheaper.\n\n"
-    for _, row in drops.iterrows():
+    for _, row in filtered.iterrows():
         link = row.get("link_today", row.get("link_yest", "https://www.ebay.com"))
+        drop_percent = round((-row["drop"] / row["price_yest"]) * 100)
         body += f"{row['title']}\n"
-        body += f"Was: ${row['price_yest']:.2f} → Now: ${row['price_today']:.2f} (save ${-row['drop']:.2f})\n"
+        body += f"Was: ${row['price_yest']:.2f} → Now: ${row['price_today']:.2f} (save {drop_percent}%)\n"
         body += f"View it here: {link}\n\n"
         
     body += "—\nDealkly Alerts\nhttps://dealkly.github.io/deal-alerts/"
@@ -85,27 +99,29 @@ def send_alert(drops):
             print(f"Alert sent to {subscriber}")
 
 def send_daily_beacon(drops, product_count):
-    """Send a detailed daily report ONLY to the admin (dealkly.contact@gmail.com)."""
     if drops is None:
         drop_count = "N/A (no comparison data)"
+        total_drops = 0
     else:
-        drop_count = len(drops) if not drops.empty else 0
+        total_drops = len(drops) if not drops.empty else 0
+        drop_count = total_drops
 
     subject = "Dealkly Daily Report – Pipeline Ran Successfully"
     body = (
         f"Daily scraping report.\n\n"
         f"Products scraped today: {product_count}\n"
-        f"Price drops detected: {drop_count}\n"
+        f"Price drops detected (unfiltered): {drop_count}\n"
     )
     if drops is not None and not drops.empty:
-        body += "\nDrops found:\n"
+        body += "\nAll drops (unfiltered):\n"
         for _, row in drops.iterrows():
-            body += f"- {row['title']}: ${row['price_yest']:.2f} → ${row['price_today']:.2f}\n"
+            drop_percent = round((-row["drop"] / row["price_yest"]) * 100)
+            body += f"- {row['title']}: ${row['price_yest']:.2f} → ${row['price_today']:.2f} ({drop_percent}%)\n"
     body += f"\n—\nDealkly Alerts\nhttps://dealkly.github.io/deal-alerts/"
 
     msg = MIMEMultipart()
     msg["From"] = f"{SENDER_NAME} <{SENDER}>"
-    msg["To"] = SENDER       # ← ONLY you
+    msg["To"] = SENDER
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
 
@@ -116,10 +132,9 @@ def send_daily_beacon(drops, product_count):
 
 if __name__ == "__main__":
     drops, product_count = detect_price_drops()
-    send_alert(drops)                                  # real alerts to subscribers (if any drops)
-    send_daily_beacon(drops, product_count)            # daily report ONLY to you
+    send_alert(drops)
+    send_daily_beacon(drops, product_count)
 
-    # Admin test mode – extra full-pipeline test when password is given
     if ADMIN_TEST_MODE:
         print("Admin test mode activated – sending test email.")
         subscribers = load_subscribers()
