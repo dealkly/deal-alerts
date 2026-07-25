@@ -22,7 +22,6 @@ CATEGORIES = [
 # --------------------------------------------
 
 def clean_price(price_str):
-    # Remove any non-numeric except dot
     clean_str = re.sub(r'[^\d.]', '', price_str)
     try:
         return float(clean_str)
@@ -61,11 +60,12 @@ with sync_playwright() as p:
             print(f"  Timeout/error loading {category}: {e}")
             continue
 
-        # Scroll all the way to the bottom to trigger all lazy-loaded items
-        page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-        time.sleep(random.uniform(2, 4))
+        # -------- Gradual scroll to trigger ALL lazy-loaded items --------
+        for _ in range(4):
+            page.mouse.wheel(0, 2000)
+            time.sleep(random.uniform(1.5, 2.5))
 
-        # -------- Robust extraction logic (No CSS Classes needed) --------
+        # -------- Enhanced extraction: title, price, condition, and availability --------
         products = page.evaluate("""
             () => {
                 const results = [];
@@ -79,6 +79,7 @@ with sync_playwright() as p:
                     let container = link.closest('li') || link.parentElement?.parentElement?.parentElement?.parentElement;
                     if (!container) return;
 
+                    // 1. Title
                     const heading = container.querySelector('h2, h3, h4');
                     let title = heading ? heading.innerText : link.innerText;
                     if (title) {
@@ -87,6 +88,7 @@ with sync_playwright() as p:
                                      .trim();
                     }
 
+                    // 2. Price (via TreeWalker)
                     let price = null;
                     const priceRegex = /(?:US\s*\$|\$|£|€)\s?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?/;
                     const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
@@ -100,12 +102,45 @@ with sync_playwright() as p:
                         }
                     }
 
-                    if (title && price) {
+                    // 3. Condition (e.g. "Brand New", "Refurbished", "Pre-owned")
+                    let condition = null;
+                    const conditionSelectors = [
+                        '.s-item__subtitle',
+                        '.SECONDARY_INFO',
+                        '[class*="condition"]',
+                        '[class*="subtitle"]'
+                    ];
+                    for (const sel of conditionSelectors) {
+                        const el = container.querySelector(sel);
+                        if (el) {
+                            condition = el.textContent.trim();
+                            break;
+                        }
+                    }
+                    if (!condition) {
+                        // Fallback: search the whole container text for condition keywords
+                        const containerText = container.innerText;
+                        const matches = containerText.match(/(Brand New|New\s*\(Other\)|Open box|Certified Refurbished|Seller Refurbished|Used|Pre-owned|For parts or not working)/i);
+                        if (matches) condition = matches[0];
+                    }
+
+                    // 4. Availability check: skip if the image is missing or a placeholder
+                    const img = container.querySelector('img');
+                    const imgSrc = img ? (img.getAttribute('src') || '') : '';
+                    const hasImage = imgSrc && !imgSrc.includes('placeholder') && !imgSrc.includes('no-image');
+                    
+                    // Also check for out-of-stock text
+                    const containerText = container.innerText.toLowerCase();
+                    const isOutOfStock = containerText.includes('out of stock') || containerText.includes('sold out');
+
+                    if (title && price && !isOutOfStock) {
                         seenUrls.add(url);
                         results.push({
                             title: title,
                             price: price,
-                            url: url
+                            url: url,
+                            condition: condition || 'Unknown',
+                            hasImage: hasImage
                         });
                     }
                 });
@@ -113,12 +148,23 @@ with sync_playwright() as p:
             }
         """)
 
-        # Process extracted products
+        # Filter and keep only new, available items
         category_items = 0
         for item in products:
+            # Keep only items clearly marked as new (you can adjust this whitelist)
+            condition = item.get("condition", "").lower()
+            is_new = any(word in condition for word in ["brand new", "new", "unused"])
+            if not is_new:
+                continue   # skip used, refurbished, etc.
+
+            # Skip items with no image (likely placeholder / dead listing)
+            if not item.get("hasImage", False):
+                continue
+
             price_num = clean_price(item["price"])
             if price_num is None:
                 continue
+
             all_products.append({
                 "title": item["title"],
                 "price": price_num,
@@ -127,7 +173,7 @@ with sync_playwright() as p:
             })
             category_items += 1
 
-        print(f"  Extracted {category_items} products")
+        print(f"  Extracted {len(products)} raw, filtered to {category_items} new & available products")
         time.sleep(random.uniform(3, 6))
 
     browser.close()
