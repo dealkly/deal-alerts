@@ -1,16 +1,15 @@
-import requests
-from bs4 import BeautifulSoup
-import csv
+import pandas as pd
 import time
 import random
 import re
 import os
+from playwright.sync_api import sync_playwright
 
 # ------------------ CONFIG ------------------
 TODAY_CSV = "books_today.csv"
 YESTERDAY_CSV = "books_yesterday.csv"
 
-SEARCH_URLS = [
+CATEGORIES = [
     ("laptops", "https://www.ebay.com/sch/i.html?_nkw=laptop&_sop=15&rt=nc&LH_BIN=1"),
     ("headphones", "https://www.ebay.com/sch/i.html?_nkw=wireless+headphones&_sop=15&rt=nc&LH_BIN=1"),
     ("sneakers", "https://www.ebay.com/sch/i.html?_nkw=men+sneakers&_sop=15&rt=nc&LH_BIN=1"),
@@ -20,95 +19,90 @@ SEARCH_URLS = [
     ("home appliances", "https://www.ebay.com/sch/i.html?_nkw=home+appliance&_sop=15&rt=nc&LH_BIN=1"),
     ("textbooks", "https://www.ebay.com/sch/i.html?_nkw=textbook&_sop=15&rt=nc&LH_BIN=1"),
 ]
-
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "Upgrade-Insecure-Requests": "1",
-    "Cache-Control": "max-age=0",
-}
-
 # --------------------------------------------
 
-# Step 1: Rotate CSV files
+def clean_price(price_str):
+    first_price = price_str.split("to")[0].split("-")[0]
+    clean_str = re.sub(r'[^\d.]', '', first_price)
+    try:
+        return float(clean_str)
+    except ValueError:
+        return None
+
+def clean_link(url):
+    if "?" in url:
+        return url.split("?")[0]
+    return url
+
+# Rotate CSV files (keep yesterday's data for comparison)
 if os.path.exists(TODAY_CSV):
     if os.path.exists(YESTERDAY_CSV):
         os.remove(YESTERDAY_CSV)
     os.rename(TODAY_CSV, YESTERDAY_CSV)
 
-all_items = []
-total_products = 0
+all_products = []
+total = 0
 
-# Step 2: Warm up session
-session = requests.Session()
-session.headers.update(HEADERS)
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    context = browser.new_context(
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        viewport={"width": 1920, "height": 1080}
+    )
+    page = context.new_page()
 
-print("Warming up session (eBay homepage)...")
-try:
-    session.get("https://www.ebay.com", timeout=15)
-    time.sleep(random.uniform(1, 2))
-except Exception as e:
-    print(f"Warm‑up error (continuing): {e}")
+    print("Warming up session on eBay homepage...")
+    page.goto("https://www.ebay.com", wait_until="domcontentloaded")
+    time.sleep(random.uniform(2, 4))
 
-# Step 3: Scrape each category
-for category, url in SEARCH_URLS:
-    print(f"Scraping category: {category}")
-    try:
-        response = session.get(url, timeout=15)
-        soup = BeautifulSoup(response.text, "html.parser")
+    for category, url in CATEGORIES:
+        print(f"Scraping category: {category}")
+        try:
+            page.goto(url, wait_until="networkidle")
+        except Exception as e:
+            print(f"  Timeout/error loading {category}: {e}")
+            continue
 
-        # Use the current eBay structure: product cards are div.s-item
-        items = soup.select(".s-item")
-        print(f"  Found {len(items)} .s-item elements")
+        # Scroll to trigger lazy-load
+        page.mouse.wheel(0, 1500)
+        time.sleep(random.uniform(2, 4))
 
-        category_items = 0
+        items = page.locator("li.s-item").all()
+        print(f"  Found {len(items)} raw elements")
+
         for item in items:
-            # Title: try the standard inner span, or the .s-item__title itself
-            title_elem = item.select_one(".s-item__title span") or item.select_one(".s-item__title")
-            price_elem = item.select_one(".s-item__price")
-            link_elem = item.select_one(".s-item__link") or item.find("a", href=True)
+            try:
+                title = item.locator(".s-item__title").inner_text(timeout=500)
+                if "Shop on eBay" in title:
+                    continue
 
-            if not title_elem or not price_elem:
+                price_text = item.locator(".s-item__price").inner_text(timeout=500)
+                raw_link = item.locator(".s-item__link").get_attribute("href", timeout=500)
+
+                price = clean_price(price_text)
+                link = clean_link(raw_link)
+
+                if title and price is not None and link:
+                    all_products.append({
+                        "title": title,
+                        "price": price,
+                        "link": link,
+                        "category": category
+                    })
+                    total += 1
+            except Exception:
                 continue
 
-            title = title_elem.text.strip()
-            price_text = price_elem.text.strip()
-            link = link_elem.get("href") if link_elem else ""
+        time.sleep(random.uniform(3, 6))
 
-            # Skip "Shop on eBay" or sponsored items that have no real link
-            if "ebay.com" not in link:
-                continue
+    browser.close()
 
-            # Extract price number
-            price_match = re.search(r"[\d,]+\.?\d*", price_text)
-            if not price_match:
-                continue
-            price = float(price_match.group().replace(",", ""))
-
-            all_items.append({
-                "title": title,
-                "price": price,
-                "link": link,
-                "category": category
-            })
-            category_items += 1
-
-        total_products += category_items
-
-        time.sleep(random.uniform(2, 4))  # polite delay
-
-    except Exception as e:
-        print(f"  Error scraping {category}: {e}")
-        continue
-
-# Save to CSV
-with open(TODAY_CSV, "w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(f, fieldnames=["title", "price", "link"])
-    writer.writeheader()
-    for item in all_items:
-        writer.writerow({"title": item["title"], "price": item["price"], "link": item["link"]})
-
-print(f"\nDone. {total_products} products saved to {TODAY_CSV}")
+# Save CSV (same format as before)
+if all_products:
+    df = pd.DataFrame(all_products)
+    df = df.drop_duplicates(subset=["title"])
+    df[["title", "price", "link"]].to_csv(TODAY_CSV, index=False)
+    print(f"\nDone. {len(df)} unique products saved to {TODAY_CSV}")
+else:
+    print("\nNo products found. Creating empty CSV.")
+    pd.DataFrame(columns=["title", "price", "link"]).to_csv(TODAY_CSV, index=False)
