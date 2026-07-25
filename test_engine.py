@@ -43,6 +43,9 @@ for category, url in SEARCH_URLS:
         response = requests.get(url, headers=HEADERS, timeout=15)
         soup = BeautifulSoup(response.text, "html.parser")
 
+        # DEBUG: show what the page actually looks like
+        print("DEBUG: First 300 chars of page:", response.text[:300])
+
         listings = soup.select("li.s-item")
         for item in listings:
             title_elem = item.select_one(".s-item__title span")
