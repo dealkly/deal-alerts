@@ -4,6 +4,7 @@ import random
 import re
 import os
 from playwright.sync_api import sync_playwright
+from playwright_stealth import stealth_sync
 
 # ------------------ CONFIG ------------------
 TODAY_CSV = "books_today.csv"
@@ -42,8 +43,22 @@ if os.path.exists(TODAY_CSV):
 all_products = []
 
 with sync_playwright() as p:
-    browser = p.chromium.launch(headless=True)
-    context = browser.new_context(viewport={"width": 1920, "height": 1080})
+    # -------- Launch with anti-crash + anti-detection flags --------
+    browser = p.chromium.launch(
+        headless=True,
+        args=[
+            "--disable-blink-features=AutomationControlled",
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage"       # prevents Page crashed on GitHub Actions
+        ]
+    )
+    context = browser.new_context(
+        viewport={"width": 1920, "height": 1080},
+        user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    )
+    # Apply full stealth to hide Playwright fingerprints
+    stealth_sync(context)
     page = context.new_page()
 
     print("Warming up session on eBay homepage...")
@@ -53,17 +68,32 @@ with sync_playwright() as p:
     for category, url in CATEGORIES:
         print(f"Scraping category: {category}")
         try:
-            page.goto(url, wait_until="domcontentloaded")
+            page.goto(url, wait_until="domcontentloaded", timeout=30000)
             print(f"  Page title seen: {page.title()}")
+
+            # If we still get an interruption page, skip and continue
+            if "Pardon Our Interruption" in page.title():
+                print(f"  Blocked by eBay. Skipping category.")
+                continue
+
             page.wait_for_selector("a[href*='/itm/']", timeout=20000)
         except Exception as e:
             print(f"  Timeout/error loading {category}: {e}")
+            # Re‑warm the session if a category fails
+            print("  Re‑warming session...")
+            try:
+                page.goto("https://www.ebay.com", wait_until="domcontentloaded")
+                time.sleep(random.uniform(2, 4))
+            except:
+                pass
             continue
 
         # Gradual scroll to load all items
         for _ in range(4):
             page.mouse.wheel(0, 2000)
             time.sleep(random.uniform(1.5, 2.5))
+            # Move mouse randomly (human behavior)
+            page.mouse.move(random.randint(100, 800), random.randint(100, 600))
 
         # -------- Extraction with total price (item + shipping) --------
         products = page.evaluate("""
@@ -96,26 +126,21 @@ with sync_playwright() as p:
                     while ((node = walker.nextNode())) {
                         const text = node.nodeValue.trim();
                         const match = text.match(priceRegex);
-                        if (match) {
-                            itemPrice = match[0];
-                            break;
-                        }
+                        if (match) { itemPrice = match[0]; break; }
                     }
 
                     // Shipping cost
                     let shippingText = null;
-                    // Look for a dedicated shipping element
                     const shippingEl = container.querySelector('.s-item__shipping, .s-item__shipping-cost, .s-item__shipping-price, [class*="shipping"]');
                     if (shippingEl) {
                         shippingText = shippingEl.textContent.trim();
                     } else {
-                        // Search for text like "+$5.00 shipping" or "Free shipping"
                         const allText = container.innerText;
                         const shipMatch = allText.match(/(\+?\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?\s*shipping)|(Free\s*shipping)/i);
                         if (shipMatch) shippingText = shipMatch[0];
                     }
 
-                    let totalPrice = itemPrice; // default to item price
+                    let totalPrice = itemPrice;
                     if (shippingText && !/free/i.test(shippingText)) {
                         const shipPriceMatch = shippingText.match(/\$[\d,]+\.?\d*/);
                         if (shipPriceMatch) {
@@ -142,7 +167,7 @@ with sync_playwright() as p:
                         if (matches) condition = matches[0];
                     }
 
-                    // Image check
+                    // Image & stock check
                     const img = container.querySelector('img');
                     const imgSrc = img ? (img.getAttribute('src') || '') : '';
                     const hasImage = imgSrc && !imgSrc.includes('placeholder') && !imgSrc.includes('no-image');
@@ -166,7 +191,7 @@ with sync_playwright() as p:
             }
         """)
 
-        # Filter new & available items, save total_price as the tracked price
+        # Filter new & available items, use total_price as the tracked price
         category_items = 0
         for item in products:
             condition = item.get("condition", "").lower()
@@ -174,14 +199,13 @@ with sync_playwright() as p:
             if not is_new: continue
             if not item.get("hasImage", False): continue
 
-            # Use total_price if available, else fallback to item price
             price_str = item.get("total_price") or item.get("price")
             price_num = clean_price(price_str)
             if price_num is None: continue
 
             all_products.append({
                 "title": item["title"],
-                "price": price_num,          # now total estimated price (item+shipping)
+                "price": price_num,          # total estimated price
                 "link": item["url"],
                 "category": category
             })
@@ -192,7 +216,7 @@ with sync_playwright() as p:
 
     browser.close()
 
-# Save CSV with 'price' column now representing total estimated price
+# Save CSV
 if all_products:
     df = pd.DataFrame(all_products)
     df = df.drop_duplicates(subset=["link"])
