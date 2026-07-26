@@ -4,7 +4,6 @@ import random
 import re
 import os
 from playwright.sync_api import sync_playwright
-from playwright_stealth import stealth
 
 # ------------------ CONFIG ------------------
 TODAY_CSV = "books_today.csv"
@@ -49,7 +48,7 @@ with sync_playwright() as p:
             "--disable-blink-features=AutomationControlled",
             "--no-sandbox",
             "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage"
+            "--disable-dev-shm-usage"       # stops Page crashed on GitHub Actions
         ]
     )
     context = browser.new_context(
@@ -57,8 +56,6 @@ with sync_playwright() as p:
         user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     )
     page = context.new_page()
-    # Apply stealth to the page (hides automation fingerprints)
-    stealth(page)
 
     print("Warming up session on eBay homepage...")
     page.goto("https://www.ebay.com", wait_until="domcontentloaded")
