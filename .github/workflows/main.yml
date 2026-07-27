@@ -35,6 +35,11 @@ jobs:
           ADMIN_PASSWORD_INPUT: ${{ github.event.inputs.password }}
           ADMIN_SECRET: ${{ secrets.ADMIN_TEST_PASSWORD }}
         run: python price_detector.py
+        
+      - name: Run personalised watchlist checker
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python watchlist_checker.py
       - name: Commit updated CSV
         run: |
           git config user.name "github-actions[bot]"
