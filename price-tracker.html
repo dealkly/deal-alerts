@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dealkly – Personal Price Tracker</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px; }
+    form { display: inline-block; text-align: left; }
+    input, textarea { display: block; width: 300px; margin: 10px 0; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h2>Dealkly – Personal Price Tracker</h2>
+  <p>Tell us what item you want us to watch daily. You'll receive an email when the price drops.</p>
+  <form action="https://formspree.io/f/mdaqyqry" method="POST">
+    <label>Your Email:</label>
+    <input type="email" name="email" required>
+    <label>What item do you want tracked? (e.g., MacBook Pro 2020)</label>
+    <textarea name="keywords" rows="3" required></textarea>
+    <button type="submit">Start Tracking</button>
+  </form>
+</body>
+</html>
