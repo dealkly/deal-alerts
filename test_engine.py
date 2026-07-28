@@ -10,14 +10,27 @@ TODAY_CSV = "books_today.csv"
 YESTERDAY_CSV = "books_yesterday.csv"
 
 CATEGORIES = [
-    ("laptops", "https://www.ebay.com/sch/i.html?_nkw=laptop&_sop=15&rt=nc&LH_BIN=1"),
-    ("headphones", "https://www.ebay.com/sch/i.html?_nkw=wireless+headphones&_sop=15&rt=nc&LH_BIN=1"),
-    ("sneakers", "https://www.ebay.com/sch/i.html?_nkw=men+sneakers&_sop=15&rt=nc&LH_BIN=1"),
-    ("tablets", "https://www.ebay.com/sch/i.html?_nkw=tablet&_sop=15&rt=nc&LH_BIN=1"),
-    ("gaming", "https://www.ebay.com/sch/i.html?_nkw=video+game+console&_sop=15&rt=nc&LH_BIN=1"),
-    ("baby gear", "https://www.ebay.com/sch/i.html?_nkw=baby+gear&_sop=15&rt=nc&LH_BIN=1"),
-    ("home appliances", "https://www.ebay.com/sch/i.html?_nkw=home+appliance&_sop=15&rt=nc&LH_BIN=1"),
-    ("textbooks", "https://www.ebay.com/sch/i.html?_nkw=textbook&_sop=15&rt=nc&LH_BIN=1"),
+    # High‑resale Tech & Hardware
+    ("MacBook Pro", "https://www.ebay.com/sch/i.html?_nkw=macbook+pro+m1&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Sony WH-1000XM5", "https://www.ebay.com/sch/i.html?_nkw=sony+wh-1000xm5&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("PlayStation 5", "https://www.ebay.com/sch/i.html?_nkw=playstation+5+console&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("AirPods Pro", "https://www.ebay.com/sch/i.html?_nkw=airpods+pro+2nd+gen&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Nintendo Switch", "https://www.ebay.com/sch/i.html?_nkw=nintendo+switch+oled&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Samsung Galaxy S24", "https://www.ebay.com/sch/i.html?_nkw=samsung+galaxy+s24+ultra&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Dell XPS 13", "https://www.ebay.com/sch/i.html?_nkw=dell+xps+13+2023&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Graphic Cards", "https://www.ebay.com/sch/i.html?_nkw=rtx+4080&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+
+    # High‑margin fashion & collectibles
+    ("Jordan 1 Retro", "https://www.ebay.com/sch/i.html?_nkw=jordan+1+retro+high&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Designer Handbags", "https://www.ebay.com/sch/i.html?_nkw=designer+handbag&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Rare LEGO Sets", "https://www.ebay.com/sch/i.html?_nkw=lego+set+rare&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Vintage Video Games", "https://www.ebay.com/sch/i.html?_nkw=vintage+video+game+lot&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+
+    # Tools, drones, wearables & smart home
+    ("Drones", "https://www.ebay.com/sch/i.html?_nkw=dji+drone&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("High‑End Power Tools", "https://www.ebay.com/sch/i.html?_nkw=dewalt+tool+kit&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Fitness Trackers", "https://www.ebay.com/sch/i.html?_nkw=fitness+tracker+garmin&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
+    ("Smart Home Hubs", "https://www.ebay.com/sch/i.html?_nkw=smart+home+hub&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"),
 ]
 # --------------------------------------------
 
