@@ -30,6 +30,17 @@ def load_subscribers():
         data = json.load(f)
     return data
 
+def get_deal_tag(drop_amount, price_yest):
+    """Return a tag string if the deal is exceptional."""
+    percent = (-drop_amount / price_yest) * 100
+    # WHALE DEAL: 25%+ off OR save $100 or more
+    if percent >= 25 or -drop_amount >= 100:
+        return "💎 WHALE DEAL"
+    # MEGA DROP: 15%+ off OR save $50 or more
+    elif percent >= 15 or -drop_amount >= 50:
+        return "🚨 MEGA DROP"
+    return ""
+
 def detect_price_drops():
     if not os.path.exists(YESTERDAY_CSV):
         print("No yesterday data found. Skipping comparison (first run).")
@@ -72,7 +83,11 @@ def send_alert(drops):
     for _, row in filtered.iterrows():
         link = row.get("link_today", row.get("link_yest", "https://www.ebay.com"))
         drop_percent = round((-row["drop"] / row["price_yest"]) * 100)
-        body += f"{row['title']}\n"
+        tag = get_deal_tag(row["drop"], row["price_yest"])
+        if tag:
+            body += f"{tag} {row['title']}\n"
+        else:
+            body += f"{row['title']}\n"
         body += f"Was: ${row['price_yest']:.2f} → Now: ${row['price_today']:.2f} (save {drop_percent}%)\n"
         body += f"View it here: {link}\n\n"
         
