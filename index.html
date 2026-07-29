@@ -31,7 +31,22 @@
 <!-- Navigation -->
 <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-        <div class="text-2xl font-extrabold text-gray-900 tracking-tight">Dealkly.</div>
+        <!-- Logo with SVG icon -->
+        <a href="#" class="flex items-center gap-2 no-underline">
+            <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="cubeGrad" x1="3" y1="2" x2="29" y2="30" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#FF7F50"/>
+                        <stop offset="1" stop-color="#00CED1"/>
+                    </linearGradient>
+                </defs>
+                <path d="M16 2L3 9.5V22.5L16 30L29 22.5V9.5L16 2Z" fill="url(#cubeGrad)"/>
+                <path d="M16 2L29 9.5L16 17L3 9.5L16 2Z" fill="#ffffff" fill-opacity="0.2"/>
+                <path d="M16 30V17L3 9.5V22.5L16 30Z" fill="#000000" fill-opacity="0.15"/>
+                <path d="M16 17L22.5 13.25V20.75L16 24.5V17Z" fill="#ffffff"/>
+            </svg>
+            <span class="text-2xl font-extrabold text-gray-900 tracking-tight">Dealkly</span>
+        </a>
         <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-500">
             <a href="#features" class="hover:text-gray-900 transition">Introduction</a>
             <a href="#how-it-works" class="hover:text-gray-900 transition">How it Works</a>
