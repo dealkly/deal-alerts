@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dealkly - Automated Deal Alerts</title>
-    <!-- Tailwind CSS for styling (Zero installation required) -->
+    <title>Dealkly – Automated Deal Alerts</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .hero-bg {
-            background-image: linear-gradient(rgba(17, 24, 39, 0.7), rgba(17, 24, 39, 0.8)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_clip,w_2000,h_720,f_auto,q_auto/unsplashcom/photo-1600758313102-3c82cc074b0b');
             background-size: cover;
             background-position: center;
+        }
+        .feature-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
     </style>
 </head>
@@ -24,8 +30,9 @@
         <div class="flex justify-between h-16 items-center">
             <div class="flex-shrink-0 font-extrabold text-2xl tracking-tighter text-gray-900">Dealkly.</div>
             <div class="hidden md:flex space-x-8">
-                <a href="#features" class="text-gray-500 hover:text-gray-900 font-medium">Features</a>
+                <a href="#features" class="text-gray-500 hover:text-gray-900 font-medium">Introduction</a>
                 <a href="#how-it-works" class="text-gray-500 hover:text-gray-900 font-medium">How it Works</a>
+                <a href="#categories" class="text-gray-500 hover:text-gray-900 font-medium">Features &amp; Benefits</a>
                 <a href="#pricing" class="text-gray-500 hover:text-gray-900 font-medium">Pricing</a>
             </div>
             <div>
@@ -35,123 +42,155 @@
     </div>
 </nav>
 
-<!-- Hero Section -->
-<section class="hero-bg h-screen flex items-center justify-center text-center pt-16">
+<!-- Hero Section (exact Strikingly hero) -->
+<section class="hero-bg min-h-screen flex items-center justify-center text-center pt-16">
     <div class="max-w-4xl px-4">
-        <p class="text-indigo-400 font-bold tracking-widest uppercase text-sm mb-4">Real-Time Deal Monitoring</p>
+        <p class="text-indigo-300 font-bold tracking-widest uppercase text-sm mb-4">Real-Time Deal Monitoring</p>
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">Stay ahead with automated alerts on verified tech and hardware discounts from eBay.</h1>
         <a href="#features" class="inline-block bg-white text-gray-900 px-8 py-4 rounded font-bold hover:bg-gray-200 transition shadow-lg mt-4">LEARN MORE</a>
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- Introduction to Dealkly (three feature cards) -->
 <section id="features" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Feature 1 -->
+
+        <!-- Feature 1: Verified Deals -->
         <div class="flex flex-col md:flex-row items-center mb-24 gap-12">
             <div class="md:w-1/2">
-                <img src="https://images.unsplash.com/photo-1526406915894-7bcd65f60845?auto=format&fit=crop&w=800&q=80" alt="Verified Deals" class="rounded-xl shadow-2xl w-full object-cover h-80">
+                <img src="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_clip,w_960,h_720,f_auto,q_auto/unsplashcom/photo-1641312054664-acb3d817cee4" alt="Verified Deals" class="feature-img">
             </div>
             <div class="md:w-1/2">
                 <div class="text-indigo-600 font-bold tracking-wide uppercase text-sm mb-2">Quality Control</div>
                 <h2 class="text-4xl font-bold mb-4 text-gray-900">Verified Deals</h2>
-                <p class="text-gray-600 text-lg leading-relaxed">We only track listings that are consistently delivering across our accepted tech and hardware categories. Our system filters out the noise so you only see genuine price drops.</p>
+                <p class="text-gray-600 text-lg leading-relaxed">Dealkly only notifies about deals that are verified for authenticity. The system filters out noise so only genuine price drops are seen.</p>
             </div>
         </div>
 
-        <!-- Feature 2 -->
+        <!-- Feature 2: Frequent Monitoring -->
         <div class="flex flex-col md:flex-row-reverse items-center mb-24 gap-12">
             <div class="md:w-1/2">
-                <img src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&w=800&q=80" alt="Frequent Monitoring" class="rounded-xl shadow-2xl w-full object-cover h-80">
+                <img src="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_clip,w_960,h_720,f_auto,q_auto/unsplashcom/photo-1635151962337-5ee109f2cd31" alt="Frequent Monitoring" class="feature-img">
             </div>
             <div class="md:w-1/2">
                 <div class="text-indigo-600 font-bold tracking-wide uppercase text-sm mb-2">Speed Advantage</div>
                 <h2 class="text-4xl font-bold mb-4 text-gray-900">Frequent Monitoring</h2>
-                <p class="text-gray-600 text-lg leading-relaxed">Our automated GitHub Actions pipelines run constantly in the background. We check the market every 4 hours to ensure you catch massive price drops before manual deal sites even wake up.</p>
+                <p class="text-gray-600 text-lg leading-relaxed">The system runs every 4 hours to detect deals with at least 10% discounts, catching opportunities before manual deal sites even wake up.</p>
             </div>
         </div>
 
-        <!-- Feature 3 -->
+        <!-- Feature 3: Custom Watchlists -->
         <div class="flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
-                <img src="https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?auto=format&fit=crop&w=800&q=80" alt="Custom Watchlists" class="rounded-xl shadow-2xl w-full object-cover h-80">
+                <img src="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_clip,w_960,h_720,f_auto,q_auto/unsplashcom/photo-1639450177811-fc52cc3a17d4" alt="Custom Watchlists" class="feature-img">
             </div>
             <div class="md:w-1/2">
                 <div class="text-indigo-600 font-bold tracking-wide uppercase text-sm mb-2">Personalized Hunting</div>
                 <h2 class="text-4xl font-bold mb-4 text-gray-900">Custom Watchlists</h2>
-                <p class="text-gray-600 text-lg leading-relaxed">Premium subscribers can define their own watchlists for specific products. Tell us exactly what hardware, tech, or model you want tracked, and we send tailored alerts directly to your inbox.</p>
+                <p class="text-gray-600 text-lg leading-relaxed">Premium subscribers can define their own watchlists for specific products or categories, receiving tailored alerts directly to their inbox.</p>
             </div>
         </div>
 
     </div>
 </section>
 
-<!-- How it Works Grid -->
-<section id="how-it-works" class="py-24 bg-gray-50 border-t border-gray-200">
+<!-- How Dealkly Detects Deals (4‑step grid) -->
+<section id="how-it-works" class="py-24 bg-white border-t border-gray-200">
     <div class="max-w-7xl mx-auto px-4 text-center">
         <h2 class="text-4xl font-bold mb-4 text-gray-900">How Dealkly Detects Deals</h2>
-        <p class="text-gray-500 mb-16 max-w-2xl mx-auto text-lg">We fully automate the process, scanning through thousands of products to find massive price drops across our predefined network.</p>
+        <p class="text-gray-500 mb-16 max-w-2xl mx-auto text-lg">The automated system operates on a strict 4-hour schedule, scanning eBay for deals that meet strict discount criteria, and delivers instant email alerts.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left max-w-5xl mx-auto">
-            <div class="bg-white border border-gray-100 p-10 rounded-xl shadow-sm hover:shadow-lg transition duration-300">
-                <h3 class="font-bold text-xl mb-3 text-gray-900">1. Automated Search</h3>
-                <p class="text-gray-600">The system scans eBay listings across our curated high-value tech, gaming, and hardware categories.</p>
+            <div class="bg-gray-50 border border-gray-100 p-10 rounded-xl shadow-sm">
+                <h3 class="font-bold text-xl mb-3 text-gray-900">1. Scheduled Scans</h3>
+                <p class="text-gray-600">The system runs every 4 hours, performing comprehensive scans of eBay listings to identify potential deals based on subscriber preferences.</p>
             </div>
-            <div class="bg-white border border-gray-100 p-10 rounded-xl shadow-sm hover:shadow-lg transition duration-300">
-                <h3 class="font-bold text-xl mb-3 text-gray-900">2. True-Cost Filter</h3>
-                <p class="text-gray-600">Only deals that drop by at least 10% (calculating Item + Shipping) make it through. No hidden $20 fees.</p>
+            <div class="bg-gray-50 border border-gray-100 p-10 rounded-xl shadow-sm">
+                <h3 class="font-bold text-xl mb-3 text-gray-900">2. Discount Criteria</h3>
+                <p class="text-gray-600">Only deals offering a minimum of 10% off are flagged, ensuring genuine savings on quality products.</p>
             </div>
-            <div class="bg-white border border-gray-100 p-10 rounded-xl shadow-sm hover:shadow-lg transition duration-300">
-                <h3 class="font-bold text-xl mb-3 text-gray-900">3. Deal Tiering</h3>
-                <p class="text-gray-600">The engine automatically grades deals, tagging savings over 25% or $100 as "MEGA DROPS" or "WHALE DEALS".</p>
+            <div class="bg-gray-50 border border-gray-100 p-10 rounded-xl shadow-sm">
+                <h3 class="font-bold text-xl mb-3 text-gray-900">3. Alert Dispatch</h3>
+                <p class="text-gray-600">Once a qualifying deal is found, an instant email alert is sent to the subscriber, enabling quick action before the deal expires.</p>
             </div>
-            <div class="bg-white border border-gray-100 p-10 rounded-xl shadow-sm hover:shadow-lg transition duration-300">
-                <h3 class="font-bold text-xl mb-3 text-gray-900">4. Instant Dispatch</h3>
-                <p class="text-gray-600">Once a qualifying deal is found, an alert is sent instantly to your inbox depending on your subscription tier.</p>
+            <div class="bg-gray-50 border border-gray-100 p-10 rounded-xl shadow-sm">
+                <h3 class="font-bold text-xl mb-3 text-gray-900">4. Category Coverage</h3>
+                <p class="text-gray-600">Alerts are available across 16 standard categories for free, with premium watchlists offering additional customization and tracking.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Pricing Section (Active Links) -->
+<!-- Powerful Deal Alerts for Tech & Hardware Enthusiasts (dark section) -->
+<section id="categories" class="py-24 bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-4">Powerful Deal Alerts for Tech &amp; Hardware Enthusiasts</h2>
+        <p class="text-gray-400 mb-16 max-w-2xl mx-auto text-lg">Dealkly offers a comprehensive, automated solution for discovering verified discounts, with free access to core categories and premium options for personalized tracking.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Free Categories -->
+            <div class="bg-gray-800 p-10 rounded-xl">
+                <img src="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_clip,w_960,h_720,f_auto,q_auto/unsplashcom/photo-1634874257520-fe229ee2ffdd" class="w-full h-48 object-cover rounded-lg mb-6" alt="Free Categories">
+                <h3 class="font-bold text-xl mb-4">Free Categories</h3>
+                <p class="text-gray-300 mb-6">Access alerts for 16 popular tech and hardware categories at no cost, keeping you informed about the best deals without any subscription fees.</p>
+                <a href="#pricing" class="text-indigo-400 font-bold hover:underline">Explore Categories</a>
+            </div>
+            <!-- Premium Watchlists -->
+            <div class="bg-gray-800 p-10 rounded-xl">
+                <img src="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_clip,w_960,h_720,f_auto,q_auto/unsplashcom/photo-1550091230-b5f07d288758" class="w-full h-48 object-cover rounded-lg mb-6" alt="Premium Watchlists">
+                <h3 class="font-bold text-xl mb-4">Premium Watchlists</h3>
+                <p class="text-gray-300 mb-6">Create customized watchlists for specific products or brands, receiving tailored alerts that match your interests and savings goals.</p>
+                <a href="#pricing" class="text-indigo-400 font-bold hover:underline">Set Up Watchlists</a>
+            </div>
+            <!-- Instant Email Notifications -->
+            <div class="bg-gray-800 p-10 rounded-xl">
+                <img src="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_clip,w_960,h_720,f_auto,q_auto/unsplashcom/photo-1603808326448-ff7a2d980272" class="w-full h-48 object-cover rounded-lg mb-6" alt="Instant Email Notifications">
+                <h3 class="font-bold text-xl mb-4">Instant Email Notifications</h3>
+                <p class="text-gray-300 mb-6">Receive immediate email alerts whenever a qualifying deal is detected, so you can act quickly and secure the best prices.</p>
+                <a href="#pricing" class="text-indigo-400 font-bold hover:underline">Subscribe Today</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
 <section id="pricing" class="py-24 bg-white border-t border-gray-200">
     <div class="max-w-7xl mx-auto px-4 text-center">
         <h2 class="text-4xl font-bold mb-4 text-gray-900">Flexible Plans for Every Deal Hunter</h2>
-        <p class="text-gray-500 mb-16 max-w-2xl mx-auto text-lg">Choose the plan that fits your needs—from casual tech savings to serious hardware arbitrage.</p>
+        <p class="text-gray-500 mb-16 max-w-2xl mx-auto text-lg">Choose the plan that fits the need—from casual tech savings to serious hardware arbitrage.</p>
         
         <div class="flex flex-col md:flex-row justify-center gap-8 max-w-4xl mx-auto">
             
             <!-- Free Tier -->
             <div class="bg-gray-50 border border-gray-200 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative">
-                <h3 class="text-gray-500 font-bold uppercase tracking-widest mb-2 text-sm">Free Tier</h3>
+                <h3 class="text-gray-500 font-bold uppercase tracking-widest mb-2 text-sm">Free Plan</h3>
                 <div class="text-5xl font-extrabold mb-6 text-gray-900">$0<span class="text-xl text-gray-500 font-normal">/mo</span></div>
                 <ul class="text-left text-gray-600 mb-10 space-y-4 flex-grow">
-                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to base tech categories</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to 16 standard categories</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> True Cost calculation (Item + Shipping)</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
                 </ul>
-                <div class="text-left mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Initialize Free Account</label>
-                    <input type="email" placeholder="Enter delivery email address" class="w-full px-4 py-3 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500 mb-3" />
-                </div>
-                <!-- Modify the button below to connect to your free tier signup if needed -->
-                <button class="w-full bg-gray-900 text-white font-bold py-4 rounded hover:bg-gray-800 transition shadow-md">INITIALIZE FREE ACCOUNT</button>
+                <form action="https://formspree.io/f/mwvdklly" method="POST">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Initialize Free Account</label>
+                        <input type="email" name="email" placeholder="Enter delivery email address" required class="w-full px-4 py-3 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <button type="submit" class="w-full bg-gray-900 text-white font-bold py-4 rounded hover:bg-gray-800 transition shadow-md">INITIALIZE FREE ACCOUNT</button>
+                </form>
             </div>
 
             <!-- Premium Tier -->
-            <div class="bg-gray-900 text-white border border-gray-800 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative transform md:-translate-y-4 shadow-2xl">
-                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-500 text-white text-xs font-bold uppercase tracking-widest py-2 px-4 rounded-full">Most Popular</div>
-                <h3 class="text-gray-400 font-bold uppercase tracking-widest mb-2 text-sm mt-4">Premium Watchlists</h3>
-                <div class="text-5xl font-extrabold mb-6">$3<span class="text-xl text-gray-500 font-normal">/mo</span></div>
-                <ul class="text-left text-gray-300 mb-10 space-y-4 flex-grow">
-                    <li class="flex items-center"><svg class="w-5 h-5 text-indigo-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong class="text-white ml-1"> All Free Features</strong></li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-indigo-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong class="text-white ml-1"> "My Items" Custom Tracking</strong></li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-indigo-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Specify exact models & keywords</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-indigo-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Priority alert dispatch</li>
+            <div class="bg-indigo-600 text-white rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative transform md:-translate-y-4 shadow-2xl">
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-gray-900 text-xs font-bold uppercase tracking-widest py-2 px-4 rounded-full">Recommended</div>
+                <h3 class="text-indigo-200 font-bold uppercase tracking-widest mb-2 text-sm mt-4">Premium Plan</h3>
+                <div class="text-5xl font-extrabold mb-6">$3<span class="text-xl text-indigo-200 font-normal">/mo</span></div>
+                <ul class="text-left text-indigo-100 mb-10 space-y-4 flex-grow">
+                    <li class="flex items-center"><svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong class="text-white ml-1"> All Free Features</strong></li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong class="text-white ml-1"> "My Items" Custom Tracking</strong></li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Unlimited custom watchlists</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Priority alert dispatch</li>
                 </ul>
-                <!-- ACTUAL LIVE GUMROAD LINK -->
-                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" class="block w-full bg-indigo-600 text-white text-center font-bold py-4 rounded hover:bg-indigo-700 transition shadow-lg mt-auto">UPGRADE TO PREMIUM - $3/MO</a>
+                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="block w-full bg-white text-indigo-600 text-center font-bold py-4 rounded hover:bg-indigo-50 transition shadow-lg mt-auto">UPGRADE TO PREMIUM – $3/MO</a>
             </div>
             
         </div>
@@ -162,10 +201,10 @@
 <footer class="bg-gray-950 text-gray-500 py-12 text-center border-t border-gray-900">
     <div class="max-w-7xl mx-auto px-4">
         <h4 class="text-white font-bold text-xl mb-4">Dealkly.</h4>
-        <p class="mb-4">&copy; 2026 Dealkly. Built to automate arbitrage.</p>
+        <p class="mb-4">&copy; 2026 Dealkly. System operating independently.</p>
         <div class="flex justify-center space-x-6 text-sm">
             <a href="#" class="hover:text-white transition">System Status</a>
-            <a href="#" class="hover:text-white transition">Privacy Policy</a>
+            <a href="privacy.html" class="hover:text-white transition">Privacy Policy</a>
             <a href="#" class="hover:text-white transition">Contact</a>
         </div>
     </div>
