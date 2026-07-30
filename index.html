@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dealkly – Automated Deal Alerts</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Questrial', sans-serif; }
+        body { font-family: 'Inter', system-ui, sans-serif; }
         .hero-bg {
             background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1600758313102-3c82cc074b0b?w=2000&q=80');
             background-size: cover;
@@ -31,21 +31,12 @@
 <!-- Navigation -->
 <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-        <!-- Logo with SVG icon -->
-        <a href="#" class="flex items-center gap-2 no-underline">
-            <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="cubeGrad" x1="3" y1="2" x2="29" y2="30" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#FF7F50"/>
-                        <stop offset="1" stop-color="#00CED1"/>
-                    </linearGradient>
-                </defs>
-                <path d="M16 2L3 9.5V22.5L16 30L29 22.5V9.5L16 2Z" fill="url(#cubeGrad)"/>
-                <path d="M16 2L29 9.5L16 17L3 9.5L16 2Z" fill="#ffffff" fill-opacity="0.2"/>
-                <path d="M16 30V17L3 9.5V22.5L16 30Z" fill="#000000" fill-opacity="0.15"/>
-                <path d="M16 17L22.5 13.25V20.75L16 24.5V17Z" fill="#ffffff"/>
-            </svg>
-            <span class="text-2xl font-extrabold text-gray-900 tracking-tight">Dealkly</span>
+        <!-- Logo with subtitle -->
+        <a href="#" class="flex flex-col items-start leading-none">
+            <img src="https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/f_auto,q_auto/25964980/ai_logo_1785375979_n3vUHFdark_ai_logo.png" 
+                 alt="Dealkly Logo" 
+                 class="h-8 w-auto" />
+            <span class="text-[10px] font-semibold tracking-wide mt-0.5" style="color: #C3A579;">Engineered Alert System</span>
         </a>
         <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-500">
             <a href="#features" class="hover:text-gray-900 transition">Introduction</a>
@@ -133,7 +124,7 @@
     </div>
 </section>
 
-<!-- Powerful Deal Alerts -->
+<!-- Powerful Deal Alerts (Features & Benefits) -->
 <section id="categories" class="py-24 bg-[#1C1E22] text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl font-bold mb-4">Powerful Deal Alerts for Tech &amp; Hardware Enthusiasts</h2>
@@ -203,7 +194,7 @@
 <!-- Footer -->
 <footer class="bg-[#1C1E22] text-gray-400 py-12 text-center border-t border-gray-800">
     <div class="max-w-7xl mx-auto px-4">
-        <h4 class="text-white font-bold text-xl mb-4">Dealkly.</h4>
+        <h4 class="text-white font-bold text-xl mb-4">Dealkly</h4>
         <p class="mb-4">&copy; 2026 Dealkly. System operating independently.</p>
         <div class="flex justify-center space-x-6 text-sm">
             <a href="#" class="hover:text-white transition">System Status</a>
