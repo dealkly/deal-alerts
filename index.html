@@ -31,44 +31,34 @@
 <!-- Navigation -->
 <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-        <!-- Logo + Subtitle (SVG, no external images) -->
+        <!-- Logo with subtitle (navy filter applied) -->
         <a href="#" class="flex flex-col items-start leading-none">
-            <svg class="h-8 w-auto" viewBox="0 0 140 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Cube icon (3D navy) -->
-                <g transform="translate(0,0)">
-                    <polygon points="14,1 2,8.5 2,20.5 14,27 26,20.5 26,8.5" fill="#0B1D3A" />
-                    <polygon points="14,1 26,8.5 14,15 2,8.5" fill="#1D2E4A" opacity="0.9" />
-                    <polygon points="14,27 14,15 26,8.5 26,20.5" fill="#0A1525" opacity="0.7" />
-                    <polygon points="14,15 21,11.5 21,17.5 14,20.5" fill="#0B1D3A" />
-                </g>
-                <!-- Wordmark -->
-                <text x="34" y="21" font-family="'Inter', system-ui, sans-serif" font-weight="800" font-size="20" fill="#0B1D3A" letter-spacing="-0.5">Dealkly</text>
-            </svg>
+            <img src="./assets/logo.png" 
+                 alt="Dealkly Logo" 
+                 class="h-8 w-auto"
+                 style="filter: brightness(0) saturate(100%) invert(10%) sepia(100%) saturate(2000%) hue-rotate(200deg) brightness(30%) contrast(90%);" />
             <span class="text-[10px] font-semibold tracking-wide mt-0.5" style="color: #1D2023;">Engineered Alert System</span>
         </a>
-        <!-- Nav links -->
+        <!-- Navigation links – now in #1D2023 -->
         <div class="hidden md:flex space-x-8 text-sm font-semibold" style="color:#1D2023;">
             <a href="#features" class="hover:opacity-80 transition">Introduction</a>
             <a href="#how-it-works" class="hover:opacity-80 transition">How it Works</a>
             <a href="#categories" class="hover:opacity-80 transition">Features & Benefits</a>
             <a href="#pricing" class="hover:opacity-80 transition">Pricing</a>
         </div>
-        <a href="#pricing" class="text-white px-5 py-2 rounded font-semibold transition shadow-sm hover:opacity-90" style="background-color:#0B1D3A;">Get Started</a>
+        <a href="#pricing" class="text-white px-5 py-2 rounded font-semibold transition shadow-sm" style="background-color:#0B1D3A;">Get Started</a>
     </div>
 </nav>
 
 <!-- Hero Section -->
 <section class="hero-bg min-h-screen flex items-center justify-center text-center pt-16">
     <div class="max-w-4xl px-4">
+        <!-- Navy background on "Real-Time Deal Monitoring" without changing size -->
         <p class="font-bold text-xs tracking-[.25em] uppercase mb-4 inline-block" style="background-color:#0B1D3A; color:#ffffff; padding:2px 10px; border-radius:4px;">Real-Time Deal Monitoring</p>
         <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-8">Stay ahead with automated alerts on verified tech and hardware discounts from eBay.</h1>
-        <a href="#pricing" class="inline-block font-bold px-8 py-4 rounded transition shadow-lg hover:opacity-90" style="background-color:#0B1D3A; color:#ffffff;">START TRACKING DEALS</a>
+        <a href="#features" class="inline-block font-bold px-8 py-4 rounded transition shadow-lg" style="background-color:#0B1D3A; color:#ffffff;">LEARN MORE</a>
     </div>
 </section>
-
-<!-- Features, How it Works, etc. (unchanged, same as last polished version) -->
-<!-- … keeping all sections identical to the version you last approved … -->
-<!-- Full sections included below for completeness -->
 
 <!-- Introduction to Dealkly (Features) -->
 <section id="features" class="py-24 bg-[#e4e8ee]">
@@ -143,23 +133,26 @@
         <h2 class="text-4xl font-bold mb-4">Powerful Deal Alerts for Tech &amp; Hardware Enthusiasts</h2>
         <p class="text-gray-300 max-w-2xl mx-auto mb-16 text-lg">Dealkly offers a comprehensive, automated solution for discovering verified discounts, with free access to core categories and premium options for personalized tracking.</p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="flex flex-col p-10 rounded-xl text-left" style="background-color:#142c4b;">
+            <div class="p-10 rounded-xl text-left" style="background-color:#142c4b;">
                 <img src="https://images.unsplash.com/photo-1634874257520-fe229ee2ffdd?w=600&q=80" alt="Free Categories" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-bold text-xl mb-4 text-white">Free Categories</h3>
                 <p class="text-gray-300 mb-6">Access alerts for 16 popular tech and hardware categories at no cost, keeping you informed about the best deals without any subscription fees.</p>
-                <a href="#pricing" class="inline-block font-bold px-4 py-3 rounded-full text-white text-center transition shadow-sm mt-auto hover:opacity-90" style="background-color:#0B1D3A;">Explore Categories</a>
+                <!-- Navy background on CTA button -->
+                <a href="#pricing" class="inline-block font-bold px-4 py-2 rounded-full text-white transition shadow-sm" style="background-color:#0B1D3A;">Explore Categories</a>
             </div>
-            <div class="flex flex-col p-10 rounded-xl text-left" style="background-color:#142c4b;">
+            <div class="p-10 rounded-xl text-left" style="background-color:#142c4b;">
                 <img src="https://images.unsplash.com/photo-1550091230-b5f07d288758?w=600&q=80" alt="Premium Watchlists" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-bold text-xl mb-4 text-white">Premium Watchlists</h3>
                 <p class="text-gray-300 mb-6">Create customized watchlists for specific products or brands, receiving tailored alerts that match your interests and savings goals.</p>
-                <a href="#pricing" class="inline-block font-bold px-4 py-3 rounded-full text-white text-center transition shadow-sm mt-auto hover:opacity-90" style="background-color:#0B1D3A;">Set Up Watchlists</a>
+                <!-- Navy background on CTA button -->
+                <a href="#pricing" class="inline-block font-bold px-4 py-2 rounded-full text-white transition shadow-sm" style="background-color:#0B1D3A;">Set Up Watchlists</a>
             </div>
-            <div class="flex flex-col p-10 rounded-xl text-left" style="background-color:#142c4b;">
+            <div class="p-10 rounded-xl text-left" style="background-color:#142c4b;">
                 <img src="https://images.unsplash.com/photo-1603808326448-ff7a2d980272?w=600&q=80" alt="Instant Email Notifications" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-bold text-xl mb-4 text-white">Instant Email Notifications</h3>
                 <p class="text-gray-300 mb-6">Receive immediate email alerts whenever a qualifying deal is detected, so you can act quickly and secure the best prices.</p>
-                <a href="#pricing" class="inline-block font-bold px-4 py-3 rounded-full text-white text-center transition shadow-sm mt-auto hover:opacity-90" style="background-color:#0B1D3A;">Subscribe Today</a>
+                <!-- Navy background on CTA button -->
+                <a href="#pricing" class="inline-block font-bold px-4 py-2 rounded-full text-white transition shadow-sm" style="background-color:#0B1D3A;">Subscribe Today</a>
             </div>
         </div>
     </div>
@@ -170,22 +163,21 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl font-bold text-gray-900 mb-4">Flexible Plans for Every Deal Hunter</h2>
         <p class="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">Choose the plan that fits your needs—from casual tech savings to serious hardware arbitrage.</p>
-        <div class="flex flex-col md:flex-row justify-center items-stretch gap-8 max-w-4xl mx-auto">
-            
+        <div class="flex flex-col md:flex-row justify-center gap-8 max-w-4xl mx-auto">
             <!-- Free Plan -->
             <div class="bg-gray-50 border border-gray-200 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative text-left">
                 <h3 class="text-gray-500 font-bold uppercase tracking-widest text-sm mb-2">Free Plan</h3>
                 <div class="text-5xl font-extrabold text-gray-900 mb-6">$0<span class="text-xl text-gray-500 font-normal">/mo</span></div>
                 <ul class="text-gray-600 mb-8 space-y-4 flex-grow">
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to 16 standard categories</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> True Cost calculation (Item + Shipping)</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to 16 standard categories</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> True Cost calculation (Item + Shipping)</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
                 </ul>
                 <div class="mt-auto w-full">
                     <form action="https://formspree.io/f/mwvdklly" method="POST">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Create your free account</label>
                         <input type="email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0B1D3A] focus:border-transparent mb-4">
-                        <button type="submit" class="w-full text-white font-bold py-4 rounded transition shadow-md hover:opacity-90" style="background-color:#0B1D3A;">CREATE FREE ACCOUNT</button>
+                        <button type="submit" class="w-full text-white font-bold py-4 rounded transition shadow-md" style="background-color:#0B1D3A;">CREATE FREE ACCOUNT</button>
                     </form>
                 </div>
             </div>
@@ -201,9 +193,8 @@
                     <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#0B1D3A;">Unlimited custom watchlists</strong></li>
                     <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#0B1D3A;">Priority alert dispatch</strong></li>
                 </ul>
-                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="block w-full text-white text-center font-bold py-4 rounded transition shadow-lg mt-auto hover:opacity-90" style="background-color:#0B1D3A;">UPGRADE TO PREMIUM – $3/MO</a>
+                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="block w-full text-white text-center font-bold py-4 rounded transition shadow-lg mt-auto" style="background-color:#0B1D3A;">UPGRADE TO PREMIUM – $3/MO</a>
             </div>
-
         </div>
     </div>
 </section>
