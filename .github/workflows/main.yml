@@ -9,6 +9,10 @@ on:
         description: 'Admin password for test email (optional)'
         required: false
         default: ''
+      skip_scraper:
+        description: 'Skip scraping step (set to true for testing detector)'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -28,6 +32,7 @@ jobs:
           pip install pandas requests beautifulsoup4 playwright
           playwright install chromium
       - name: Run scraper
+        if: github.event.inputs.skip_scraper != 'true'
         run: python test_engine.py
       - name: Run price detector
         env:
