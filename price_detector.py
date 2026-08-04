@@ -3,6 +3,8 @@ import time
 import random
 import re
 import os
+import csv
+import requests
 from playwright.sync_api import sync_playwright
 
 # ------------------ CONFIG ------------------
