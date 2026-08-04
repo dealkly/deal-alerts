@@ -91,8 +91,7 @@ def send_alert(drops: pd.DataFrame) -> None:
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
         
-        # Fixed missing parenthesis here
-        image_url = row.get("image", row.get("image_url", row.get("img", "")))
+        image_url = row.get("image", row.get("image_url", row.get("img", ""))
 
         if url not in best_deal or percent > best_deal[url]["percent"]:
             best_deal[url] = {
@@ -176,25 +175,27 @@ def send_alert(drops: pd.DataFrame) -> None:
             image_html = f"""<div style="margin: 12px 0 16px 0; text-align: center;">
                 <a href="{d['link']}" target="_blank"><img src="{d['image']}" alt="{d['title']}" width="140" style="max-width: 140px; height: auto; border-radius: 8px; border: 1px solid #E2E8F0; margin: 0 auto; display: block;"></a></div>"""
 
+        # IMPORTANT – Only the title and the new price are bold now.
+        # Badge, "Was", Save badge and the CTA button are all normal weight.
         html_content += f"""
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px; border: 1px solid #E2E8F0; border-radius: 10px; background-color: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
                                 <tr>
                                     <td style="padding: 20px;">
                                         <div style="margin-bottom: 12px;">
-                                            <span style="background-color: {badge_bg}; color: #FFFFFF; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.8px; display: inline-block;">{badge_text}</span>
+                                            <span style="background-color: {badge_bg}; color: #FFFFFF; font-size: 10px; font-weight: 400; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.8px; display: inline-block;">{badge_text}</span>
                                         </div>
                                         {image_html}
                                         <a href="{d['link']}" target="_blank" style="color: #0F172A; text-decoration: none; font-size: 15px; font-weight: 700; line-height: 1.4; display: block; margin-bottom: 16px;">{d['title']}</a>
                                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 18px;">
                                             <tr>
-                                                <td style="font-size: 13px; color: #94A3B8;">Was: <span style="text-decoration: line-through; color: #94A3B8;">${d['was']:.2f}</span></td>
+                                                <td style="font-size: 13px; color: #94A3B8;">Was: <span style="text-decoration: line-through; color: #94A3B8; font-weight: 400;">${d['was']:.2f}</span></td>
                                                 <td align="right">
                                                     <span style="font-size: 20px; font-weight: 800; color: #0F172A;">${d['now']:.2f}</span>
-                                                    <span style="background-color: #DCFCE7; color: #166534; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 4px; margin-left: 8px; display: inline-block;">Save {d['percent']}%</span>
+                                                    <span style="background-color: #DCFCE7; color: #166534; font-size: 11px; font-weight: 400; padding: 4px 8px; border-radius: 4px; margin-left: 8px; display: inline-block;">Save {d['percent']}%</span>
                                                 </td>
                                             </tr>
                                         </table>
-                                        <a href="{d['link']}" target="_blank" style="display: block; width: 100%; background-color: #0B1D3A; color: #FFFFFF; text-align: center; padding: 12px 0; border-radius: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; text-decoration: none;">VIEW DEAL ON EBAY &rarr;</a>
+                                        <a href="{d['link']}" target="_blank" style="display: block; width: 100%; background-color: #0B1D3A; color: #FFFFFF; text-align: center; padding: 12px 0; border-radius: 6px; font-size: 12px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.8px; text-decoration: none;">VIEW DEAL ON EBAY &rarr;</a>
                                     </td>
                                 </tr>
                             </table>"""
@@ -211,7 +212,7 @@ def send_alert(drops: pd.DataFrame) -> None:
                         <td style="padding: 0 24px 28px 24px; background-color: #FFFFFF;">
                             <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 20px; text-align: center;">
                                 <p style="margin: 0 0 12px 0; font-size: 13px; color: #475569; line-height: 1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p>
-                                <a href="{PREMIUM_LINK}" target="_blank" style="display: inline-block; background-color: #0B1D3A; color: #FFFFFF; padding: 10px 24px; border-radius: 6px; font-size: 13px; font-weight: 700; text-decoration: none;">Upgrade to Premium &ndash; $3/mo</a>
+                                <a href="{PREMIUM_LINK}" target="_blank" style="display: inline-block; background-color: #0B1D3A; color: #FFFFFF; padding: 10px 24px; border-radius: 6px; font-size: 13px; font-weight: 400; text-decoration: none;">Upgrade to Premium &ndash; $3/mo</a>
                             </div>
                         </td>
                     </tr>
