@@ -45,14 +45,13 @@ all_items = []
 total_products = 0
 
 with sync_playwright() as p:
-    # -------- Stable launch with anti-crash + anti-detection flags --------
     browser = p.chromium.launch(
         headless=True,
         args=[
             "--disable-blink-features=AutomationControlled",
             "--no-sandbox",
             "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage"       # <-- prevents Page crashed
+            "--disable-dev-shm-usage"       # prevents Page crashed
         ]
     )
     context = browser.new_context(
@@ -61,7 +60,6 @@ with sync_playwright() as p:
     )
     page = context.new_page()
 
-    # Warm up (visit eBay homepage)
     print("Warming up session on eBay homepage...")
     page.goto("https://www.ebay.com", wait_until="domcontentloaded")
     time.sleep(random.uniform(2, 4))
@@ -75,57 +73,52 @@ with sync_playwright() as p:
                 page.mouse.wheel(0, 2000)
                 time.sleep(random.uniform(1.5, 2.5))
 
-            # Extract product cards using the /itm/ link method
-            items = page.locator("a[href*='/itm/']").all()
-            print(f"  Found {len(items)} raw elements")
+            # -------- Extract all product cards (li.s-item or .s-item) --------
+            cards = page.locator(".s-item").all()
+            print(f"  Found {len(cards)} cards")
 
-            seen_urls = set()
-            for link_element in items:
+            for card in cards:
                 try:
-                    raw_link = link_element.get_attribute("href", timeout=500)
-                    if not raw_link or '/itm/' not in raw_link:
+                    # Title – try the standard inner span, fallback to the title element itself
+                    title_el = card.locator(".s-item__title span").first or card.locator(".s-item__title").first
+                    if not title_el:
+                        continue
+                    title = title_el.inner_text(timeout=500).strip()
+                    if "Shop on eBay" in title:
+                        continue   # skip placeholder
+
+                    # Price – use .s-item__price
+                    price_el = card.locator(".s-item__price").first
+                    if not price_el:
+                        continue
+                    price_text = price_el.inner_text(timeout=500).strip()
+                    price = clean_price(price_text)
+                    if price is None:
+                        continue
+
+                    # Link – extract from .s-item__link
+                    link_el = card.locator(".s-item__link").first
+                    if not link_el:
+                        continue
+                    raw_link = link_el.get_attribute("href", timeout=500)
+                    if not raw_link:
                         continue
                     clean_url = clean_link(raw_link)
-                    if clean_url in seen_urls:
-                        continue
-                    seen_urls.add(clean_url)
 
-                    # Walk up the DOM to find the container card
-                    container = link_element
-                    title = None
-                    price = None
-                    image_url = None
-                    for _ in range(10):
-                        if container is None:
-                            break
-                        # Title
-                        title_el = container.query_selector(".s-item__title")
-                        if title_el:
-                            title = title_el.inner_text().strip()
-                        # Price
-                        price_el = container.query_selector(".s-item__price")
-                        if price_el:
-                            price_text = price_el.inner_text().strip()
-                            price = clean_price(price_text)
-                        # Image (the main product image inside the card)
-                        img_el = container.query_selector("img")
-                        if img_el:
-                            src = img_el.get_attribute("src")
-                            data_src = img_el.get_attribute("data-src")
-                            image_url = src or data_src
-                        if title and price is not None:
-                            break
-                        container = container.evaluate("node => node.parentElement")
+                    # Image – grab any img tag inside the card (src or data-src)
+                    img_el = card.locator("img").first
+                    image_url = ""
+                    if img_el:
+                        image_url = img_el.get_attribute("src") or img_el.get_attribute("data-src") or ""
 
-                    if title and price is not None:
-                        all_items.append({
-                            "title": title,
-                            "price": price,
-                            "link": clean_url,
-                            "image": image_url if image_url else "",
-                            "category": category
-                        })
-                        total_products += 1
+                    all_items.append({
+                        "title": title,
+                        "price": price,
+                        "link": clean_url,
+                        "image": image_url,
+                        "category": category
+                    })
+                    total_products += 1
                 except Exception:
                     continue
 
@@ -135,7 +128,7 @@ with sync_playwright() as p:
 
     browser.close()
 
-# Save CSV (now includes image column)
+# Save CSV (columns: title, price, link, image)
 with open(TODAY_CSV, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=["title", "price", "link", "image"])
     writer.writeheader()
