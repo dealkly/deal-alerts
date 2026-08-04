@@ -32,6 +32,20 @@ LOGO_URL = "https://dealkly.github.io/deal-alerts/logo_white.png"
 PREMIUM_LINK = "https://dealkly.gumroad.com/l/premium-alerts"
 WEBSITE_LINK = "https://dealkly.github.io/deal-alerts/"
 
+# Rotating Gold Luxury Diamond SVG
+GOLD_DIAMOND_SVG = (
+    '<span class="spin-icon" style="display:inline-block;vertical-align:middle;'
+    'animation:spin 3s linear infinite;-webkit-animation:spin 3s linear infinite;margin-right:5px;">'
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">'
+    '<path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/>'
+    '<path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/>'
+    '<path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/>'
+    '<path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/>'
+    '<path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/>'
+    '<path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/>'
+    '</svg></span>'
+)
+
 
 def clean_price(price_str):
     clean_str = re.sub(r'[^\d.]', '', str(price_str))
@@ -47,13 +61,12 @@ def load_subscribers():
 
 
 def fetch_ebay_image_url(page_url):
-    """Automatically extracts the direct image URL from an eBay item webpage link."""
+    """Extracts direct image URL and forces JPEG format to bypass Gmail WebP blocks."""
     if not page_url or not isinstance(page_url, str) or not page_url.startswith("http"):
         return ""
     
-    # If it's already a direct image file URL
     if re.search(r'\.(jpg|jpeg|png|webp)(\?.*)?$', page_url, re.IGNORECASE) or "i.ebayimg.com" in page_url:
-        return page_url
+        return re.sub(r'\.webp', '.jpg', page_url, flags=re.IGNORECASE)
 
     try:
         req = urllib.request.Request(
@@ -62,12 +75,12 @@ def fetch_ebay_image_url(page_url):
         )
         with urllib.request.urlopen(req, timeout=4) as response:
             html = response.read().decode('utf-8', errors='ignore')
-            # Look for eBay's og:image tag
             match = re.search(r'property=["\']og:image["\']\s+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
             if not match:
                 match = re.search(r'content=["\']([^"\']+)["\']\s+property=["\']og:image["\']', html, re.IGNORECASE)
             if match:
-                return match.group(1)
+                img_url = match.group(1)
+                return re.sub(r'\.webp', '.jpg', img_url, flags=re.IGNORECASE)
     except Exception as e:
         print(f"Note: Could not automatically fetch image for {page_url}: {e}")
     return ""
@@ -102,7 +115,23 @@ def build_sample_deal_html():
     sample_img = "https://i.ebayimg.com/images/g/Y8AAAOSwX6dlP7mX/s-l1600.jpg"
     return f"""<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap'); body{{margin:0;padding:0;background:#F4F6F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}} table{{border-collapse:collapse;}} img{{border:0;height:auto;display:block;}}</style></head>
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+body{{margin:0;padding:0;background:#F4F6F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}}
+table{{border-collapse:collapse;}}
+img{{border:0;height:auto;display:block;}}
+@keyframes spin {{
+  from {{ transform: rotate(0deg); -webkit-transform: rotate(0deg); }}
+  to {{ transform: rotate(360deg); -webkit-transform: rotate(360deg); }}
+}}
+@-webkit-keyframes spin {{
+  from {{ -webkit-transform: rotate(0deg); }}
+  to {{ -webkit-transform: rotate(360deg); }}
+}}
+</style>
+</head>
 <body style="margin:0;padding:0;background:#F4F6F8;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F4F6F8;padding:24px 0;">
     <tr>
@@ -124,12 +153,16 @@ def build_sample_deal_html():
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #E2E8F0;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
                 <tr>
                   <td style="padding:20px;">
-                    <div style="margin-bottom:12px;"><span style="background:#FF7F50;color:#FFFFFF;font-size:10px;font-weight:600;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.8px;">WHALE DEAL</span></div>
+                    <div style="margin-bottom:12px;">
+                      <span style="background:#FF7F50;color:#FFFFFF;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:0.8px;display:inline-block;">
+                        {GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">WHALE DEAL</span>
+                      </span>
+                    </div>
                     <div style="margin:12px 0 16px 0;text-align:center;"><a href="https://dealkly.github.io/deal-alerts/" target="_blank"><img src="{sample_img}" alt="" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>
                     <a href="https://dealkly.github.io/deal-alerts/" target="_blank" style="color:#0F172A;text-decoration:none;font-size:15px;font-weight:700;line-height:1.4;display:block;margin-bottom:16px;">Apple MacBook Pro 13in (M1, 8GB, 256GB) - Silver</a>
                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;">
                       <tr>
-                        <td style="font-size:13px;color:#EF4444;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:400;">$1,300.00</span></td>
+                        <td style="font-size:13px;color:#EF4444;font-weight:700;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:700;">$1,300.00</span></td>
                         <td align="right">
                           <span style="font-size:20px;font-weight:800;color:#0F172A;">$850.00</span>
                           <span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:600;padding:4px 8px;border-radius:4px;margin-left:8px;">Save 35%</span>
@@ -173,12 +206,11 @@ def send_alert(drops):
 
     filtered = drops[((-drops["drop"] / drops["price_yest"]) * 100 >= MIN_DROP_PERCENT) & (drops["price_today"] >= MIN_ITEM_PRICE)]
     if filtered.empty:
-        print(f"No drops passed quality filters.")
+        print("No drops passed quality filters.")
         return
 
     best_deal = {}
     for _, row in filtered.iterrows():
-        # Find item URL
         url = ""
         for col in ["link_today", "link", "url_today", "url", "link_yest"]:
             if col in row and pd.notna(row[col]) and str(row[col]).strip() != "":
@@ -191,7 +223,6 @@ def send_alert(drops):
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
         
-        # Check CSV for existing image column
         raw_image_url = ""
         for col in ["image_today", "image", "image_url", "img_today", "img", "thumbnail", "image_yest"]:
             if col in row and pd.notna(row[col]):
@@ -200,10 +231,12 @@ def send_alert(drops):
                     raw_image_url = val
                     break
 
-        # Dynamically fetch image from eBay if CSV had direct page link or missing image
         clean_img = fetch_ebay_image_url(raw_image_url)
         if not clean_img and url:
             clean_img = fetch_ebay_image_url(url)
+
+        if clean_img and ".webp" in clean_img.lower():
+            clean_img = re.sub(r'\.webp', '.jpg', clean_img, flags=re.IGNORECASE)
 
         if url not in best_deal or percent > best_deal[url]["percent"]:
             best_deal[url] = {
@@ -221,12 +254,31 @@ def send_alert(drops):
         return
 
     deal_list = sorted(best_deal.values(), key=lambda x: x["percent"], reverse=True)
-    subject = "Dealkly Alert: Verified Price Drops Detected"
+    
+    subject = "💎 Dealkly Alert: Verified Price Drops Detected"
     text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems on your tracked list have dropped:\n\n"
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dealkly Alert</title><style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap'); body{{margin:0;padding:0;background:#F4F6F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}} table{{border-collapse:collapse;}} img{{border:0;height:auto;display:block;}}</style></head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dealkly Alert</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+body{{margin:0;padding:0;background:#F4F6F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}}
+table{{border-collapse:collapse;}}
+img{{border:0;height:auto;display:block;}}
+@keyframes spin {{
+  from {{ transform: rotate(0deg); -webkit-transform: rotate(0deg); }}
+  to {{ transform: rotate(360deg); -webkit-transform: rotate(360deg); }}
+}}
+@-webkit-keyframes spin {{
+  from {{ -webkit-transform: rotate(0deg); }}
+  to {{ -webkit-transform: rotate(360deg); }}
+}}
+</style>
+</head>
 <body style="margin:0;padding:0;background:#F4F6F8;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F4F6F8;padding:24px 0;"><tr><td align="center">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;box-shadow:0 4px 12px rgba(0,0,0,0.05);">
@@ -236,21 +288,32 @@ def send_alert(drops):
 """
 
     for d in deal_list:
-        badge_text = "WHALE DEAL" if d["percent"] >= 25 or d["save"] >= 100 else ("MEGA DROP" if d["percent"] >= 15 or d["save"] >= 50 else "PRICE DROP")
-        badge_bg = "#FF7F50" if badge_text == "WHALE DEAL" else ("#DC2626" if badge_text == "MEGA DROP" else "#0B1D3A")
-        text_body += f"[{badge_text}] {d['title']}\nWas: ${d['was']:.2f} | Now: ${d['now']:.2f} (Save {d['percent']}%)\nLink: {d['link']}\n\n"
+        if d["percent"] >= 25 or d["save"] >= 100:
+            badge_text = f'{GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">WHALE DEAL</span>'
+            badge_bg = "#FF7F50"
+        elif d["percent"] >= 15 or d["save"] >= 50:
+            badge_text = '<span style="vertical-align:middle;">⚡ MEGA DROP ⚡</span>'
+            badge_bg = "#DC2626"
+        else:
+            badge_text = '<span style="vertical-align:middle;">🏷️ PRICE DROP</span>'
+            badge_bg = "#0B1D3A"
+
+        text_body += f"[{d['percent']}% OFF] {d['title']}\nWas: ${d['was']:.2f} | Now: ${d['now']:.2f} (Save {d['percent']}%)\nLink: {d['link']}\n\n"
         
-        # Build image HTML safely
         image_html = f'<div style="margin:12px 0 16px 0;text-align:center;"><a href="{d["link"]}" target="_blank"><img src="{d["image"]}" alt="{d["title"]}" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>' if d["image"] else ""
 
         html_content += f"""
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #E2E8F0;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
 <tr><td style="padding:20px;">
-<div style="margin-bottom:12px;"><span style="background:{badge_bg};color:#FFFFFF;font-size:10px;font-weight:600;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.8px;">{badge_text}</span></div>
+<div style="margin-bottom:12px;">
+  <span style="background:{badge_bg};color:#FFFFFF;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:0.8px;display:inline-block;">
+    {badge_text}
+  </span>
+</div>
 {image_html}
 <a href="{d['link']}" target="_blank" style="color:#0F172A;text-decoration:none;font-size:15px;font-weight:700;line-height:1.4;display:block;margin-bottom:16px;">{d['title']}</a>
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;"><tr>
-<td style="font-size:13px;color:#EF4444;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:400;">${d['was']:.2f}</span></td>
+<td style="font-size:13px;color:#EF4444;font-weight:700;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:700;">${d['was']:.2f}</span></td>
 <td align="right"><span style="font-size:20px;font-weight:800;color:#0F172A;">${d['now']:.2f}</span>
 <span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:600;padding:4px 8px;border-radius:4px;margin-left:8px;">Save {d['percent']}%</span></td>
 </tr></table>
@@ -323,7 +386,7 @@ if __name__ == "__main__":
         if subscribers:
             msg = MIMEMultipart()
             msg["From"] = f"{SENDER_NAME} <{SENDER}>"
-            msg["Subject"] = "Dealkly Admin Test – Pipeline Healthy"
+            msg["Subject"] = "💎 Dealkly Admin Test – Pipeline Healthy"
             msg.attach(MIMEText(sample, "html"))
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.login(SENDER, PASSWORD)
