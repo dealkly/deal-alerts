@@ -154,7 +154,8 @@ def send_alert(drops):
             continue
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
-        image_url = row.get("image", row.get("image_url", row.get("img", ""))
+        # ---- FIX: properly closed parentheses ----
+        image_url = row.get("image", row.get("image_url", row.get("img", "")))
         if url not in best_deal or percent > best_deal[url]["percent"]:
             best_deal[url] = {
                 "title": str(row["title"]).strip(),
