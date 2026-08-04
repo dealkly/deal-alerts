@@ -60,8 +60,12 @@ def detect_price_drops():
 
     product_count = len(today)
     merged = pd.merge(yest, today, on="title", suffixes=("_yest", "_today"))
+    
     if "link_today" not in merged.columns and "link" in today.columns:
         merged["link_today"] = today.set_index("title")["link"].reindex(merged["title"]).values
+
+    if "image_today" not in merged.columns and "image" in today.columns:
+        merged["image_today"] = today.set_index("title")["image"].reindex(merged["title"]).values
 
     merged["drop"] = merged["price_today"] - merged["price_yest"]
     drops = merged[merged["drop"] < 0]
@@ -154,8 +158,10 @@ def send_alert(drops):
             continue
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
-        # ---- FIX: properly closed parentheses ----
-        image_url = row.get("image", row.get("image_url", row.get("img", "")))
+        
+        # Pull product image URL safely from potential column names
+        image_url = row.get("image_today", row.get("image", row.get("image_url", row.get("img", ""))))
+
         if url not in best_deal or percent > best_deal[url]["percent"]:
             best_deal[url] = {
                 "title": str(row["title"]).strip(),
@@ -190,7 +196,9 @@ def send_alert(drops):
         badge_text = "💎 WHALE DEAL" if d["percent"] >= 25 or d["save"] >= 100 else ("🚨 MEGA DROP" if d["percent"] >= 15 or d["save"] >= 50 else "PRICE DROP")
         badge_bg = "#FF7F50" if badge_text == "💎 WHALE DEAL" else ("#DC2626" if badge_text == "🚨 MEGA DROP" else "#0B1D3A")
         text_body += f"[{badge_text}] {d['title']}\nWas: ${d['was']:.2f} | Now: ${d['now']:.2f} (Save {d['percent']}%)\nLink: {d['link']}\n\n"
-        image_html = f'<div style="margin:12px 0 16px 0;text-align:center;"><a href="{d["link"]}" target="_blank"><img src="{d["image"]}" alt="{d["title"]}" width="140" style="max-width:140px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>' if d["image"] else ""
+        
+        # Product Image HTML Block
+        image_html = f'<div style="margin:12px 0 16px 0;text-align:center;"><a href="{d["link"]}" target="_blank"><img src="{d["image"]}" alt="{d["title"]}" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>' if d["image"] else ""
 
         html_content += f"""
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #E2E8F0;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
