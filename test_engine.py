@@ -101,7 +101,7 @@ with sync_playwright() as p:
             time.sleep(random.uniform(1.5, 2.5))
             page.mouse.move(random.randint(100, 800), random.randint(100, 600))
 
-        # -------- Extraction with total price (item + shipping) --------
+        # -------- Extraction with total price AND image URL --------
         products = page.evaluate("""
             () => {
                 const results = [];
@@ -170,7 +170,7 @@ with sync_playwright() as p:
                     }
 
                     const img = container.querySelector('img');
-                    const imgSrc = img ? (img.getAttribute('src') || '') : '';
+                    const imgSrc = img ? (img.getAttribute('src') || img.getAttribute('data-src') || '') : '';
                     const hasImage = imgSrc && !imgSrc.includes('placeholder') && !imgSrc.includes('no-image');
                     const containerText = container.innerText.toLowerCase();
                     const isOutOfStock = containerText.includes('out of stock') || containerText.includes('sold out');
@@ -184,7 +184,8 @@ with sync_playwright() as p:
                             total_price: totalPrice,
                             url: url,
                             condition: condition || 'Unknown',
-                            hasImage: hasImage
+                            hasImage: hasImage,
+                            image: imgSrc           // ⬅ ADD THE IMAGE URL
                         });
                     }
                 });
@@ -208,7 +209,8 @@ with sync_playwright() as p:
                 "title": item["title"],
                 "price": price_num,
                 "link": item["url"],
-                "category": category
+                "category": category,
+                "image": item.get("image", "")   # ⬅ SAVE THE IMAGE URL
             })
             category_items += 1
 
@@ -217,12 +219,12 @@ with sync_playwright() as p:
 
     browser.close()
 
-# Save CSV
+# Save CSV (now includes image column)
 if all_products:
     df = pd.DataFrame(all_products)
     df = df.drop_duplicates(subset=["link"])
-    df[["title", "price", "link"]].to_csv(TODAY_CSV, index=False)
+    df[["title", "price", "link", "image"]].to_csv(TODAY_CSV, index=False)
     print(f"\nDone. {len(df)} unique products saved to {TODAY_CSV}")
 else:
     print("\nNo products found. Creating empty CSV.")
-    pd.DataFrame(columns=["title", "price", "link"]).to_csv(TODAY_CSV, index=False)
+    pd.DataFrame(columns=["title", "price", "link", "image"]).to_csv(TODAY_CSV, index=False)
