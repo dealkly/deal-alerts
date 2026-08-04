@@ -4,7 +4,6 @@ import random
 import re
 import os
 import csv
-import requests
 from playwright.sync_api import sync_playwright
 
 # ------------------ CONFIG ------------------
@@ -21,17 +20,6 @@ CATEGORIES = [
     ("home appliances", "https://www.ebay.com/sch/i.html?_nkw=home+appliance&_sop=15&rt=nc&LH_BIN=1"),
     ("textbooks", "https://www.ebay.com/sch/i.html?_nkw=textbook&_sop=15&rt=nc&LH_BIN=1"),
 ]
-
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "Upgrade-Insecure-Requests": "1",
-    "Cache-Control": "max-age=0",
-}
-
 # --------------------------------------------
 
 def clean_price(price_str):
@@ -56,22 +44,27 @@ if os.path.exists(TODAY_CSV):
 all_items = []
 total_products = 0
 
-# Warm up session
-session = requests.Session()
-session.headers.update(HEADERS)
-
-print("Warming up session (eBay homepage)...")
-try:
-    session.get("https://www.ebay.com", timeout=15)
-    time.sleep(random.uniform(1, 2))
-except Exception as e:
-    print(f"Warm‑up error (continuing): {e}")
-
-# Scrape each category
 with sync_playwright() as p:
-    browser = p.chromium.launch(headless=True)
-    context = browser.new_context(viewport={"width": 1920, "height": 1080})
+    # -------- Stable launch with anti-crash + anti-detection flags --------
+    browser = p.chromium.launch(
+        headless=True,
+        args=[
+            "--disable-blink-features=AutomationControlled",
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage"       # <-- prevents Page crashed
+        ]
+    )
+    context = browser.new_context(
+        viewport={"width": 1920, "height": 1080},
+        user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    )
     page = context.new_page()
+
+    # Warm up (visit eBay homepage)
+    print("Warming up session on eBay homepage...")
+    page.goto("https://www.ebay.com", wait_until="domcontentloaded")
+    time.sleep(random.uniform(2, 4))
 
     for category, url in CATEGORIES:
         print(f"Scraping category: {category}")
@@ -105,19 +98,21 @@ with sync_playwright() as p:
                     for _ in range(10):
                         if container is None:
                             break
-                        # Try to get title
+                        # Title
                         title_el = container.query_selector(".s-item__title")
                         if title_el:
                             title = title_el.inner_text().strip()
-                        # Try to get price
+                        # Price
                         price_el = container.query_selector(".s-item__price")
                         if price_el:
                             price_text = price_el.inner_text().strip()
                             price = clean_price(price_text)
-                        # Try to get image
+                        # Image (the main product image inside the card)
                         img_el = container.query_selector("img")
                         if img_el:
-                            image_url = img_el.get_attribute("src") or img_el.get_attribute("data-src")
+                            src = img_el.get_attribute("src")
+                            data_src = img_el.get_attribute("data-src")
+                            image_url = src or data_src
                         if title and price is not None:
                             break
                         container = container.evaluate("node => node.parentElement")
