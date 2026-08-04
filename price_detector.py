@@ -4,6 +4,7 @@ import smtplib
 import os
 import sys
 import re
+import urllib.request
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -45,6 +46,33 @@ def load_subscribers():
         return json.load(f)
 
 
+def fetch_ebay_image_url(page_url):
+    """Automatically extracts the direct image URL from an eBay item webpage link."""
+    if not page_url or not isinstance(page_url, str) or not page_url.startswith("http"):
+        return ""
+    
+    # If it's already a direct image file URL
+    if re.search(r'\.(jpg|jpeg|png|webp)(\?.*)?$', page_url, re.IGNORECASE) or "i.ebayimg.com" in page_url:
+        return page_url
+
+    try:
+        req = urllib.request.Request(
+            page_url, 
+            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        )
+        with urllib.request.urlopen(req, timeout=4) as response:
+            html = response.read().decode('utf-8', errors='ignore')
+            # Look for eBay's og:image tag
+            match = re.search(r'property=["\']og:image["\']\s+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+            if not match:
+                match = re.search(r'content=["\']([^"\']+)["\']\s+property=["\']og:image["\']', html, re.IGNORECASE)
+            if match:
+                return match.group(1)
+    except Exception as e:
+        print(f"Note: Could not automatically fetch image for {page_url}: {e}")
+    return ""
+
+
 def detect_price_drops():
     if not os.path.exists(YESTERDAY_CSV):
         print("No yesterday data found.")
@@ -58,7 +86,6 @@ def detect_price_drops():
     yest = yest.dropna(subset=["price"])
     today = today.dropna(subset=["price"])
 
-    # --- FIX: Deduplicate titles to prevent duplicate index crash ---
     yest = yest.drop_duplicates(subset=["title"], keep="first")
     today = today.drop_duplicates(subset=["title"], keep="first")
 
@@ -72,6 +99,7 @@ def detect_price_drops():
 
 def build_sample_deal_html():
     """Return a complete HTML email with a sample deal, used for admin test."""
+    sample_img = "https://i.ebayimg.com/images/g/Y8AAAOSwX6dlP7mX/s-l1600.jpg"
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap'); body{{margin:0;padding:0;background:#F4F6F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}} table{{border-collapse:collapse;}} img{{border:0;height:auto;display:block;}}</style></head>
@@ -97,6 +125,7 @@ def build_sample_deal_html():
                 <tr>
                   <td style="padding:20px;">
                     <div style="margin-bottom:12px;"><span style="background:#FF7F50;color:#FFFFFF;font-size:10px;font-weight:600;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.8px;">WHALE DEAL</span></div>
+                    <div style="margin:12px 0 16px 0;text-align:center;"><a href="https://dealkly.github.io/deal-alerts/" target="_blank"><img src="{sample_img}" alt="" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>
                     <a href="https://dealkly.github.io/deal-alerts/" target="_blank" style="color:#0F172A;text-decoration:none;font-size:15px;font-weight:700;line-height:1.4;display:block;margin-bottom:16px;">Apple MacBook Pro 13in (M1, 8GB, 256GB) - Silver</a>
                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;">
                       <tr>
@@ -149,7 +178,7 @@ def send_alert(drops):
 
     best_deal = {}
     for _, row in filtered.iterrows():
-        # --- FIX: Aggressive URL Extraction ---
+        # Find item URL
         url = ""
         for col in ["link_today", "link", "url_today", "url", "link_yest"]:
             if col in row and pd.notna(row[col]) and str(row[col]).strip() != "":
@@ -162,21 +191,19 @@ def send_alert(drops):
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
         
-        # --- FIX: Aggressive Product Image Extraction ---
-        image_url = ""
+        # Check CSV for existing image column
+        raw_image_url = ""
         for col in ["image_today", "image", "image_url", "img_today", "img", "thumbnail", "image_yest"]:
             if col in row and pd.notna(row[col]):
                 val = str(row[col]).strip()
                 if val.lower() not in ["", "nan", "none"]:
-                    image_url = val
+                    raw_image_url = val
                     break
 
-        # Sanitize image URL
-        clean_img = image_url
-        if clean_img.startswith("//"):
-            clean_img = "https:" + clean_img
-        if len(clean_img) < 10 or not clean_img.startswith("http"):
-            clean_img = ""
+        # Dynamically fetch image from eBay if CSV had direct page link or missing image
+        clean_img = fetch_ebay_image_url(raw_image_url)
+        if not clean_img and url:
+            clean_img = fetch_ebay_image_url(url)
 
         if url not in best_deal or percent > best_deal[url]["percent"]:
             best_deal[url] = {
@@ -213,7 +240,7 @@ def send_alert(drops):
         badge_bg = "#FF7F50" if badge_text == "WHALE DEAL" else ("#DC2626" if badge_text == "MEGA DROP" else "#0B1D3A")
         text_body += f"[{badge_text}] {d['title']}\nWas: ${d['was']:.2f} | Now: ${d['now']:.2f} (Save {d['percent']}%)\nLink: {d['link']}\n\n"
         
-        # Render product image dynamically
+        # Build image HTML safely
         image_html = f'<div style="margin:12px 0 16px 0;text-align:center;"><a href="{d["link"]}" target="_blank"><img src="{d["image"]}" alt="{d["title"]}" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>' if d["image"] else ""
 
         html_content += f"""
