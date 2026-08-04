@@ -91,7 +91,8 @@ def send_alert(drops: pd.DataFrame) -> None:
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
         
-        image_url = row.get("image", row.get("image_url", row.get("img", ""))
+        # FIXED: missing closing parenthesis added
+        image_url = row.get("image", row.get("image_url", row.get("img", "")))
 
         if url not in best_deal or percent > best_deal[url]["percent"]:
             best_deal[url] = {
@@ -113,12 +114,10 @@ def send_alert(drops: pd.DataFrame) -> None:
     # C. BUILD EMAIL
     subject = "💎 Dealkly Alert: Verified Price Drops Detected"
 
-    # Plain text fallback
     text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n"
     text_body += "=" * 45 + "\n\n"
     text_body += "Items on your tracked list have dropped in price:\n\n"
 
-    # HTML Base with Dark Navy Header and blank alt tag to prevent double-naming
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -156,7 +155,6 @@ def send_alert(drops: pd.DataFrame) -> None:
                         <td style="padding: 8px 24px 24px 24px;">
 """
 
-    # Insert Product Cards
     for d in deal_list:
         if d["percent"] >= 25 or d["save"] >= 100:
             badge_text = "💎 WHALE DEAL"
@@ -175,8 +173,6 @@ def send_alert(drops: pd.DataFrame) -> None:
             image_html = f"""<div style="margin: 12px 0 16px 0; text-align: center;">
                 <a href="{d['link']}" target="_blank"><img src="{d['image']}" alt="{d['title']}" width="140" style="max-width: 140px; height: auto; border-radius: 8px; border: 1px solid #E2E8F0; margin: 0 auto; display: block;"></a></div>"""
 
-        # IMPORTANT – Only the title and the new price are bold now.
-        # Badge, "Was", Save badge and the CTA button are all normal weight.
         html_content += f"""
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px; border: 1px solid #E2E8F0; border-radius: 10px; background-color: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
                                 <tr>
@@ -296,13 +292,9 @@ def send_daily_beacon(drops, product_count):
 if __name__ == "__main__":
     drops, product_count = detect_price_drops()
     
-    # Send HTML alerts to subscribers
     send_alert(drops)
-    
-    # Send plain text pipeline status to admin
     send_daily_beacon(drops, product_count)
 
-    # Admin Manual Override Test Mode
     if ADMIN_TEST_MODE:
         print("Admin test mode activated – sending test email.")
         subscribers = load_subscribers()
