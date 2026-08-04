@@ -28,7 +28,7 @@ MIN_DROP_PERCENT = 10.0
 MIN_ITEM_PRICE = 5.00
 
 # ---------- ASSETS & LINKS ----------
-LOGO_URL = "https://dealkly.github.io/deal-alerts/logo_white v2.png"
+LOGO_URL = "https://dealkly.github.io/deal-alerts/logo_white.png"
 PREMIUM_LINK = "https://dealkly.gumroad.com/l/premium-alerts"
 WEBSITE_LINK = "https://dealkly.github.io/deal-alerts/"
 
