@@ -154,8 +154,8 @@ img{{border:0;height:auto;display:block;}}
                 <tr>
                   <td style="padding:20px;">
                     <div style="margin-bottom:12px;">
-                      <span style="background:#FF7F50;color:#FFFFFF;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:0.8px;display:inline-block;">
-                        {GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">WHALE DEAL</span>
+                      <span style="background:#DC2626;color:#FFFFFF;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:0.8px;display:inline-block;">
+                        {GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">MEGA DROP</span>
                       </span>
                     </div>
                     <div style="margin:12px 0 16px 0;text-align:center;"><a href="https://dealkly.github.io/deal-alerts/" target="_blank"><img src="{sample_img}" alt="" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>
@@ -169,7 +169,7 @@ img{{border:0;height:auto;display:block;}}
                         </td>
                       </tr>
                     </table>
-                    <a href="https://dealkly.github.io/deal-alerts/" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
+                    <a href="{sample_img}" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
                   </td>
                 </tr>
               </table>
@@ -292,7 +292,8 @@ img{{border:0;height:auto;display:block;}}
             badge_text = f'{GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">WHALE DEAL</span>'
             badge_bg = "#FF7F50"
         elif d["percent"] >= 15 or d["save"] >= 50:
-            badge_text = '<span style="vertical-align:middle;">⚡ MEGA DROP ⚡</span>'
+            # ---> Added the spinning SVG to the MEGA DROP right here <---
+            badge_text = f'{GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">MEGA DROP</span>'
             badge_bg = "#DC2626"
         else:
             badge_text = '<span style="vertical-align:middle;">🏷️ PRICE DROP</span>'
@@ -301,6 +302,7 @@ img{{border:0;height:auto;display:block;}}
         text_body += f"[{d['percent']}% OFF] {d['title']}\nWas: ${d['was']:.2f} | Now: ${d['now']:.2f} (Save {d['percent']}%)\nLink: {d['link']}\n\n"
         
         image_html = f'<div style="margin:12px 0 16px 0;text-align:center;"><a href="{d["link"]}" target="_blank"><img src="{d["image"]}" alt="{d["title"]}" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>' if d["image"] else ""
+        button_link = d["image"] if d["image"] else d["link"]
 
         html_content += f"""
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #E2E8F0;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
@@ -317,7 +319,7 @@ img{{border:0;height:auto;display:block;}}
 <td align="right"><span style="font-size:20px;font-weight:800;color:#0F172A;">${d['now']:.2f}</span>
 <span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:600;padding:4px 8px;border-radius:4px;margin-left:8px;">Save {d['percent']}%</span></td>
 </tr></table>
-<a href="{d['link']}" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
+<a href="{button_link}" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
 </td></tr></table>"""
 
     text_body += f"-" * 45 + f"\nUpgrade to Premium: {PREMIUM_LINK}\nManage preferences: {WEBSITE_LINK}"
