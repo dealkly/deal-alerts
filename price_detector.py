@@ -58,9 +58,13 @@ def detect_price_drops():
     yest = yest.dropna(subset=["price"])
     today = today.dropna(subset=["price"])
 
+    # --- FIX: Deduplicate titles to prevent duplicate index crash ---
+    yest = yest.drop_duplicates(subset=["title"], keep="first")
+    today = today.drop_duplicates(subset=["title"], keep="first")
+
     product_count = len(today)
     merged = pd.merge(yest, today, on="title", suffixes=("_yest", "_today"))
-    
+
     if "link_today" not in merged.columns and "link" in today.columns:
         merged["link_today"] = today.set_index("title")["link"].reindex(merged["title"]).values
 
