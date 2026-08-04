@@ -3,6 +3,7 @@ import json
 import smtplib
 import os
 import sys
+import re
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -34,7 +35,7 @@ WEBSITE_LINK = "https://dealkly.github.io/deal-alerts/"
 
 
 # ==========================================
-# 2. CORE LOGIC
+# 2. UTILITY
 # ==========================================
 def clean_price(price_str):
     """Convert a price string like '$1,299.99' to float 1299.99"""
@@ -44,6 +45,10 @@ def clean_price(price_str):
     except ValueError:
         return None
 
+
+# ==========================================
+# 3. CORE LOGIC
+# ==========================================
 def load_subscribers():
     with open(SUBSCRIBERS_FILE, "r") as f:
         data = json.load(f)
@@ -60,7 +65,6 @@ def detect_price_drops():
     # --- FIX: Convert price columns from text to numbers ---
     yest["price"] = yest["price"].apply(clean_price)
     today["price"] = today["price"].apply(clean_price)
-    # Drop rows where price couldn't be converted (NaN)
     yest = yest.dropna(subset=["price"])
     today = today.dropna(subset=["price"])
     # ------------------------------------------------------
@@ -77,13 +81,9 @@ def detect_price_drops():
 
 
 # ==========================================
-# 3. HTML ALERT DISPATCHER
+# 4. HTML ALERT DISPATCHER
 # ==========================================
 def send_alert(drops: pd.DataFrame) -> None:
-    # ... (keep the entire send_alert function exactly as before) ...
-    # To save space I will write the full function but ensure it's identical to the previous working version.
-    # I'm including the complete function below for safety.
-    # (No changes in this function)
     if drops is None:
         print("[INFO] No comparison dataframe provided. Exiting process.")
         return
@@ -112,7 +112,8 @@ def send_alert(drops: pd.DataFrame) -> None:
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
         
-        image_url = row.get("image", row.get("image_url", row.get("img", ""))
+        # ---- FIX: properly closed parentheses ----
+        image_url = row.get("image", row.get("image_url", row.get("img", "")))
 
         if url not in best_deal or percent > best_deal[url]["percent"]:
             best_deal[url] = {
@@ -272,7 +273,7 @@ def send_alert(drops: pd.DataFrame) -> None:
 
 
 # ==========================================
-# 4. DAILY ADMIN REPORT
+# 5. DAILY ADMIN REPORT
 # ==========================================
 def send_daily_beacon(drops, product_count):
     if drops is None:
@@ -306,7 +307,7 @@ def send_daily_beacon(drops, product_count):
 
 
 # ==========================================
-# 5. EXECUTION TRIGGER
+# 6. EXECUTION TRIGGER
 # ==========================================
 if __name__ == "__main__":
     drops, product_count = detect_price_drops()
