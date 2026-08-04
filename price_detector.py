@@ -91,7 +91,8 @@ def send_alert(drops: pd.DataFrame) -> None:
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
         
-        image_url = row.get("image", row.get("image_url", row.get("img", ""))
+        # FIXED: missing closing parenthesis added
+        image_url = row.get("image", row.get("image_url", row.get("img", "")))
 
         if url not in best_deal or percent > best_deal[url]["percent"]:
             best_deal[url] = {
