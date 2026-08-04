@@ -58,18 +58,12 @@ def detect_price_drops():
     yest = yest.dropna(subset=["price"])
     today = today.dropna(subset=["price"])
 
-    # Deduplicate titles to prevent reindex errors
+    # --- FIX: Deduplicate titles to prevent duplicate index crash ---
     yest = yest.drop_duplicates(subset=["title"], keep="first")
     today = today.drop_duplicates(subset=["title"], keep="first")
 
     product_count = len(today)
     merged = pd.merge(yest, today, on="title", suffixes=("_yest", "_today"))
-
-    if "link_today" not in merged.columns and "link" in today.columns:
-        merged["link_today"] = today.set_index("title")["link"].reindex(merged["title"]).values
-
-    if "image_today" not in merged.columns and "image" in today.columns:
-        merged["image_today"] = today.set_index("title")["image"].reindex(merged["title"]).values
 
     merged["drop"] = merged["price_today"] - merged["price_yest"]
     drops = merged[merged["drop"] < 0]
@@ -102,18 +96,18 @@ def build_sample_deal_html():
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #E2E8F0;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
                 <tr>
                   <td style="padding:20px;">
-                    <div style="margin-bottom:12px;"><span style="background:#FF7F50;color:#FFFFFF;font-size:10px;font-weight:400;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.8px;">💎 WHALE DEAL</span></div>
+                    <div style="margin-bottom:12px;"><span style="background:#FF7F50;color:#FFFFFF;font-size:10px;font-weight:600;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.8px;">WHALE DEAL</span></div>
                     <a href="https://dealkly.github.io/deal-alerts/" target="_blank" style="color:#0F172A;text-decoration:none;font-size:15px;font-weight:700;line-height:1.4;display:block;margin-bottom:16px;">Apple MacBook Pro 13in (M1, 8GB, 256GB) - Silver</a>
                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;">
                       <tr>
                         <td style="font-size:13px;color:#EF4444;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:400;">$1,300.00</span></td>
                         <td align="right">
                           <span style="font-size:20px;font-weight:800;color:#0F172A;">$850.00</span>
-                          <span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:400;padding:4px 8px;border-radius:4px;margin-left:8px;">Save 35%</span>
+                          <span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:600;padding:4px 8px;border-radius:4px;margin-left:8px;">Save 35%</span>
                         </td>
                       </tr>
                     </table>
-                    <a href="https://dealkly.github.io/deal-alerts/" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:400;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
+                    <a href="https://dealkly.github.io/deal-alerts/" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
                   </td>
                 </tr>
               </table>
@@ -123,14 +117,12 @@ def build_sample_deal_html():
             <td style="padding:0 24px 28px 24px;">
               <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:20px;text-align:center;">
                 <p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p>
-                <a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background:#0B1D3A;color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:400;text-decoration:none;">Upgrade to Premium – $3/mo</a>
+                <a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background:#0B1D3A;color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a>
               </div>
             </td>
           </tr>
           <tr>
-            <td style="background:#0B1D3A;padding:32px 24px;text-align:center;border-top:1px solid #1E293B;">
-              <p style="color:#FFFFFF;font-size:14px;font-weight:800;margin:0 0 6px;letter-spacing:0.5px;">Dealkly Alerts</p>
-              <p style="color:#94A3B8;font-size:12px;margin:0 0 16px;">Automated deal tracking engine. No spam, just price drops.</p>
+            <td style="background:#0B1D3A;padding:24px;text-align:center;border-top:1px solid #1E293B;">
               <a href="{WEBSITE_LINK}" target="_blank" style="color:#60A5FA;font-size:12px;text-decoration:underline;">Manage Preferences & Watchlists</a>
             </td>
           </tr>
@@ -157,22 +149,33 @@ def send_alert(drops):
 
     best_deal = {}
     for _, row in filtered.iterrows():
-        url = row.get("link_today", row.get("link_yest", ""))
+        # --- FIX: Aggressive URL Extraction ---
+        url = ""
+        for col in ["link_today", "link", "url_today", "url", "link_yest"]:
+            if col in row and pd.notna(row[col]) and str(row[col]).strip() != "":
+                url = str(row[col]).strip()
+                break
+                
         if not url:
             continue
+
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
         
-        # 1. Pull product image URL safely
-        image_url = row.get("image_today", row.get("image", row.get("image_url", row.get("img", ""))))
+        # --- FIX: Aggressive Product Image Extraction ---
+        image_url = ""
+        for col in ["image_today", "image", "image_url", "img_today", "img", "thumbnail", "image_yest"]:
+            if col in row and pd.notna(row[col]):
+                val = str(row[col]).strip()
+                if val.lower() not in ["", "nan", "none"]:
+                    image_url = val
+                    break
 
-        # 2. Clean & sanitize image URL
-        clean_img = str(image_url).strip() if pd.notna(image_url) else ""
-        if clean_img.lower() in ["nan", "none"]:
-            clean_img = ""
+        # Sanitize image URL
+        clean_img = image_url
         if clean_img.startswith("//"):
             clean_img = "https:" + clean_img
-        elif clean_img and not clean_img.startswith("http"):
+        if len(clean_img) < 10 or not clean_img.startswith("http"):
             clean_img = ""
 
         if url not in best_deal or percent > best_deal[url]["percent"]:
@@ -182,7 +185,7 @@ def send_alert(drops):
                 "now": float(row["price_today"]),
                 "save": float(drop_val),
                 "percent": int(percent),
-                "link": str(url).strip(),
+                "link": url,
                 "image": clean_img
             }
 
@@ -191,7 +194,7 @@ def send_alert(drops):
         return
 
     deal_list = sorted(best_deal.values(), key=lambda x: x["percent"], reverse=True)
-    subject = "💎 Dealkly Alert: Verified Price Drops Detected"
+    subject = "Dealkly Alert: Verified Price Drops Detected"
     text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems on your tracked list have dropped:\n\n"
 
     html_content = f"""<!DOCTYPE html>
@@ -206,32 +209,32 @@ def send_alert(drops):
 """
 
     for d in deal_list:
-        badge_text = "💎 WHALE DEAL" if d["percent"] >= 25 or d["save"] >= 100 else ("🚨 MEGA DROP" if d["percent"] >= 15 or d["save"] >= 50 else "PRICE DROP")
-        badge_bg = "#FF7F50" if badge_text == "💎 WHALE DEAL" else ("#DC2626" if badge_text == "🚨 MEGA DROP" else "#0B1D3A")
+        badge_text = "WHALE DEAL" if d["percent"] >= 25 or d["save"] >= 100 else ("MEGA DROP" if d["percent"] >= 15 or d["save"] >= 50 else "PRICE DROP")
+        badge_bg = "#FF7F50" if badge_text == "WHALE DEAL" else ("#DC2626" if badge_text == "MEGA DROP" else "#0B1D3A")
         text_body += f"[{badge_text}] {d['title']}\nWas: ${d['was']:.2f} | Now: ${d['now']:.2f} (Save {d['percent']}%)\nLink: {d['link']}\n\n"
         
-        # Render product image only if valid
+        # Render product image dynamically
         image_html = f'<div style="margin:12px 0 16px 0;text-align:center;"><a href="{d["link"]}" target="_blank"><img src="{d["image"]}" alt="{d["title"]}" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>' if d["image"] else ""
 
         html_content += f"""
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #E2E8F0;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
 <tr><td style="padding:20px;">
-<div style="margin-bottom:12px;"><span style="background:{badge_bg};color:#FFFFFF;font-size:10px;font-weight:400;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.8px;">{badge_text}</span></div>
+<div style="margin-bottom:12px;"><span style="background:{badge_bg};color:#FFFFFF;font-size:10px;font-weight:600;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.8px;">{badge_text}</span></div>
 {image_html}
 <a href="{d['link']}" target="_blank" style="color:#0F172A;text-decoration:none;font-size:15px;font-weight:700;line-height:1.4;display:block;margin-bottom:16px;">{d['title']}</a>
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;"><tr>
 <td style="font-size:13px;color:#EF4444;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:400;">${d['was']:.2f}</span></td>
 <td align="right"><span style="font-size:20px;font-weight:800;color:#0F172A;">${d['now']:.2f}</span>
-<span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:400;padding:4px 8px;border-radius:4px;margin-left:8px;">Save {d['percent']}%</span></td>
+<span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:600;padding:4px 8px;border-radius:4px;margin-left:8px;">Save {d['percent']}%</span></td>
 </tr></table>
-<a href="{d['link']}" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:400;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
+<a href="{d['link']}" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
 </td></tr></table>"""
 
-    text_body += f"-" * 45 + f"\nUpgrade to Premium: {PREMIUM_LINK}\nManage preferences: {WEBSITE_LINK}\nDealkly Alerts — Automated Price Detection Engine"
+    text_body += f"-" * 45 + f"\nUpgrade to Premium: {PREMIUM_LINK}\nManage preferences: {WEBSITE_LINK}"
 
     html_content += f"""</td></tr>
-<tr><td style="padding:0 24px 28px 24px;"><div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:20px;text-align:center;"><p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p><a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background:#0B1D3A;color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:400;text-decoration:none;">Upgrade to Premium – $3/mo</a></div></td></tr>
-<tr><td style="background:#0B1D3A;padding:32px 24px;text-align:center;border-top:1px solid #1E293B;"><p style="color:#FFFFFF;font-size:14px;font-weight:800;margin:0 0 6px;letter-spacing:0.5px;">Dealkly Alerts</p><p style="color:#94A3B8;font-size:12px;margin:0 0 16px;">Automated deal tracking engine. No spam, just price drops.</p><a href="{WEBSITE_LINK}" target="_blank" style="color:#60A5FA;font-size:12px;text-decoration:underline;">Manage Preferences & Watchlists</a></td></tr></table></td></tr></table></body></html>"""
+<tr><td style="padding:0 24px 28px 24px;"><div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:20px;text-align:center;"><p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p><a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background:#0B1D3A;color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a></div></td></tr>
+<tr><td style="background:#0B1D3A;padding:24px;text-align:center;border-top:1px solid #1E293B;"><a href="{WEBSITE_LINK}" target="_blank" style="color:#60A5FA;font-size:12px;text-decoration:underline;">Manage Preferences & Watchlists</a></td></tr></table></td></tr></table></body></html>"""
 
     subscribers = load_subscribers()
     if not subscribers:
@@ -268,7 +271,7 @@ def send_daily_beacon(drops, product_count):
         for _, row in drops.iterrows():
             drop_percent = round((-row["drop"] / row["price_yest"]) * 100)
             body += f"- {row['title']}: ${row['price_yest']:.2f} → ${row['price_today']:.2f} ({drop_percent}%)\n"
-    body += f"\n—\nDealkly Alerts\nhttps://dealkly.github.io/deal-alerts/"
+    body += f"\n—\nDealkly\nhttps://dealkly.github.io/deal-alerts/"
 
     msg = MIMEMultipart()
     msg["From"] = f"{SENDER_NAME} <{SENDER}>"
