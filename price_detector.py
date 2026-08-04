@@ -32,12 +32,18 @@ LOGO_URL = "https://dealkly.github.io/deal-alerts/logo_white.png"
 PREMIUM_LINK = "https://dealkly.gumroad.com/l/premium-alerts"
 WEBSITE_LINK = "https://dealkly.github.io/deal-alerts/"
 
-# Replaced SVG with an animated GIF because Gmail strips SVGs and CSS animations.
-# You must upload a "spinning-diamond.gif" to your github pages repo for this to display.
-GOLD_DIAMOND_GIF = (
-    '<img src="https://dealkly.github.io/deal-alerts/spinning-diamond.gif" '
-    'alt="💎" width="16" height="16" '
-    'style="display:inline-block; vertical-align:middle; margin-right:6px; border:none;">'
+# Rotating Gold Luxury Diamond SVG
+GOLD_DIAMOND_SVG = (
+    '<span class="spin-icon" style="display:inline-block;vertical-align:middle;'
+    'animation:spin 3s linear infinite;-webkit-animation:spin 3s linear infinite;margin-right:5px;">'
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">'
+    '<path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/>'
+    '<path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/>'
+    '<path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/>'
+    '<path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/>'
+    '<path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/>'
+    '<path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/>'
+    '</svg></span>'
 )
 
 
@@ -116,6 +122,14 @@ def build_sample_deal_html():
 body{{margin:0;padding:0;background:#F4F6F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}}
 table{{border-collapse:collapse;}}
 img{{border:0;height:auto;display:block;}}
+@keyframes spin {{
+  from {{ transform: rotate(0deg); -webkit-transform: rotate(0deg); }}
+  to {{ transform: rotate(360deg); -webkit-transform: rotate(360deg); }}
+}}
+@-webkit-keyframes spin {{
+  from {{ -webkit-transform: rotate(0deg); }}
+  to {{ -webkit-transform: rotate(360deg); }}
+}}
 </style>
 </head>
 <body style="margin:0;padding:0;background:#F4F6F8;">
@@ -140,8 +154,8 @@ img{{border:0;height:auto;display:block;}}
                 <tr>
                   <td style="padding:20px;">
                     <div style="margin-bottom:12px;">
-                      <span style="background:#FF7F50;color:#FFFFFF;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:0.8px;display:inline-block;">
-                        {GOLD_DIAMOND_GIF}<span style="vertical-align:middle;">WHALE DEAL</span>
+                      <span style="background:#DC2626;color:#FFFFFF;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:0.8px;display:inline-block;">
+                        {GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">MEGA DROP</span>
                       </span>
                     </div>
                     <div style="margin:12px 0 16px 0;text-align:center;"><a href="https://dealkly.github.io/deal-alerts/" target="_blank"><img src="{sample_img}" alt="" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>
@@ -255,6 +269,14 @@ def send_alert(drops):
 body{{margin:0;padding:0;background:#F4F6F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}}
 table{{border-collapse:collapse;}}
 img{{border:0;height:auto;display:block;}}
+@keyframes spin {{
+  from {{ transform: rotate(0deg); -webkit-transform: rotate(0deg); }}
+  to {{ transform: rotate(360deg); -webkit-transform: rotate(360deg); }}
+}}
+@-webkit-keyframes spin {{
+  from {{ -webkit-transform: rotate(0deg); }}
+  to {{ -webkit-transform: rotate(360deg); }}
+}}
 </style>
 </head>
 <body style="margin:0;padding:0;background:#F4F6F8;">
@@ -267,10 +289,11 @@ img{{border:0;height:auto;display:block;}}
 
     for d in deal_list:
         if d["percent"] >= 25 or d["save"] >= 100:
-            badge_text = f'{GOLD_DIAMOND_GIF}<span style="vertical-align:middle;">WHALE DEAL</span>'
+            badge_text = f'{GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">WHALE DEAL</span>'
             badge_bg = "#FF7F50"
         elif d["percent"] >= 15 or d["save"] >= 50:
-            badge_text = f'{GOLD_DIAMOND_GIF}<span style="vertical-align:middle;">MEGA DROP</span>'
+            # ---> Added the spinning SVG to the MEGA DROP right here <---
+            badge_text = f'{GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">MEGA DROP</span>'
             badge_bg = "#DC2626"
         else:
             badge_text = '<span style="vertical-align:middle;">🏷️ PRICE DROP</span>'
