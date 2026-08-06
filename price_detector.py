@@ -255,7 +255,17 @@ def send_alert(drops):
 
     deal_list = sorted(best_deal.values(), key=lambda x: x["percent"], reverse=True)
     
-    subject = "💎 Dealkly Alert: Verified Price Drops Detected"
+    # ---------------------------------------------------------
+    # CLEAN, HIGH-TRUST SUBJECT LINE LOGIC
+    # ---------------------------------------------------------
+    top_deal = deal_list[0]
+    total_deals = len(deal_list)
+
+    if total_deals == 1:
+        subject = f"[Dealkly] Price Drop: {top_deal['title']} dropped to ${top_deal['now']:.2f} ({top_deal['percent']}% OFF)"
+    else:
+        subject = f"[Dealkly] {total_deals} Deals Found: {top_deal['title']} dropped {top_deal['percent']}% OFF"
+    
     text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems on your tracked list have dropped:\n\n"
 
     html_content = f"""<!DOCTYPE html>
@@ -388,7 +398,7 @@ if __name__ == "__main__":
         if subscribers:
             msg = MIMEMultipart()
             msg["From"] = f"{SENDER_NAME} <{SENDER}>"
-            msg["Subject"] = "💎 Dealkly Admin Test – Pipeline Healthy"
+            msg["Subject"] = "[Dealkly] Admin Test – Pipeline Healthy"
             msg.attach(MIMEText(sample, "html"))
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.login(SENDER, PASSWORD)
