@@ -162,10 +162,10 @@ img{{border:0;height:auto;display:block;}}
                     <a href="https://dealkly.github.io/deal-alerts/" target="_blank" style="color:#0F172A;text-decoration:none;font-size:15px;font-weight:700;line-height:1.4;display:block;margin-bottom:16px;">Apple MacBook Pro 13in (M1, 8GB, 256GB) - Silver</a>
                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;">
                       <tr>
-                        <td style="font-size:13px;color:#EF4444;font-weight:700;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:700;">$1,300.00</span></td>
+                        <td style="font-size:18px;color:#EF4444;font-weight:800;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:800;">$1,300.00</span></td>
                         <td align="right">
                           <span style="font-size:20px;font-weight:800;color:#0F172A;">$850.00</span>
-                          <span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:600;padding:4px 8px;border-radius:4px;margin-left:8px;">Save 35%</span>
+                          <span style="background:#DCFCE7;color:#166534;font-size:14px;font-weight:800;padding:6px 10px;border-radius:4px;margin-left:8px;">Save 35%</span>
                         </td>
                       </tr>
                     </table>
@@ -302,7 +302,6 @@ img{{border:0;height:auto;display:block;}}
             badge_text = f'{GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">WHALE DEAL</span>'
             badge_bg = "#FF7F50"
         elif d["percent"] >= 15 or d["save"] >= 50:
-            # ---> Added the spinning SVG to the MEGA DROP right here <---
             badge_text = f'{GOLD_DIAMOND_SVG}<span style="vertical-align:middle;">MEGA DROP</span>'
             badge_bg = "#DC2626"
         else:
@@ -325,9 +324,9 @@ img{{border:0;height:auto;display:block;}}
 {image_html}
 <a href="{d['link']}" target="_blank" style="color:#0F172A;text-decoration:none;font-size:15px;font-weight:700;line-height:1.4;display:block;margin-bottom:16px;">{d['title']}</a>
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;"><tr>
-<td style="font-size:13px;color:#EF4444;font-weight:700;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:700;">${d['was']:.2f}</span></td>
+<td style="font-size:18px;color:#EF4444;font-weight:800;">Was: <span style="text-decoration:line-through;color:#EF4444;font-weight:800;">${d['was']:.2f}</span></td>
 <td align="right"><span style="font-size:20px;font-weight:800;color:#0F172A;">${d['now']:.2f}</span>
-<span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:600;padding:4px 8px;border-radius:4px;margin-left:8px;">Save {d['percent']}%</span></td>
+<span style="background:#DCFCE7;color:#166534;font-size:14px;font-weight:800;padding:6px 10px;border-radius:4px;margin-left:8px;">Save {d['percent']}%</span></td>
 </tr></table>
 <a href="{button_link}" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
 </td></tr></table>"""
