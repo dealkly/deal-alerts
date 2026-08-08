@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dealkly – Automated Deal Alerts</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
+
         .hero-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1600758313102-3c82cc074b0b?w=2000&q=80');
+            background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1600758313102-3c82cc074b0b?w=2000&q=80');
             background-size: cover;
             background-position: center;
+            filter: brightness(1.08) contrast(1.06);
         }
+
         .feature-img {
             border-radius: 1rem;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
@@ -21,7 +24,6 @@
             height: 300px;
         }
 
-        /* Smooth header transition */
         #main-header {
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             background-color: transparent;
@@ -38,20 +40,32 @@
             border-bottom: 1px solid #f3f4f6;
         }
 
-        /* Logo colour shift: white on hero, navy on scroll */
         .logo-img {
-            filter: brightness(0) invert(1);
+            filter: brightness(0) saturate(100%) invert(53%) sepia(87%) saturate(2250%) hue-rotate(354deg) brightness(93%) contrast(94%);
             transition: filter 0.3s ease;
         }
         #main-header.scrolled .logo-img {
-            filter: brightness(0) saturate(100%) invert(10%) sepia(100%) saturate(2000%) hue-rotate(200deg) brightness(30%) contrast(90%);
+            filter: brightness(0) saturate(100%) invert(53%) sepia(87%) saturate(2250%) hue-rotate(354deg) brightness(93%) contrast(94%);
         }
 
-        /* Nav links – white on hero, dark on scroll */
-        .nav-link { color: #ffffff; transition: color 0.3s ease; }
+        .logo-subtitle {
+            color: #F5EFE6;
+            transition: color 0.3s ease;
+        }
+        #main-header.scrolled .logo-subtitle { color: #1D2023; }
+
+        .nav-link {
+            color: #F59E0B;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover { color: #FBBF24; }
         #main-header.scrolled .nav-link { color: #1D2023; }
 
-        /* Hero text fade-in */
+        .hero-heading {
+            font-family: 'Anek Latin', sans-serif;
+            text-align: justify;
+        }
+
         .fade-in-up {
             opacity: 0;
             transform: translateY(30px);
@@ -63,111 +77,162 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Card hover */
         .card-hover {
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         .card-hover:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.12);
         }
 
-        /* Premium button subtle scale */
-        .btn-premium {
+        .btn-marketplace {
             transition: all 0.3s ease;
         }
-        .btn-premium:hover {
+        .btn-marketplace:hover {
             transform: scale(1.03) translateY(-1px);
-            box-shadow: 0 12px 24px rgba(11, 29, 58, 0.3);
+            box-shadow: 0 12px 24px rgba(180, 83, 9, 0.25);
+        }
+
+        .btn-silky {
+            background: #F5EFE6;
+            color: #92400E;
+            transition: all 0.3s ease;
+        }
+        .btn-silky:hover {
+            background: #FFFFFF;
+            color: #78350F;
+            transform: scale(1.03) translateY(-1px);
+            box-shadow: 0 12px 24px rgba(245, 239, 230, 0.35);
+        }
+        #main-header.scrolled .btn-silky {
+            background: linear-gradient(135deg, #D97706, #B45309);
+            color: #ffffff;
+        }
+        #main-header.scrolled .btn-silky:hover {
+            background: linear-gradient(135deg, #B45309, #78350F);
+            color: #ffffff;
+            box-shadow: 0 12px 24px rgba(180, 83, 9, 0.35);
         }
     </style>
 </head>
-<body class="text-gray-600 bg-white">
+<body class="text-gray-700 bg-[#FFFDF7]">
 
-<!-- Navigation -->
+<!-- ==================== NAVIGATION ==================== -->
 <nav id="main-header" class="fixed top-0 w-full z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <a href="#" class="flex flex-col items-start leading-none">
             <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
-            <span class="text-[10px] font-semibold tracking-wide mt-0.5 logo-subtitle" style="color:#ffffff;">Engineered Alert System</span>
+            <span class="text-[10px] font-semibold tracking-wide mt-0.5 logo-subtitle">Engineered Alert System</span>
         </a>
         <div class="hidden md:flex space-x-8 text-sm font-semibold">
-            <a href="#features" class="nav-link hover:opacity-80">Introduction</a>
-            <a href="#how-it-works" class="nav-link hover:opacity-80">How it Works</a>
-            <a href="#categories" class="nav-link hover:opacity-80">Features & Benefits</a>
-            <a href="#pricing" class="nav-link hover:opacity-80">Pricing</a>
+            <a href="#features" class="nav-link">Introduction</a>
+            <a href="#how-it-works" class="nav-link">How it Works</a>
+            <a href="#categories" class="nav-link">Features & Benefits</a>
+            <a href="#pricing" class="nav-link">Pricing</a>
         </div>
-        <a href="#pricing" class="btn-premium text-white px-5 py-2 rounded font-semibold shadow-sm" style="background-color:#0B1D3A;">Get Started</a>
+        <a href="#pricing" class="btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get Started</a>
     </div>
 </nav>
 
-<!-- Hero Section -->
-<section class="hero-bg min-h-screen flex items-center justify-center text-center pt-16">
-    <div class="max-w-4xl px-4">
-        <p class="fade-in-up font-bold text-xs tracking-[.25em] uppercase mb-4 inline-block" style="background-color:#0B1D3A; color:#ffffff; padding:4px 12px; border-radius:4px;">Real-Time Deal Monitoring</p>
-        <h1 class="fade-in-up delay-1 text-4xl md:text-6xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">Stay ahead with automated alerts on verified tech and hardware discounts from eBay.</h1>
-        <a href="#features" class="fade-in-up delay-2 btn-premium inline-block font-bold px-8 py-4 rounded shadow-lg" style="background-color:#0B1D3A; color:#ffffff;">LEARN MORE</a>
+<!-- ==================== HERO ==================== -->
+<section class="hero-bg min-h-screen flex items-center pt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="flex flex-col">
+            <!-- Badge: larger, unbolded, comfortable padding, white bg -->
+            <span class="fade-in-up inline-block mb-4" style="overflow: hidden; vertical-align: top;">
+                <span style="display: inline-block; background-color: #FFFFFF; color: #92400E; padding: 2px 5px; border-radius: 2px; font-size: 1.25rem; font-weight: normal; letter-spacing: 0.25em; margin-right: -0.25em;">
+                    Real-Time Deal Monitoring
+                </span>
+            </span>
+
+            <!-- Main heading: unbolded, same size and justification -->
+            <div class="max-w-4xl">
+                <h1 class="fade-in-up delay-1 hero-heading text-4xl md:text-6xl font-normal text-white leading-tight mb-8 drop-shadow-lg">
+                    Stay ahead with automated alerts on verified tech and hardware discounts from eBay.
+                </h1>
+            </div>
+
+            <!-- Button centered -->
+            <div class="flex justify-center w-full">
+                <a href="#features" class="fade-in-up delay-2 btn-marketplace inline-block font-bold px-8 py-4 rounded shadow-lg" style="background: linear-gradient(135deg, #D97706, #B45309); color:#ffffff;">
+                    LEARN MORE
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- Introduction to Dealkly (Features) -->
-<section id="features" class="py-24 bg-[#e4e8ee]">
+<!-- ==================== INTRODUCTION (FEATURES) ==================== -->
+<section id="features" class="py-24 bg-[#FEF9ED]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+
         <!-- Verified Deals -->
         <div class="flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
                 <img src="https://images.unsplash.com/photo-1641312054664-acb3d817cee4?w=800&q=80" alt="Verified Deals" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <p class="font-bold text-xs tracking-[.15em] uppercase mb-2" style="color:#1D2023;">Quality Control</p>
                 <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Verified Deals</h2>
-                <p class="text-lg text-gray-600 leading-relaxed">Only listings from highly rated sellers within the accepted tech and hardware categories are tracked. The system filters out noise so only genuine price drops are seen.</p>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Only listings from highly rated sellers within the accepted tech and hardware categories are tracked. 
+                    The system filters out noise so only genuine price drops are seen.
+                </p>
             </div>
         </div>
+
         <!-- Frequent Monitoring -->
         <div class="flex flex-col md:flex-row-reverse items-center gap-12">
             <div class="md:w-1/2">
                 <img src="https://images.unsplash.com/photo-1635151962337-5ee109f2cd31?w=800&q=80" alt="Frequent Monitoring" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <p class="font-bold text-xs tracking-[.15em] uppercase mb-2" style="color:#1D2023;">Speed Advantage</p>
                 <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Frequent Monitoring</h2>
-                <p class="text-lg text-gray-600 leading-relaxed">The system runs every 4 hours to detect deals with at least 10% discounts, catching opportunities before manual deal sites even wake up.</p>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    The system runs every 4 hours to detect deals with at least 10% discounts, 
+                    catching opportunities before manual deal sites even wake up.
+                </p>
             </div>
         </div>
+
         <!-- Custom Watchlists -->
         <div class="flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
                 <img src="https://images.unsplash.com/photo-1639450177811-fc52cc3a17d4?w=800&q=80" alt="Custom Watchlists" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <p class="font-bold text-xs tracking-[.15em] uppercase mb-2" style="color:#1D2023;">Personalized Hunting</p>
                 <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Custom Watchlists</h2>
-                <p class="text-lg text-gray-600 leading-relaxed">Premium subscribers can define their own watchlists for specific products or categories, receiving tailored alerts directly to their inbox.</p>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Premium subscribers can define their own watchlists for specific products or categories, 
+                    receiving tailored alerts directly to their inbox.
+                </p>
             </div>
         </div>
+
     </div>
 </section>
 
-<!-- How Dealkly Detects Deals -->
-<section id="how-it-works" class="py-24 bg-white border-t border-gray-200">
+<!-- ==================== HOW IT WORKS ==================== -->
+<section id="how-it-works" class="py-24 bg-white border-t border-amber-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl font-extrabold text-gray-900 mb-4">How Dealkly Detects Deals</h2>
-        <p class="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">The automated system operates on a strict 4-hour schedule, scanning eBay for deals that meet strict discount criteria, and delivers instant email alerts.</p>
+        <p class="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">
+            The automated system operates on a strict 4-hour schedule, scanning eBay for deals that meet strict discount criteria, 
+            and delivers instant email alerts.
+        </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left max-w-5xl mx-auto">
-            <div class="bg-gray-50 border border-gray-100 p-10 rounded-xl shadow-sm card-hover">
+            <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
                 <h3 class="font-extrabold text-xl text-gray-900 mb-3">1. Scheduled Scans</h3>
                 <p class="text-gray-600">The system runs every 4 hours, performing comprehensive scans of eBay listings to identify potential deals based on subscriber preferences.</p>
             </div>
-            <div class="bg-gray-50 border border-gray-100 p-10 rounded-xl shadow-sm card-hover">
+            <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
                 <h3 class="font-extrabold text-xl text-gray-900 mb-3">2. Discount Criteria</h3>
                 <p class="text-gray-600">Only deals offering a minimum of 10% off are flagged, ensuring genuine savings on quality products.</p>
             </div>
-            <div class="bg-gray-50 border border-gray-100 p-10 rounded-xl shadow-sm card-hover">
+            <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
                 <h3 class="font-extrabold text-xl text-gray-900 mb-3">3. Alert Dispatch</h3>
                 <p class="text-gray-600">Once a qualifying deal is found, an instant email alert is sent to the subscriber, enabling quick action before the deal expires.</p>
             </div>
-            <div class="bg-gray-50 border border-gray-100 p-10 rounded-xl shadow-sm card-hover">
+            <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
                 <h3 class="font-extrabold text-xl text-gray-900 mb-3">4. Category Coverage</h3>
                 <p class="text-gray-600">Alerts are available across 16 standard categories for free, with premium watchlists offering additional customization and tracking.</p>
             </div>
@@ -175,77 +240,81 @@
     </div>
 </section>
 
-<!-- Powerful Deal Alerts (Features & Benefits) -->
-<section id="categories" class="py-24 text-white" style="background-color:#0B1D3A;">
+<!-- ==================== FEATURES & BENEFITS ==================== -->
+<section id="categories" class="py-24 text-white" style="background: linear-gradient(135deg, #92400E, #78350F);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl font-extrabold mb-4">Powerful Deal Alerts for Tech &amp; Hardware Enthusiasts</h2>
-        <p class="text-gray-300 max-w-2xl mx-auto mb-16 text-lg">Dealkly offers a comprehensive, automated solution for discovering verified discounts, with free access to core categories and premium options for personalized tracking.</p>
+        <p class="text-amber-100 max-w-2xl mx-auto mb-16 text-lg">
+            Dealkly offers a comprehensive, automated solution for discovering verified discounts, 
+            with free access to core categories and premium options for personalized tracking.
+        </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="p-10 rounded-xl text-left card-hover" style="background-color:#142c4b;">
+            <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
                 <img src="https://images.unsplash.com/photo-1634874257520-fe229ee2ffdd?w=600&q=80" alt="Free Categories" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Free Categories</h3>
-                <p class="text-gray-300 mb-6">Access alerts for 16 popular tech and hardware categories at no cost, keeping you informed about the best deals without any subscription fees.</p>
-                <a href="#pricing" class="btn-premium inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background-color:#0B1D3A;">Explore Categories</a>
+                <p class="text-amber-100 mb-6">Access alerts for 16 popular tech and hardware categories at no cost, keeping you informed about the best deals without any subscription fees.</p>
+                <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Explore Categories</a>
             </div>
-            <div class="p-10 rounded-xl text-left card-hover" style="background-color:#142c4b;">
+            <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
                 <img src="https://images.unsplash.com/photo-1550091230-b5f07d288758?w=600&q=80" alt="Premium Watchlists" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Premium Watchlists</h3>
-                <p class="text-gray-300 mb-6">Create customized watchlists for specific products or brands, receiving tailored alerts that match your interests and savings goals.</p>
-                <a href="#pricing" class="btn-premium inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background-color:#0B1D3A;">Set Up Watchlists</a>
+                <p class="text-amber-100 mb-6">Create customized watchlists for specific products or brands, receiving tailored alerts that match your interests and savings goals.</p>
+                <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Set Up Watchlists</a>
             </div>
-            <div class="p-10 rounded-xl text-left card-hover" style="background-color:#142c4b;">
+            <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
                 <img src="https://images.unsplash.com/photo-1603808326448-ff7a2d980272?w=600&q=80" alt="Instant Email Notifications" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Instant Email Notifications</h3>
-                <p class="text-gray-300 mb-6">Receive immediate email alerts whenever a qualifying deal is detected, so you can act quickly and secure the best prices.</p>
-                <a href="#pricing" class="btn-premium inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background-color:#0B1D3A;">Subscribe Today</a>
+                <p class="text-amber-100 mb-6">Receive immediate email alerts whenever a qualifying deal is detected, so you can act quickly and secure the best prices.</p>
+                <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Subscribe Today</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Pricing -->
-<section id="pricing" class="py-24 bg-white border-t border-gray-200">
+<!-- ==================== PRICING ==================== -->
+<section id="pricing" class="py-24 bg-[#FFFDF7] border-t border-amber-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Flexible Plans for Every Deal Hunter</h2>
-        <p class="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">Choose the plan that fits your needs—from casual tech savings to serious hardware arbitrage.</p>
+        <p class="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">
+            Choose the plan that fits your needs—from casual tech savings to serious hardware arbitrage.
+        </p>
         <div class="flex flex-col md:flex-row justify-center gap-8 max-w-4xl mx-auto">
-            <!-- Free Plan -->
-            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative text-left card-hover">
-                <h3 class="text-gray-500 font-bold uppercase tracking-widest text-sm mb-2">Free Plan</h3>
+            
+            <div class="bg-white border border-amber-200 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative text-left card-hover">
+                <h3 class="text-amber-700 font-bold uppercase tracking-widest text-sm mb-2">Free Plan</h3>
                 <div class="text-5xl font-extrabold text-gray-900 mb-6">$0<span class="text-xl text-gray-500 font-normal">/mo</span></div>
                 <ul class="text-gray-600 mb-8 space-y-4 flex-grow">
-                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to 16 standard categories</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> True Cost calculation (Item + Shipping)</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to 16 standard categories</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> True Cost calculation (Item + Shipping)</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
                 </ul>
                 <div class="mt-auto w-full">
                     <form action="https://formspree.io/f/mwvdklly" method="POST">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Create your free account</label>
-                        <input type="email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0B1D3A] focus:border-transparent mb-4">
-                        <button type="submit" class="btn-premium w-full text-white font-bold py-4 rounded shadow-md" style="background-color:#0B1D3A;">CREATE FREE ACCOUNT</button>
+                        <input type="email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent mb-4">
+                        <button type="submit" class="btn-marketplace w-full text-white font-bold py-4 rounded shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">CREATE FREE ACCOUNT</button>
                     </form>
                 </div>
             </div>
 
-            <!-- Premium Plan -->
-            <div class="bg-white border-2 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative transform md:-translate-y-4 shadow-2xl text-left card-hover" style="border-color:#0B1D3A;">
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xs font-bold uppercase tracking-widest py-2 px-4 rounded-full shadow-md" style="background-color:#0B1D3A;">Recommended</div>
-                <h3 class="text-gray-500 font-bold uppercase tracking-widest text-sm mb-2 mt-4">Premium Plan</h3>
+            <div class="bg-white border-2 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative transform md:-translate-y-4 shadow-2xl text-left card-hover" style="border-color:#D97706;">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xs font-bold uppercase tracking-widest py-2 px-4 rounded-full shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">Recommended</div>
+                <h3 class="text-amber-700 font-bold uppercase tracking-widest text-sm mb-2 mt-4">Premium Plan</h3>
                 <div class="text-5xl font-extrabold text-gray-900 mb-6">$3<span class="text-xl text-gray-500 font-normal">/mo</span></div>
                 <ul class="text-gray-600 mb-8 space-y-4 flex-grow">
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#0B1D3A;">All Free Features</strong></li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#0B1D3A;">"My Items" Custom Tracking</strong></li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#0B1D3A;">Unlimited custom watchlists</strong></li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#0B1D3A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#0B1D3A;">Priority alert dispatch</strong></li>
+                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#B45309;">All Free Features</strong></li>
+                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#B45309;">"My Items" Custom Tracking</strong></li>
+                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#B45309;">Unlimited custom watchlists</strong></li>
+                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#B45309;">Priority alert dispatch</strong></li>
                 </ul>
-                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="btn-premium block w-full text-white text-center font-bold py-4 rounded shadow-lg mt-auto" style="background-color:#0B1D3A;">UPGRADE TO PREMIUM – $3/MO</a>
+                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="btn-marketplace block w-full text-white text-center font-bold py-4 rounded shadow-lg mt-auto" style="background: linear-gradient(135deg, #D97706, #B45309);">UPGRADE TO PREMIUM – $3/MO</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Footer -->
-<footer class="text-gray-400 py-12 text-center border-t border-gray-800" style="background-color:#0B1D3A;">
+<!-- ==================== FOOTER ==================== -->
+<footer class="text-amber-100 py-12 text-center" style="background: linear-gradient(135deg, #78350F, #451A03);">
     <div class="max-w-7xl mx-auto px-4">
         <h4 class="text-white font-bold text-xl mb-4">Dealkly</h4>
         <p class="mb-4">&copy; 2026 Dealkly. Dealkly runs autonomously. Just deals, no spam.</p>
@@ -259,7 +328,6 @@
 </footer>
 
 <script>
-    // Toggle sticky header style on scroll
     window.addEventListener('scroll', () => {
         const header = document.getElementById('main-header');
         if (window.scrollY > 50) {
