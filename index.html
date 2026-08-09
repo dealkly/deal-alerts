@@ -10,7 +10,7 @@
         body { font-family: 'Inter', system-ui, sans-serif; }
 
         .hero-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1600758313102-3c82cc074b0b?w=2000&q=80');
+            background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1600758313102-3c82cc074b0b?w=2000&q=80');
             background-size: cover;
             background-position: center;
             filter: brightness(1.08) contrast(1.06);
@@ -28,14 +28,14 @@
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             background-color: transparent;
             box-shadow: none;
-            padding-top: 10px;
+            padding-top: 0;
             padding-bottom: 10px;
         }
         #main-header.scrolled {
             background-color: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding-top: 0px;
+            padding-top: 0;
             padding-bottom: 0px;
             border-bottom: 1px solid #f3f4f6;
         }
@@ -55,11 +55,15 @@
         #main-header.scrolled .logo-subtitle { color: #1D2023; }
 
         .nav-link {
-            color: #F59E0B;
+            color: #ffffff;
+            text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);
             transition: all 0.3s ease;
         }
-        .nav-link:hover { color: #FBBF24; }
-        #main-header.scrolled .nav-link { color: #1D2023; }
+        .nav-link:hover { color: #e2e8f0; }
+        #main-header.scrolled .nav-link {
+            color: #1D2023;
+            text-shadow: none;
+        }
 
         .hero-heading {
             font-family: 'Anek Latin', sans-serif;
@@ -113,9 +117,26 @@
             color: #ffffff;
             box-shadow: 0 12px 24px rgba(180, 83, 9, 0.35);
         }
+
+        .feature-description {
+            background: linear-gradient(135deg, #D97706, #B45309);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 500;
+        }
+
+        .feature-heading {
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #D97706, #B45309);
+            color: #ffffff;
+            font-weight: 800;
+        }
     </style>
 </head>
-<body class="text-gray-700 bg-[#FFFDF7]">
+<body class="font-light text-gray-700 bg-white">
 
 <!-- ==================== NAVIGATION ==================== -->
 <nav id="main-header" class="fixed top-0 w-full z-50">
@@ -138,21 +159,18 @@
 <section class="hero-bg min-h-screen flex items-center pt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div class="flex flex-col">
-            <!-- Badge: larger, unbolded, comfortable padding, white bg -->
             <span class="fade-in-up inline-block mb-4" style="overflow: hidden; vertical-align: top;">
-                <span style="display: inline-block; background-color: #FFFFFF; color: #92400E; padding: 2px 5px; border-radius: 2px; font-size: 1.25rem; font-weight: normal; letter-spacing: 0.25em; margin-right: -0.25em;">
+                <span style="display: inline-block; background-color: #FFFFFF; color: #92400E; padding: 0px 5px; border-radius: 2px; font-size: 1.15rem; font-weight: 600; letter-spacing: 0.1em; margin-right: -0.1em;">
                     Real-Time Deal Monitoring
                 </span>
             </span>
 
-            <!-- Main heading: unbolded, same size and justification -->
             <div class="max-w-4xl">
-                <h1 class="fade-in-up delay-1 hero-heading text-4xl md:text-6xl font-normal text-white leading-tight mb-8 drop-shadow-lg">
-                    Stay ahead with automated alerts on verified tech and hardware discounts from eBay.
+                <h1 class="fade-in-up delay-1 hero-heading text-4xl md:text-6xl font-bold text-white leading-tight mb-8 drop-shadow-lg">
+                    Stay ahead with automated alerts on the best deals across the most popular eBay categories.
                 </h1>
             </div>
 
-            <!-- Button centered -->
             <div class="flex justify-center w-full">
                 <a href="#features" class="fade-in-up delay-2 btn-marketplace inline-block font-bold px-8 py-4 rounded shadow-lg" style="background: linear-gradient(135deg, #D97706, #B45309); color:#ffffff;">
                     LEARN MORE
@@ -163,7 +181,7 @@
 </section>
 
 <!-- ==================== INTRODUCTION (FEATURES) ==================== -->
-<section id="features" class="py-24 bg-[#FEF9ED]">
+<section id="features" class="py-24 bg-[#FFFDF7]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
 
         <!-- Verified Deals -->
@@ -172,10 +190,11 @@
                 <img src="https://images.unsplash.com/photo-1641312054664-acb3d817cee4?w=800&q=80" alt="Verified Deals" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Verified Deals</h2>
-                <p class="text-lg text-gray-600 leading-relaxed">
-                    Only listings from highly rated sellers within the accepted tech and hardware categories are tracked. 
-                    The system filters out noise so only genuine price drops are seen.
+                <h2 class="text-4xl mb-4">
+                    <span class="feature-heading">Verified Deals</span>
+                </h2>
+                <p class="text-lg leading-relaxed feature-description">
+                    Only listings from highly rated sellers are tracked. The system filters out noise so only genuine price drops are seen—across electronics, fashion, home goods, and more.
                 </p>
             </div>
         </div>
@@ -186,10 +205,11 @@
                 <img src="https://images.unsplash.com/photo-1635151962337-5ee109f2cd31?w=800&q=80" alt="Frequent Monitoring" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Frequent Monitoring</h2>
-                <p class="text-lg text-gray-600 leading-relaxed">
-                    The system runs every 4 hours to detect deals with at least 10% discounts, 
-                    catching opportunities before manual deal sites even wake up.
+                <h2 class="text-4xl mb-4">
+                    <span class="feature-heading">Frequent Monitoring</span>
+                </h2>
+                <p class="text-lg leading-relaxed feature-description">
+                    The system runs every 4 hours to detect deals with at least 10% discounts, catching opportunities before manual deal sites even wake up.
                 </p>
             </div>
         </div>
@@ -200,10 +220,11 @@
                 <img src="https://images.unsplash.com/photo-1639450177811-fc52cc3a17d4?w=800&q=80" alt="Custom Watchlists" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Custom Watchlists</h2>
-                <p class="text-lg text-gray-600 leading-relaxed">
-                    Premium subscribers can define their own watchlists for specific products or categories, 
-                    receiving tailored alerts directly to their inbox.
+                <h2 class="text-4xl mb-4">
+                    <span class="feature-heading">Custom Watchlists</span>
+                </h2>
+                <p class="text-lg leading-relaxed feature-description">
+                    Premium subscribers can define their own watchlists for any product or category—be it laptops, sneakers, or kitchen appliances—receiving tailored alerts directly to their inbox.
                 </p>
             </div>
         </div>
@@ -212,17 +233,16 @@
 </section>
 
 <!-- ==================== HOW IT WORKS ==================== -->
-<section id="how-it-works" class="py-24 bg-white border-t border-amber-200">
+<section id="how-it-works" class="py-24 bg-white border-t border-amber-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl font-extrabold text-gray-900 mb-4">How Dealkly Detects Deals</h2>
         <p class="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">
-            The automated system operates on a strict 4-hour schedule, scanning eBay for deals that meet strict discount criteria, 
-            and delivers instant email alerts.
+            The automated system operates on a strict 4-hour schedule, scanning eBay for deals that meet strict discount criteria, and delivers instant email alerts.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left max-w-5xl mx-auto">
             <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
                 <h3 class="font-extrabold text-xl text-gray-900 mb-3">1. Scheduled Scans</h3>
-                <p class="text-gray-600">The system runs every 4 hours, performing comprehensive scans of eBay listings to identify potential deals based on subscriber preferences.</p>
+                <p class="text-gray-600">The system runs every 4 hours, performing comprehensive scans of eBay listings across dozens of popular categories.</p>
             </div>
             <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
                 <h3 class="font-extrabold text-xl text-gray-900 mb-3">2. Discount Criteria</h3>
@@ -234,31 +254,30 @@
             </div>
             <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
                 <h3 class="font-extrabold text-xl text-gray-900 mb-3">4. Category Coverage</h3>
-                <p class="text-gray-600">Alerts are available across 16 standard categories for free, with premium watchlists offering additional customization and tracking.</p>
+                <p class="text-gray-600">Alerts are available across a wide range of categories for free, with premium watchlists offering additional customization and tracking.</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- ==================== FEATURES & BENEFITS ==================== -->
-<section id="categories" class="py-24 text-white" style="background: linear-gradient(135deg, #92400E, #78350F);">
+<section id="categories" class="py-24 text-white" style="background: linear-gradient(135deg, #B45309, #92400E);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-4xl font-extrabold mb-4">Powerful Deal Alerts for Tech &amp; Hardware Enthusiasts</h2>
+        <h2 class="text-4xl font-extrabold mb-4">Powerful Deal Alerts for Every Kind of Shopper</h2>
         <p class="text-amber-100 max-w-2xl mx-auto mb-16 text-lg">
-            Dealkly offers a comprehensive, automated solution for discovering verified discounts, 
-            with free access to core categories and premium options for personalized tracking.
+            Dealkly offers a comprehensive, automated solution for discovering verified discounts, with free access to a broad range of categories and premium options for personalized tracking.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
                 <img src="https://images.unsplash.com/photo-1634874257520-fe229ee2ffdd?w=600&q=80" alt="Free Categories" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Free Categories</h3>
-                <p class="text-amber-100 mb-6">Access alerts for 16 popular tech and hardware categories at no cost, keeping you informed about the best deals without any subscription fees.</p>
+                <p class="text-amber-100 mb-6">Access alerts across dozens of popular eBay categories at no cost—electronics, fashion, home & garden, toys, and more.</p>
                 <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Explore Categories</a>
             </div>
             <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
                 <img src="https://images.unsplash.com/photo-1550091230-b5f07d288758?w=600&q=80" alt="Premium Watchlists" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Premium Watchlists</h3>
-                <p class="text-amber-100 mb-6">Create customized watchlists for specific products or brands, receiving tailored alerts that match your interests and savings goals.</p>
+                <p class="text-amber-100 mb-6">Create customized watchlists for any product or brand you care about, receiving tailored alerts that match your exact interests.</p>
                 <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Set Up Watchlists</a>
             </div>
             <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
@@ -272,11 +291,11 @@
 </section>
 
 <!-- ==================== PRICING ==================== -->
-<section id="pricing" class="py-24 bg-[#FFFDF7] border-t border-amber-200">
+<section id="pricing" class="py-24 bg-white border-t border-amber-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Flexible Plans for Every Deal Hunter</h2>
         <p class="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">
-            Choose the plan that fits your needs—from casual tech savings to serious hardware arbitrage.
+            Choose the plan that fits your needs—from casual savings to serious bargain hunting across any category.
         </p>
         <div class="flex flex-col md:flex-row justify-center gap-8 max-w-4xl mx-auto">
             
@@ -284,7 +303,7 @@
                 <h3 class="text-amber-700 font-bold uppercase tracking-widest text-sm mb-2">Free Plan</h3>
                 <div class="text-5xl font-extrabold text-gray-900 mb-6">$0<span class="text-xl text-gray-500 font-normal">/mo</span></div>
                 <ul class="text-gray-600 mb-8 space-y-4 flex-grow">
-                    <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to 16 standard categories</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to broad category coverage</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> True Cost calculation (Item + Shipping)</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
                 </ul>
@@ -314,7 +333,7 @@
 </section>
 
 <!-- ==================== FOOTER ==================== -->
-<footer class="text-amber-100 py-12 text-center" style="background: linear-gradient(135deg, #78350F, #451A03);">
+<footer class="text-amber-100 py-12 text-center" style="background: linear-gradient(135deg, #92400E, #78350F);">
     <div class="max-w-7xl mx-auto px-4">
         <h4 class="text-white font-bold text-xl mb-4">Dealkly</h4>
         <p class="mb-4">&copy; 2026 Dealkly. Dealkly runs autonomously. Just deals, no spam.</p>
