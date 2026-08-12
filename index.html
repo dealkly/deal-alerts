@@ -9,68 +9,12 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
 
-        /* Ultra-smooth rotating background images */
+        /* Static hero background using your image */
         .hero-bg {
-            position: relative;
+            background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('./image_03be41.png');
             background-size: cover;
             background-position: center;
-            animation: bgRotate 150s infinite;
-            filter: brightness(1.35) contrast(1.06);
-        }
-
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-size: cover;
-            background-position: center;
-            animation: bgFadeOverlay 150s infinite;
-            z-index: 0;
-            opacity: 0;
-        }
-
-        @keyframes bgRotate {
-            0%, 16% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=2000&q=80'); }
-            20%, 36% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=2000&q=80'); }
-            40%, 56% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=2000&q=80'); }
-            60%, 76% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=2000&q=80'); }
-            80%, 96% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1607082349566-187342175e2f?w=2000&q=80'); }
-        }
-
-        @keyframes bgFadeOverlay {
-            0%, 16% { opacity: 0; }
-            17% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=2000&q=80'); opacity: 0; }
-            18% { opacity: 0.25; }
-            19% { opacity: 0.75; }
-            20% { opacity: 1; }
-            20%, 36% { opacity: 1; }
-            37% { opacity: 0.75; }
-            38% { opacity: 0.25; }
-            39%, 40% { opacity: 0; }
-
-            40%, 56% { opacity: 0; }
-            57% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=2000&q=80'); opacity: 0; }
-            58% { opacity: 0.25; }
-            59% { opacity: 0.75; }
-            60% { opacity: 1; }
-            60%, 76% { opacity: 1; }
-            77% { opacity: 0.75; }
-            78% { opacity: 0.25; }
-            79%, 80% { opacity: 0; }
-
-            80%, 96% { opacity: 0; }
-            97% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=2000&q=80'); opacity: 0; }
-            98% { opacity: 0.25; }
-            99% { opacity: 0.75; }
-            100% { opacity: 1; }
-        }
-
-        .hero-bg .hero-content {
-            position: relative;
-            z-index: 1;
+            filter: brightness(1.1) contrast(1.05);
         }
 
         .feature-img {
@@ -212,7 +156,7 @@
 
 <!-- ==================== HERO ==================== -->
 <section class="hero-bg min-h-screen flex items-center pt-32 pb-16">
-    <div class="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div class="flex flex-col">
             <span class="fade-in-up inline-block mb-4" style="overflow: hidden; vertical-align: top;">
                 <span style="display: inline-block; background-color: #FFFFFF; color: #92400E; padding: 0px 5px; border-radius: 2px; font-size: 1.15rem; font-weight: 600; letter-spacing: 0.1em; margin-right: -0.1em;">
