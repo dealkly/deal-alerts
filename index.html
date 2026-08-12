@@ -9,8 +9,9 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
 
-        /* Static hero background using your image */
+        /* Dark fallback background + your image */
         .hero-bg {
+            background-color: #0f172a;
             background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('./image_03be41.png');
             background-size: cover;
             background-position: center;
@@ -34,8 +35,8 @@
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             background-color: transparent;
             box-shadow: none;
-            padding-top: 15px;
-            padding-bottom: 15px;
+            padding-top: 8px;
+            padding-bottom: 8px;
         }
 
         #main-header.scrolled {
@@ -45,6 +46,11 @@
             padding-top: 10px;
             padding-bottom: 10px;
             border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Only the nav links are moved a tiny bit up (-12px) */
+        .nav-links {
+            transform: translateY(-12px);
         }
 
         .logo-img {
@@ -144,7 +150,7 @@
             <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
             <span class="text-[10px] font-semibold tracking-wide mt-0.5 logo-subtitle">Engineered Alert System</span>
         </a>
-        <div class="hidden md:flex space-x-8 text-sm font-semibold">
+        <div class="nav-links hidden md:flex space-x-8 text-sm font-semibold">
             <a href="#features" class="nav-link">Introduction</a>
             <a href="#how-it-works" class="nav-link">How it Works</a>
             <a href="#categories" class="nav-link">Features & Benefits</a>
