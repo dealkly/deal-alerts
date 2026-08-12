@@ -9,11 +9,68 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
 
+        /* Ultra-smooth rotating background images */
         .hero-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1600758313102-3c82cc074b0b?w=2000&q=80');
+            position: relative;
             background-size: cover;
             background-position: center;
+            animation: bgRotate 150s infinite;
             filter: brightness(1.35) contrast(1.06);
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            animation: bgFadeOverlay 150s infinite;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        @keyframes bgRotate {
+            0%, 16% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=2000&q=80'); }
+            20%, 36% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=2000&q=80'); }
+            40%, 56% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=2000&q=80'); }
+            60%, 76% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=2000&q=80'); }
+            80%, 96% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1607082349566-187342175e2f?w=2000&q=80'); }
+        }
+
+        @keyframes bgFadeOverlay {
+            0%, 16% { opacity: 0; }
+            17% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=2000&q=80'); opacity: 0; }
+            18% { opacity: 0.25; }
+            19% { opacity: 0.75; }
+            20% { opacity: 1; }
+            20%, 36% { opacity: 1; }
+            37% { opacity: 0.75; }
+            38% { opacity: 0.25; }
+            39%, 40% { opacity: 0; }
+
+            40%, 56% { opacity: 0; }
+            57% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=2000&q=80'); opacity: 0; }
+            58% { opacity: 0.25; }
+            59% { opacity: 0.75; }
+            60% { opacity: 1; }
+            60%, 76% { opacity: 1; }
+            77% { opacity: 0.75; }
+            78% { opacity: 0.25; }
+            79%, 80% { opacity: 0; }
+
+            80%, 96% { opacity: 0; }
+            97% { background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=2000&q=80'); opacity: 0; }
+            98% { opacity: 0.25; }
+            99% { opacity: 0.75; }
+            100% { opacity: 1; }
+        }
+
+        .hero-bg .hero-content {
+            position: relative;
+            z-index: 1;
         }
 
         .feature-img {
@@ -25,18 +82,24 @@
         }
 
         #main-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             background-color: transparent;
             box-shadow: none;
-            padding-top: 0;
-            padding-bottom: 10px;
+            padding-top: 15px;
+            padding-bottom: 15px;
         }
+
         #main-header.scrolled {
             background-color: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding-top: 0;
-            padding-bottom: 0px;
+            padding-top: 10px;
+            padding-bottom: 10px;
             border-bottom: 1px solid #f3f4f6;
         }
 
@@ -118,13 +181,6 @@
             box-shadow: 0 12px 24px rgba(180, 83, 9, 0.35);
         }
 
-        /* Feature descriptions – dark solid color + subtle shadow for enhanced readability */
-        .feature-description {
-            color: #1e293b;
-            font-weight: 500;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
         .feature-heading {
             display: inline-block;
             padding: 8px 24px;
@@ -155,8 +211,8 @@
 </nav>
 
 <!-- ==================== HERO ==================== -->
-<section class="hero-bg min-h-screen flex items-center pt-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+<section class="hero-bg min-h-screen flex items-center pt-32 pb-16">
+    <div class="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div class="flex flex-col">
             <span class="fade-in-up inline-block mb-4" style="overflow: hidden; vertical-align: top;">
                 <span style="display: inline-block; background-color: #FFFFFF; color: #92400E; padding: 0px 5px; border-radius: 2px; font-size: 1.15rem; font-weight: 600; letter-spacing: 0.1em; margin-right: -0.1em;">
@@ -192,7 +248,7 @@
                 <h2 class="text-4xl mb-4">
                     <span class="feature-heading">Verified Deals</span>
                 </h2>
-                <p class="text-lg leading-relaxed feature-description">
+                <p class="text-lg text-gray-600 leading-relaxed">
                     Only listings from highly rated sellers are tracked. The system filters out noise so only genuine price drops are seen—across electronics, fashion, home goods, and more.
                 </p>
             </div>
@@ -207,7 +263,7 @@
                 <h2 class="text-4xl mb-4">
                     <span class="feature-heading">Frequent Monitoring</span>
                 </h2>
-                <p class="text-lg leading-relaxed feature-description">
+                <p class="text-lg text-gray-600 leading-relaxed">
                     The system runs every 4 hours to detect deals with at least 10% discounts, catching opportunities before manual deal sites even wake up.
                 </p>
             </div>
@@ -222,7 +278,7 @@
                 <h2 class="text-4xl mb-4">
                     <span class="feature-heading">Custom Watchlists</span>
                 </h2>
-                <p class="text-lg leading-relaxed feature-description">
+                <p class="text-lg text-gray-600 leading-relaxed">
                     Premium subscribers can define their own watchlists for any product or category—be it laptops, sneakers, or kitchen appliances—receiving tailored alerts directly to their inbox.
                 </p>
             </div>
