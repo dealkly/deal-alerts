@@ -9,7 +9,6 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
 
-        /* Dark fallback background + your image */
         .hero-bg {
             background-color: #0f172a;
             background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('./image_03be41.png');
@@ -26,46 +25,71 @@
             height: 300px;
         }
 
-        #main-header {
-            position: fixed !important;
+        /* ---------- Original transparent header (scrolls with page) ---------- */
+        #transparent-header {
+            position: absolute !important;
             top: 0 !important;
             left: 0;
             width: 100%;
-            z-index: 9999;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 9998;
             background-color: transparent;
             box-shadow: none;
             padding-top: 8px;
             padding-bottom: 8px;
         }
 
-        #main-header.scrolled {
+        /* ---------- White dropdown header (fixed, slides down/up) ---------- */
+        #dropdown-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             background-color: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding-top: 10px;
-            padding-bottom: 10px;
             border-bottom: 1px solid #f3f4f6;
+            padding-top: 0;
+            padding-bottom: 0;
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
         }
 
-        /* Only the nav links are moved a tiny bit up (-12px) */
+        #dropdown-header.show-down {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #dropdown-header .max-w-7xl {
+            height: 3.5rem;
+        }
+
         .nav-links {
             transform: translateY(-12px);
+        }
+
+        #dropdown-header .nav-links {
+            transform: none;
         }
 
         .logo-img {
             filter: brightness(0) saturate(100%) invert(53%) sepia(87%) saturate(2250%) hue-rotate(354deg) brightness(150%) contrast(94%);
             transition: filter 0.3s ease;
         }
-        #main-header.scrolled .logo-img {
-            filter: brightness(0) saturate(100%) invert(53%) sepia(87%) saturate(2250%) hue-rotate(354deg) brightness(150%) contrast(94%);
+
+        #dropdown-header .logo-img {
+            filter: brightness(0) saturate(100%) invert(39%) sepia(91%) saturate(4096%) hue-rotate(5deg) brightness(91%) contrast(90%);
         }
 
         .logo-subtitle {
             color: #F5EFE6;
             transition: color 0.3s ease;
         }
-        #main-header.scrolled .logo-subtitle { color: #1D2023; }
+        #dropdown-header .logo-subtitle { color: #1D2023; }
 
         .nav-link {
             color: #ffffff;
@@ -73,7 +97,7 @@
             transition: all 0.3s ease;
         }
         .nav-link:hover { color: #e2e8f0; }
-        #main-header.scrolled .nav-link {
+        #dropdown-header .nav-link {
             color: #1D2023;
             text-shadow: none;
         }
@@ -112,20 +136,20 @@
 
         .btn-silky {
             background: #F5EFE6;
-            color: #92400E;
+            color: #D97706;
             transition: all 0.3s ease;
         }
         .btn-silky:hover {
             background: #FFFFFF;
-            color: #78350F;
+            color: #B45309;
             transform: scale(1.03) translateY(-1px);
             box-shadow: 0 12px 24px rgba(245, 239, 230, 0.35);
         }
-        #main-header.scrolled .btn-silky {
+        #dropdown-header .btn-silky {
             background: linear-gradient(135deg, #D97706, #B45309);
             color: #ffffff;
         }
-        #main-header.scrolled .btn-silky:hover {
+        #dropdown-header .btn-silky:hover {
             background: linear-gradient(135deg, #B45309, #78350F);
             color: #ffffff;
             box-shadow: 0 12px 24px rgba(180, 83, 9, 0.35);
@@ -143,8 +167,25 @@
 </head>
 <body class="font-light text-gray-700 bg-white">
 
-<!-- ==================== NAVIGATION ==================== -->
-<nav id="main-header" class="fixed top-0 w-full z-50">
+<!-- ==================== TRANSPARENT HEADER (scrolls with page) ==================== -->
+<nav id="transparent-header" class="w-full z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+        <a href="#" class="flex flex-col items-start leading-none">
+            <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
+            <span class="text-[10px] font-semibold tracking-wide mt-0.5 logo-subtitle">Engineered Alert System</span>
+        </a>
+        <div class="nav-links hidden md:flex space-x-8 text-sm font-semibold">
+            <a href="#features" class="nav-link">Introduction</a>
+            <a href="#how-it-works" class="nav-link">How it Works</a>
+            <a href="#categories" class="nav-link">Features & Benefits</a>
+            <a href="#pricing" class="nav-link">Pricing</a>
+        </div>
+        <a href="#pricing" class="btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get Started</a>
+    </div>
+</nav>
+
+<!-- ==================== WHITE DROPDOWN HEADER (fixed, slides down/up) ==================== -->
+<nav id="dropdown-header" class="w-full z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <a href="#" class="flex flex-col items-start leading-none">
             <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
@@ -214,7 +255,7 @@
                     <span class="feature-heading">Frequent Monitoring</span>
                 </h2>
                 <p class="text-lg text-gray-600 leading-relaxed">
-                    The system runs every 4 hours to detect deals with at least 10% discounts, catching opportunities before manual deal sites even wake up.
+                    The system runs every 4 hours to detect deals with at least 10% discounts, catching opportunities before they become widely known.
                 </p>
             </div>
         </div>
@@ -229,7 +270,7 @@
                     <span class="feature-heading">Custom Watchlists</span>
                 </h2>
                 <p class="text-lg text-gray-600 leading-relaxed">
-                    Premium subscribers can define their own watchlists for any product or category—be it laptops, sneakers, or kitchen appliances—receiving tailored alerts directly to their inbox.
+                    Premium subscribers can define their own watchlists for any product or category—whether it's laptops, sneakers, or kitchen appliances—receiving tailored alerts directly to their inbox.
                 </p>
             </div>
         </div>
@@ -246,19 +287,19 @@
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left max-w-5xl mx-auto">
             <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
-                <h3 class="font-extrabold text-xl text-gray-900 mb-3">1. Scheduled Scans</h3>
+                <h3 class="font-extrabold text-xl text-gray-900 mb-3">Scheduled Scans</h3>
                 <p class="text-gray-600">The system runs every 4 hours, performing comprehensive scans of eBay listings across dozens of popular categories.</p>
             </div>
             <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
-                <h3 class="font-extrabold text-xl text-gray-900 mb-3">2. Discount Criteria</h3>
+                <h3 class="font-extrabold text-xl text-gray-900 mb-3">Discount Criteria</h3>
                 <p class="text-gray-600">Only deals offering a minimum of 10% off are flagged, ensuring genuine savings on quality products.</p>
             </div>
             <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
-                <h3 class="font-extrabold text-xl text-gray-900 mb-3">3. Alert Dispatch</h3>
+                <h3 class="font-extrabold text-xl text-gray-900 mb-3">Alert Dispatch</h3>
                 <p class="text-gray-600">Once a qualifying deal is found, an instant email alert is sent to the subscriber, enabling quick action before the deal expires.</p>
             </div>
             <div class="bg-amber-50 border border-amber-100 p-10 rounded-xl shadow-sm card-hover">
-                <h3 class="font-extrabold text-xl text-gray-900 mb-3">4. Category Coverage</h3>
+                <h3 class="font-extrabold text-xl text-gray-900 mb-3">Category Coverage</h3>
                 <p class="text-gray-600">Alerts are available across a wide range of categories for free, with premium watchlists offering additional customization and tracking.</p>
             </div>
         </div>
@@ -341,7 +382,7 @@
 <footer class="text-amber-100 py-12 text-center" style="background: linear-gradient(135deg, #92400E, #78350F);">
     <div class="max-w-7xl mx-auto px-4">
         <h4 class="text-white font-bold text-xl mb-4">Dealkly</h4>
-        <p class="mb-4">&copy; 2026 Dealkly. Dealkly runs autonomously. Just deals, no spam.</p>
+        <p class="mb-4">&copy; 2026 Dealkly. Dealkly runs autonomously.</p>
         <div class="flex justify-center space-x-6 text-sm">
             <a href="#" class="hover:text-white transition">System Status</a>
             <a href="privacy.html" class="hover:text-white transition">Privacy Policy</a>
@@ -352,12 +393,42 @@
 </footer>
 
 <script>
+    const transparentHeader = document.getElementById('transparent-header');
+    const dropdownHeader = document.getElementById('dropdown-header');
+    let threshold = 0;
+    let ticking = false;
+
+    function updateThreshold() {
+        const logo = transparentHeader.querySelector('.logo-img');
+        const nav = transparentHeader.querySelector('.nav-links');
+        const btn = transparentHeader.querySelector('.btn-silky');
+        if (!logo || !nav || !btn) return;
+
+        const topLogo = logo.getBoundingClientRect().top + window.scrollY;
+        const topNav = nav.getBoundingClientRect().top + window.scrollY;
+        const topBtn = btn.getBoundingClientRect().top + window.scrollY;
+        threshold = Math.min(topLogo, topNav, topBtn);
+    }
+
+    window.addEventListener('load', updateThreshold);
+    window.addEventListener('resize', updateThreshold);
+    updateThreshold();
+
     window.addEventListener('scroll', () => {
-        const header = document.getElementById('main-header');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const currentScrollY = window.scrollY;
+                const isPast = currentScrollY >= threshold;
+
+                if (isPast) {
+                    dropdownHeader.classList.add('show-down');
+                } else {
+                    dropdownHeader.classList.remove('show-down');
+                }
+
+                ticking = false;
+            });
+            ticking = true;
         }
     });
 </script>
