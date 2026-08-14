@@ -9,12 +9,48 @@
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       max-width: 760px;
-      margin: 4rem auto;
+      margin: 0 auto;
       padding: 0 2rem;
       line-height: 1.7;
       color: #374151;
       background-color: #ffffff;
     }
+
+    /* Top header with the same gradient as the footer and status page header */
+    .privacy-header {
+      margin: 0 -2rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #92400E, #78350F);
+      color: #ffffff;
+    }
+
+    .privacy-header a {
+      color: #fbbf24;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+
+    .privacy-header a:hover {
+      text-decoration: underline;
+    }
+
+    .privacy-header h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin: 0;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .privacy-header .date {
+      font-size: 0.95rem;
+      color: #fde68a;
+      margin-top: 0.5rem;
+    }
+
     h1 {
       font-size: 2.25rem;
       font-weight: 800;
@@ -79,8 +115,11 @@
   </style>
 </head>
 <body>
-  <h1>Privacy Protocol</h1>
-  <div class="date"><strong>Effective Date:</strong> July 20, 2026</div>
+  <div class="privacy-header">
+    <a href="index.html">&larr; Return to Dashboard</a>
+    <h1>Privacy Protocol</h1>
+    <div class="date"><strong>Effective Date:</strong> July 20, 2026</div>
+  </div>
 
   <p>The Dealkly system is structured to strictly respect user privacy and data security. This document outlines how operational data is handled, how system risks are minimized, and how absolute control remains with the user.</p>
 
