@@ -6,24 +6,27 @@
   <title>Privacy Protocol | Dealkly</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 2L3 9.5V22.5L16 30L29 22.5V9.5L16 2Z' fill='url(%23techGrad)' /%3E%3Cpath d='M16 2L29 9.5L16 17L3 9.5L16 2Z' fill='%23ffffff' fill-opacity='0.2' /%3E%3Cpath d='M16 30V17L3 9.5V22.5L16 30Z' fill='%23000000' fill-opacity='0.15' /%3E%3Cpath d='M16 17L22.5 13.25V20.75L16 24.5V17Z' fill='%23ffffff' /%3E%3Cdefs%3E%3ClinearGradient id='techGrad' x1='3' y1='2' x2='29' y2='30' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23FF7F50'/%3E%3Cstop offset='1' stop-color='%2300CED1'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 0 2rem;
       line-height: 1.7;
       color: #374151;
       background-color: #ffffff;
     }
-
-    /* Top header with the same gradient as the footer and status page header */
     .privacy-header {
-      margin: 0 -2rem;
-      padding: 2rem;
       background: linear-gradient(135deg, #92400E, #78350F);
       color: #ffffff;
+      padding: 3rem 0;
     }
-
+    .privacy-header .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
     .privacy-header a {
       color: #fbbf24;
       text-decoration: none;
@@ -32,37 +35,24 @@
       display: inline-block;
       margin-bottom: 1.5rem;
     }
-
     .privacy-header a:hover {
       text-decoration: underline;
     }
-
     .privacy-header h1 {
       font-size: 2.25rem;
       font-weight: 800;
-      margin: 0;
       color: #ffffff;
       line-height: 1.2;
     }
-
     .privacy-header .date {
       font-size: 0.95rem;
       color: #fde68a;
       margin-top: 0.5rem;
     }
-
-    h1 {
-      font-size: 2.25rem;
-      font-weight: 800;
-      color: #111827;
-      margin-bottom: 0.5rem;
-    }
-    .date {
-      font-size: 0.95rem;
-      color: #6b7280;
-      margin-bottom: 3rem;
-      border-bottom: 1px solid #e5e7eb;
-      padding-bottom: 1.5rem;
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
     }
     h2 {
       font-size: 1.25rem;
@@ -89,9 +79,12 @@
     a:hover {
       text-decoration: underline;
     }
+    .back-link-wrapper {
+      text-align: center;
+      margin-top: 3rem;
+    }
     .back-link {
       display: inline-block;
-      margin-top: 4rem;
       background: #f3f4f6;
       color: #374151;
       padding: 0.75rem 1.5rem;
@@ -106,47 +99,52 @@
       text-decoration: none;
     }
     footer {
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid #e5e7eb;
-      font-size: 0.875rem;
-      color: #6b7280;
+      background: linear-gradient(135deg, #92400E, #78350F);
+      color: #fde68a;
       text-align: center;
+      padding: 2rem 0;
+      font-size: 0.875rem;
     }
   </style>
 </head>
 <body>
   <div class="privacy-header">
-    <a href="index.html">&larr; Back to Home</a>
-    <h1>Privacy Protocol</h1>
-    <div class="date"><strong>Effective Date:</strong> July 20, 2026</div>
+    <div class="container">
+      <a href="index.html">&larr; Back to Home</a>
+      <h1>Privacy Protocol</h1>
+      <div class="date"><strong>Effective Date:</strong> July 20, 2026</div>
+    </div>
   </div>
 
-  <p>The Dealkly system is structured to strictly respect user privacy and data security. This document outlines how operational data is handled, how system risks are minimized, and how absolute control remains with the user.</p>
+  <div class="content">
+    <p>The Dealkly system is structured to strictly respect user privacy and data security. This document outlines how operational data is handled, how system risks are minimized, and how absolute control remains with the user.</p>
 
-  <h2>1. Information Collection</h2>
-  <p>Only the exact information required to deliver automated retail alerts is processed. This limited data includes:</p>
-  <ul>
-    <li><strong>Logistics Data:</strong> Target email addresses used solely as alert destinations.</li>
-    <li><strong>Target Parameters:</strong> Public retail URLs and price thresholds required for parsing.</li>
-  </ul>
-  <p>Primary account master passwords are never requested, accessed, or stored. All system authentication relies exclusively on isolated, single-purpose application tokens (App Passwords). This guarantees that core login credentials remain invisible to the platform.</p>
+    <h2>1. Information Collection</h2>
+    <p>Only the exact information required to deliver automated retail alerts is processed. This limited data includes:</p>
+    <ul>
+      <li><strong>Logistics Data:</strong> Target email addresses used solely as alert destinations.</li>
+      <li><strong>Target Parameters:</strong> Public retail URLs and price thresholds required for parsing.</li>
+    </ul>
+    <p>Primary account master passwords are never requested, accessed, or stored. All system authentication relies exclusively on isolated, single-purpose application tokens (App Passwords). This guarantees that core login credentials remain invisible to the platform.</p>
 
-  <h2>2. Data Storage and Security</h2>
-  <p>Sensitive operational configurations, routing strings, and authentication keys are secured within encrypted, server-side environments (GitHub Secrets). These credentials are never written into public repositories, eliminating exposure risks.</p>
-  <p>The automation pipeline executes within sandboxed, serverless environments. No information is logged, tracked, or cached on secondary hardware, borrowed verification devices, or temporary networks. At the end of each execution cycle, the runtime memory is permanently wiped.</p>
+    <h2>2. Data Storage and Security</h2>
+    <p>Sensitive operational configurations, routing strings, and authentication keys are secured within encrypted, server-side environments (GitHub Secrets). These credentials are never written into public repositories, eliminating exposure risks.</p>
+    <p>The automation pipeline executes within sandboxed, serverless environments. No information is logged, tracked, or cached on secondary hardware, borrowed verification devices, or temporary networks. At the end of each execution cycle, the runtime memory is permanently wiped.</p>
 
-  <h2>3. Tracking and Third-Party Sharing</h2>
-  <p>No commercial data brokers, persistent background cookies, or tracking pixels are utilized by Dealkly. User parameters are never monetized, traded, or transferred to external marketing entities.</p>
+    <h2>3. Tracking and Third-Party Sharing</h2>
+    <p>No commercial data brokers, persistent background cookies, or tracking pixels are utilized by Dealkly. User parameters are never monetized, traded, or transferred to external marketing entities.</p>
 
-  <h2>4. User Rights and Deletion</h2>
-  <p>Every user retains full authority over their tracking settings. Removing a tracking parameter or rotating environment security tokens immediately halts all related system activity. This action purges the data from the active system, leaving no residual tracking logs.</p>
+    <h2>4. User Rights and Deletion</h2>
+    <p>Every user retains full authority over their tracking settings. Removing a tracking parameter or rotating environment security tokens immediately halts all related system activity. This action purges the data from the active system, leaving no residual tracking logs.</p>
 
-  <h2>5. Contact Information</h2>
-  <p>For technical inquiries, system log verification, or updates regarding this protocol, the administration gateway is available at:</p>
-  <p>📧 <strong>Security Contact:</strong> <a href="mailto:dealkly.contact@gmail.com">dealkly.contact@gmail.com</a></p>
+    <h2>5. Contact Information</h2>
+    <p>For technical inquiries, system log verification, or updates regarding this protocol, the administration gateway is available at:</p>
+    <p>📧 <strong>Security Contact:</strong> <a href="mailto:dealkly.contact@gmail.com">dealkly.contact@gmail.com</a></p>
 
-  <a href="index.html" class="back-link">&larr; Back to Home</a>
+    <div class="back-link-wrapper">
+      <a href="index.html" class="back-link">&larr; Back to Home</a>
+    </div>
+  </div>
 
   <footer>
     &copy; 2026 Dealkly. All rights reserved.
