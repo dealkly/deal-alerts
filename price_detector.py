@@ -150,7 +150,7 @@ img{{border:0;height:auto;display:block;}}
           </tr>
           <tr>
             <td style="padding:8px 24px 24px 24px;">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #E2E8F0;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #FDE68A;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
                 <tr>
                   <td style="padding:20px;">
                     <div style="margin-bottom:12px;">
@@ -169,7 +169,7 @@ img{{border:0;height:auto;display:block;}}
                         </td>
                       </tr>
                     </table>
-                    <a href="{sample_img}" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
+                    <a href="{sample_img}" target="_blank" style="display:block;width:100%;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
                   </td>
                 </tr>
               </table>
@@ -177,9 +177,9 @@ img{{border:0;height:auto;display:block;}}
           </tr>
           <tr>
             <td style="padding:0 24px 28px 24px;">
-              <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:20px;text-align:center;">
+              <div style="background:#FEF9ED;border:1px solid #FDE68A;border-radius:10px;padding:20px;text-align:center;">
                 <p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p>
-                <a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background:#0B1D3A;color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a>
+                <a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a>
               </div>
             </td>
           </tr>
@@ -314,7 +314,7 @@ img{{border:0;height:auto;display:block;}}
         button_link = d["image"] if d["image"] else d["link"]
 
         html_content += f"""
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #E2E8F0;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:20px;border:1px solid #FDE68A;border-radius:10px;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
 <tr><td style="padding:20px;">
 <div style="margin-bottom:12px;">
   <span style="background:{badge_bg};color:#FFFFFF;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:0.8px;display:inline-block;">
@@ -328,13 +328,13 @@ img{{border:0;height:auto;display:block;}}
 <td align="right"><span style="font-size:20px;font-weight:800;color:#0F172A;">${d['now']:.2f}</span>
 <span style="background:#DCFCE7;color:#166534;font-size:14px;font-weight:800;padding:6px 10px;border-radius:4px;margin-left:8px;">Save {d['percent']}%</span></td>
 </tr></table>
-<a href="{button_link}" target="_blank" style="display:block;width:100%;background:#0B1D3A;color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
+<a href="{button_link}" target="_blank" style="display:block;width:100%;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
 </td></tr></table>"""
 
     text_body += f"-" * 45 + f"\nUpgrade to Premium: {PREMIUM_LINK}\nManage preferences: {WEBSITE_LINK}"
 
     html_content += f"""</td></tr>
-<tr><td style="padding:0 24px 28px 24px;"><div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:20px;text-align:center;"><p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p><a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background:#0B1D3A;color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a></div></td></tr>
+<tr><td style="padding:0 24px 28px 24px;"><div style="background:#FEF9ED;border:1px solid #FDE68A;border-radius:10px;padding:20px;text-align:center;"><p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p><a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a></div></td></tr>
 <tr><td style="background:#0B1D3A;padding:24px;text-align:center;border-top:1px solid #1E293B;"><a href="{WEBSITE_LINK}" target="_blank" style="color:#60A5FA;font-size:12px;text-decoration:underline;">Manage Preferences & Watchlists</a></td></tr></table></td></tr></table></body></html>"""
 
     subscribers = load_subscribers()
