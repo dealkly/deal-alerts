@@ -185,7 +185,7 @@ img{{border:0;height:auto;display:block;}}
           </tr>
           <tr>
             <td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;">
-              <a href="{WEBSITE_LINK}" target="_blank" style="color:#0B1D3A;font-size:12px;font-weight:600;text-decoration:underline;">Manage Preferences & Watchlists</a>
+              <a href="{WEBSITE_LINK}" target="_blank" style="color:#FDE68A;font-size:12px;font-weight:600;text-decoration:underline;">Manage Preferences & Watchlists</a>
             </td>
           </tr>
         </table>
@@ -335,7 +335,7 @@ img{{border:0;height:auto;display:block;}}
 
     html_content += f"""</td></tr>
 <tr><td style="padding:0 24px 28px 24px;"><div style="background:#FEF9ED;border:1px solid #FDE68A;border-radius:10px;padding:20px;text-align:center;"><p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p><a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a></div></td></tr>
-<tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;"><a href="{WEBSITE_LINK}" target="_blank" style="color:#0B1D3A;font-size:12px;font-weight:600;text-decoration:underline;">Manage Preferences & Watchlists</a></td></tr></table></td></tr></table></body></html>"""
+<tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;"><a href="{WEBSITE_LINK}" target="_blank" style="color:#FDE68A;font-size:12px;font-weight:600;text-decoration:underline;">Manage Preferences & Watchlists</a></td></tr></table></td></tr></table></body></html>"""
 
     subscribers = load_subscribers()
     if not subscribers:
