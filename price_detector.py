@@ -14,6 +14,7 @@ from email.mime.multipart import MIMEMultipart
 YESTERDAY_CSV = "books_yesterday.csv"
 TODAY_CSV = "books_today.csv"
 SUBSCRIBERS_FILE = "paid_subscribers.json"
+FREE_SUBSCRIBERS_FILE = "free_subscribers.json"
 SENDER = "dealkly.contact@gmail.com"
 SENDER_NAME = "Dealkly Alerts"
 PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
@@ -56,8 +57,25 @@ def clean_price(price_str):
 
 
 def load_subscribers():
-    with open(SUBSCRIBERS_FILE, "r") as f:
-        return json.load(f)
+    subscribers = []
+
+    if os.path.exists(SUBSCRIBERS_FILE):
+        with open(SUBSCRIBERS_FILE, "r") as f:
+            subscribers += json.load(f)
+
+    if os.path.exists(FREE_SUBSCRIBERS_FILE):
+        with open(FREE_SUBSCRIBERS_FILE, "r") as f:
+            subscribers += json.load(f)
+
+    # Remove duplicates while keeping order
+    seen = set()
+    unique = []
+    for email in subscribers:
+        if email not in seen:
+            seen.add(email)
+            unique.append(email)
+
+    return unique
 
 
 def fetch_ebay_image_url(page_url):
