@@ -171,6 +171,45 @@
             color: #ffffff;
             font-weight: 800;
         }
+
+        /* Category modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 1rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #ffffff;
+            max-width: 600px;
+            width: 100%;
+            border-radius: 1rem;
+            padding: 2rem;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .modal-close:hover {
+            color: #0f172a;
+        }
     </style>
 </head>
 <body class="font-light text-gray-700 bg-white">
@@ -326,19 +365,19 @@
                 <img src="https://images.unsplash.com/photo-1634874257520-fe229ee2ffdd?w=600&q=80" alt="Free Categories" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Free Categories</h3>
                 <p class="text-amber-100 mb-6">Access alerts across dozens of popular eBay categories at no cost—electronics, fashion, home & garden, toys, and more.</p>
-                <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Explore Categories</a>
+                <button onclick="openCategoryModal()" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309); cursor:pointer; border:none;">Explore Categories</button>
             </div>
             <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
                 <img src="https://images.unsplash.com/photo-1550091230-b5f07d288758?w=600&q=80" alt="Premium Watchlists" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Premium Watchlists</h3>
                 <p class="text-amber-100 mb-6">Create customized watchlists for any product or brand you care about, receiving tailored alerts that match your exact interests.</p>
-                <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Set Up Watchlists</a>
+                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Set Up Watchlists</a>
             </div>
             <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
                 <img src="https://images.unsplash.com/photo-1603808326448-ff7a2d980272?w=600&q=80" alt="Instant Email Notifications" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Instant Email Notifications</h3>
                 <p class="text-amber-100 mb-6">Receive immediate email alerts whenever a qualifying deal is detected, so you can act quickly and secure the best prices.</p>
-                <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Subscribe Today</a>
+                <a href="#free-plan" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Subscribe Today</a>
             </div>
         </div>
     </div>
@@ -353,7 +392,7 @@
         </p>
         <div class="flex flex-col md:flex-row justify-center gap-8 max-w-4xl mx-auto">
             
-            <div class="bg-white border border-amber-200 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative text-left card-hover">
+            <div id="free-plan" class="bg-white border border-amber-200 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative text-left card-hover">
                 <h3 class="text-amber-700 font-bold uppercase tracking-widest text-sm mb-2">Free Plan</h3>
                 <div class="text-5xl font-extrabold text-gray-900 mb-6">$0<span class="text-xl text-gray-500 font-normal">/mo</span></div>
                 <ul class="text-gray-600 mb-8 space-y-4 flex-grow">
@@ -400,6 +439,36 @@
     </div>
 </footer>
 
+<!-- Category Modal -->
+<div id="categoryModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeCategoryModal()">&times;</button>
+        <h3 class="text-2xl font-extrabold text-gray-900 mb-4">Monitored Categories</h3>
+        <p class="text-gray-600 mb-6">Dealkly tracks these popular eBay categories. Free tier includes all of them.</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Laptops</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Desktops</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Graphics Cards</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">CPUs</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">RAM</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Motherboards</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Smartphones</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Tablets</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Monitors</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Keyboards</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Mice</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Headsets</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Networking</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Storage</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Smart Home</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 text-sm font-medium text-gray-700">Gaming Consoles</span>
+        </div>
+        <div class="mt-8 text-center">
+            <a href="#free-plan" onclick="closeCategoryModal()" class="btn-marketplace inline-block font-bold px-6 py-3 rounded text-white" style="background: linear-gradient(135deg, #D97706, #B45309);">Get Free Alerts</a>
+        </div>
+    </div>
+</div>
+
 <script>
     const transparentHeader = document.getElementById('transparent-header');
     const dropdownHeader = document.getElementById('dropdown-header');
@@ -437,6 +506,28 @@
                 ticking = false;
             });
             ticking = true;
+        }
+    });
+
+    // Category modal functions
+    function openCategoryModal() {
+        document.getElementById('categoryModal').classList.add('active');
+    }
+    function closeCategoryModal() {
+        document.getElementById('categoryModal').classList.remove('active');
+    }
+
+    // Close modal when clicking outside content
+    document.getElementById('categoryModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCategoryModal();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeCategoryModal();
         }
     });
 </script>
