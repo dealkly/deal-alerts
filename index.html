@@ -214,7 +214,7 @@
 </head>
 <body class="font-light text-gray-700 bg-white">
 
-<!-- ==================== TRANSPARENT HEADER (scrolls with page) ==================== -->
+<!-- ==================== TRANSPARENT HEADER ==================== -->
 <nav id="transparent-header" class="w-full z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <a href="index.html" onclick="location.reload(); return false;" class="flex flex-col items-start leading-none">
@@ -231,7 +231,7 @@
     </div>
 </nav>
 
-<!-- ==================== WHITE DROPDOWN HEADER (fixed, slides down/up) ==================== -->
+<!-- ==================== WHITE DROPDOWN HEADER ==================== -->
 <nav id="dropdown-header" class="w-full z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <a href="index.html" onclick="location.reload(); return false;" class="flex flex-col items-start leading-none">
@@ -273,55 +273,42 @@
     </div>
 </section>
 
-<!-- ==================== INTRODUCTION (FEATURES) ==================== -->
+<!-- ==================== INTRODUCTION ==================== -->
 <section id="features" class="py-24 bg-[#FFFDF7]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
-
-        <!-- Verified Deals -->
         <div class="flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
                 <img src="https://images.unsplash.com/photo-1641312054664-acb3d817cee4?w=800&q=80" alt="Verified Deals" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <h2 class="text-4xl mb-4">
-                    <span class="feature-heading">Verified Deals</span>
-                </h2>
+                <h2 class="text-4xl mb-4"><span class="feature-heading">Verified Deals</span></h2>
                 <p class="text-lg text-gray-600 leading-relaxed">
                     Only listings from highly rated sellers are tracked. The system filters out noise so only genuine price drops are seen—across electronics, fashion, home goods, and more.
                 </p>
             </div>
         </div>
-
-        <!-- Frequent Monitoring -->
         <div class="flex flex-col md:flex-row-reverse items-center gap-12">
             <div class="md:w-1/2">
                 <img src="https://images.unsplash.com/photo-1635151962337-5ee109f2cd31?w=800&q=80" alt="Frequent Monitoring" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <h2 class="text-4xl mb-4">
-                    <span class="feature-heading">Frequent Monitoring</span>
-                </h2>
+                <h2 class="text-4xl mb-4"><span class="feature-heading">Frequent Monitoring</span></h2>
                 <p class="text-lg text-gray-600 leading-relaxed">
                     The system runs every 4 hours to detect deals with at least 10% discounts, catching opportunities before they become widely known.
                 </p>
             </div>
         </div>
-
-        <!-- Custom Watchlists -->
         <div class="flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
                 <img src="https://images.unsplash.com/photo-1639450177811-fc52cc3a17d4?w=800&q=80" alt="Custom Watchlists" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <h2 class="text-4xl mb-4">
-                    <span class="feature-heading">Custom Watchlists</span>
-                </h2>
+                <h2 class="text-4xl mb-4"><span class="feature-heading">Custom Watchlists</span></h2>
                 <p class="text-lg text-gray-600 leading-relaxed">
                     Premium subscribers can define their own watchlists for any product or category—whether it's laptops, sneakers, or kitchen appliances—receiving tailored alerts directly to their inbox.
                 </p>
             </div>
         </div>
-
     </div>
 </section>
 
@@ -391,7 +378,7 @@
             Choose the plan that fits your needs—from casual savings to serious bargain hunting across any category.
         </p>
         <div class="flex flex-col md:flex-row justify-center gap-8 max-w-4xl mx-auto">
-            
+
             <div id="free-plan" class="bg-white border border-amber-200 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative text-left card-hover">
                 <h3 class="text-amber-700 font-bold uppercase tracking-widest text-sm mb-2">Free Plan</h3>
                 <div class="text-5xl font-extrabold text-gray-900 mb-6">$0<span class="text-xl text-gray-500 font-normal">/mo</span></div>
@@ -401,11 +388,13 @@
                     <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
                 </ul>
                 <div class="mt-auto w-full">
-                    <form action="https://formspree.io/f/mwvdklly" method="POST">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Create your free account</label>
-                        <input type="email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent mb-4">
-                        <button type="submit" class="btn-marketplace w-full text-white font-bold py-4 rounded shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">CREATE FREE ACCOUNT</button>
+                    <form id="free-signup-form" action="https://script.google.com/macros/s/AKfycbw5NyLcBLQl1ZI_uWTTLtUXnniNxN0avSt291mpT5C4cxakKf2-1js6EfvwyhAFVl4/exec" method="POST" target="dealkly-signup-frame" class="space-y-3">
+                        <label for="free-email" class="block text-sm font-semibold text-gray-800">Create your free account</label>
+                        <input type="email" id="free-email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
+                        <button type="submit" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">CREATE FREE ACCOUNT</button>
                     </form>
+                    <p id="free-signup-message" class="hidden mt-3 text-sm font-semibold text-green-800 bg-green-50 border border-green-200 rounded-lg px-4 py-3">Signup received. Dealkly will begin monitoring for you.</p>
+                    <iframe name="dealkly-signup-frame" id="dealkly-signup-frame" style="display:none;" title="Dealkly signup receiver"></iframe>
                 </div>
             </div>
 
@@ -506,7 +495,6 @@
         }
     });
 
-    // Category modal functions
     function openCategoryModal() {
         document.getElementById('categoryModal').classList.add('active');
     }
@@ -514,19 +502,30 @@
         document.getElementById('categoryModal').classList.remove('active');
     }
 
-    // Close modal when clicking outside content
     document.getElementById('categoryModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeCategoryModal();
         }
     });
 
-    // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeCategoryModal();
         }
     });
+</script>
+
+<script>
+    const freeSignupForm = document.getElementById('free-signup-form');
+    const freeSignupMessage = document.getElementById('free-signup-message');
+
+    if (freeSignupForm && freeSignupMessage) {
+        freeSignupForm.addEventListener('submit', function () {
+            freeSignupMessage.classList.remove('hidden');
+            freeSignupMessage.textContent = 'Signup received. Dealkly will begin monitoring for you.';
+            freeSignupForm.reset();
+        });
+    }
 </script>
 
 </body>
