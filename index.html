@@ -523,7 +523,10 @@
         freeSignupForm.addEventListener('submit', function () {
             freeSignupMessage.classList.remove('hidden');
             freeSignupMessage.textContent = 'Signup received. Dealkly will begin monitoring for you.';
-            freeSignupForm.reset();
+
+            setTimeout(function () {
+                freeSignupForm.reset();
+            }, 800);
         });
     }
 </script>
