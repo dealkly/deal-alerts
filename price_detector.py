@@ -5,6 +5,7 @@ import os
 import sys
 import re
 import urllib.request
+import urllib.parse
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -32,6 +33,7 @@ MIN_ITEM_PRICE = 5.00
 LOGO_URL = "https://dealkly.github.io/deal-alerts/logo_white.png"
 PREMIUM_LINK = "https://dealkly.gumroad.com/l/premium-alerts"
 WEBSITE_LINK = "https://dealkly.github.io/deal-alerts/"
+UNSUBSCRIBE_BASE = "https://script.google.com/macros/s/AKfycbw5NyLcBLQl1ZI_uWTTLtUXnniNxN0avSt291mpT5C4cxakKf2-1js6EfvwyhAFVl4/exec"
 
 # Rotating Gold Luxury Diamond SVG
 GOLD_DIAMOND_SVG = (
@@ -349,30 +351,31 @@ img{{border:0;height:auto;display:block;}}
 <a href="{button_link}" target="_blank" style="display:block;width:100%;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
 </td></tr></table>"""
 
-    text_body += f"-" * 45 + f"\nUpgrade to Premium: {PREMIUM_LINK}\nManage preferences: {WEBSITE_LINK}"
+    text_body += f"-" * 45 + f"\nUpgrade to Premium: {PREMIUM_LINK}\nUnsubscribe: __UNSUBSCRIBE_LINK__"
 
     html_content += f"""</td></tr>
 <tr><td style="padding:0 24px 28px 24px;"><div style="background:#FEF9ED;border:1px solid #FDE68A;border-radius:10px;padding:20px;text-align:center;"><p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p><a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a></div></td></tr>
-<tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;"><a href="{WEBSITE_LINK}" target="_blank" style="color:#FDE68A;font-size:12px;font-weight:600;text-decoration:underline;">Manage Preferences & Watchlists</a></td></tr></table></td></tr></table></body></html>"""
+<tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;"><a href="__UNSUBSCRIBE_LINK__" style="color:#FDE68A;font-size:12px;font-weight:600;text-decoration:underline;">Unsubscribe from Dealkly emails</a></td></tr></table></td></tr></table></body></html>"""
 
     subscribers = load_subscribers()
     if not subscribers:
         print("No subscribers.")
         return
 
-    msg = MIMEMultipart("alternative")
-    msg["From"] = f"{SENDER_NAME} <{SENDER}>"
-    msg["Subject"] = subject
-    msg.attach(MIMEText(text_body, "plain"))
-    msg.attach(MIMEText(html_content, "html"))
-
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(SENDER, PASSWORD)
         for sub in subscribers:
-            if "To" in msg:
-                msg.replace_header("To", sub)
-            else:
-                msg["To"] = sub
+            unsub_url = f"{UNSUBSCRIBE_BASE}?action=unsubscribe&email={urllib.parse.quote(sub)}"
+            per_text = text_body.replace("__UNSUBSCRIBE_LINK__", unsub_url)
+            per_html = html_content.replace("__UNSUBSCRIBE_LINK__", unsub_url)
+
+            msg = MIMEMultipart("alternative")
+            msg["From"] = f"{SENDER_NAME} <{SENDER}>"
+            msg["To"] = sub
+            msg["Subject"] = subject
+            msg["List-Unsubscribe"] = f"<{unsub_url}>"
+            msg.attach(MIMEText(per_text, "plain"))
+            msg.attach(MIMEText(per_html, "html"))
             server.send_message(msg)
             print(f"Alert sent to {sub}")
 
