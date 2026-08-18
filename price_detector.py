@@ -33,6 +33,8 @@ MIN_ITEM_PRICE = 5.00
 LOGO_URL = "https://dealkly.github.io/deal-alerts/logo_white.png"
 PREMIUM_LINK = "https://dealkly.gumroad.com/l/premium-alerts"
 WEBSITE_LINK = "https://dealkly.github.io/deal-alerts/"
+PRIVACY_LINK = "https://dealkly.github.io/deal-alerts/privacy.html"
+CONTACT_LINK = "mailto:dealkly.contact@gmail.com"
 UNSUBSCRIBE_BASE = "https://script.google.com/macros/s/AKfycbw5NyLcBLQl1ZI_uWTTLtUXnniNxN0avSt291mpT5C4cxakKf2-1js6EfvwyhAFVl4/exec"
 
 # Rotating Gold Luxury Diamond SVG
@@ -312,7 +314,10 @@ img{{border:0;height:auto;display:block;}}
 <body style="margin:0;padding:0;background:#F4F6F8;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F4F6F8;padding:24px 0;"><tr><td align="center">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-<tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:32px 24px;text-align:center;"><a href="{WEBSITE_LINK}" target="_blank"><img src="{LOGO_URL}" alt="" height="36" style="display:block;margin:0 auto;height:36px;width:auto;"></a></td></tr>
+<tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;">
+  <div style="text-align:right;margin-bottom:8px;"><a href="__UNSUBSCRIBE_LINK__" style="color:#FDE68A;font-size:11px;font-weight:600;text-decoration:underline;">Unsubscribe</a></div>
+  <a href="{WEBSITE_LINK}" target="_blank"><img src="{LOGO_URL}" alt="" height="36" style="display:block;margin:0 auto;height:36px;width:auto;"></a>
+</td></tr>
 <tr><td style="padding:28px 24px 16px 24px;"><h2 style="color:#0F172A;margin:0 0 8px;font-size:20px;font-weight:800;">Price Drops Detected</h2><p style="color:#64748B;margin:0;font-size:14px;line-height:1.5;">Items on your tracked watchlists have dropped in price. Here are today's verified deals:</p></td></tr>
 <tr><td style="padding:8px 24px 24px 24px;">
 """
@@ -351,11 +356,14 @@ img{{border:0;height:auto;display:block;}}
 <a href="{button_link}" target="_blank" style="display:block;width:100%;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;text-align:center;padding:12px 0;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;text-decoration:none;">VIEW DEAL ON EBAY →</a>
 </td></tr></table>"""
 
-    text_body += f"-" * 45 + f"\nUpgrade to Premium: {PREMIUM_LINK}\nUnsubscribe: __UNSUBSCRIBE_LINK__"
+    text_body += f"-" * 45 + f"\nUpgrade to Premium: {PREMIUM_LINK}\nUnsubscribe: __UNSUBSCRIBE_LINK__\n\nWhy did you get this? You are receiving this email because you subscribed to Dealkly Free Alerts."
 
     html_content += f"""</td></tr>
 <tr><td style="padding:0 24px 28px 24px;"><div style="background:#FEF9ED;border:1px solid #FDE68A;border-radius:10px;padding:20px;text-align:center;"><p style="margin:0 0 12px;font-size:13px;color:#475569;line-height:1.4;">Want to track a specific item? Upgrade to Premium and we'll watch it daily for you.</p><a href="{PREMIUM_LINK}" target="_blank" style="display:inline-block;background: linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">Upgrade to Premium – $3/mo</a></div></td></tr>
-<tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;"><a href="__UNSUBSCRIBE_LINK__" style="color:#FDE68A;font-size:12px;font-weight:600;text-decoration:underline;">Unsubscribe from Dealkly emails</a></td></tr></table></td></tr></table></body></html>"""
+<tr><td style="padding:12px 24px 0 24px;text-align:center;"><p style="color:#64748B;font-size:12px;line-height:1.4;margin:0;">Why did you get this? You are receiving this email because you subscribed to Dealkly Free Alerts.</p></td></tr>
+<tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;">
+<p style="margin:0 0 8px;font-size:12px;"><a href="__UNSUBSCRIBE_LINK__" style="color:#FDE68A;text-decoration:underline;">Unsubscribe</a> &nbsp;|&nbsp; <a href="{PRIVACY_LINK}" target="_blank" style="color:#FDE68A;text-decoration:underline;">Privacy Policy</a> &nbsp;|&nbsp; <a href="{CONTACT_LINK}" style="color:#FDE68A;text-decoration:underline;">Contact</a></p>
+</td></tr></table></td></tr></table></body></html>"""
 
     subscribers = load_subscribers()
     if not subscribers:
