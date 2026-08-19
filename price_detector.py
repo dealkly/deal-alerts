@@ -426,17 +426,26 @@ if __name__ == "__main__":
         sample = build_sample_deal_html()
         subscribers = load_subscribers()
         if subscribers:
-            msg = MIMEMultipart()
-            msg["From"] = f"{SENDER_NAME} <{SENDER}>"
-            msg["Subject"] = "[Dealkly] Admin Test – Pipeline Healthy"
-            msg.attach(MIMEText(sample, "html"))
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.login(SENDER, PASSWORD)
                 for sub in subscribers:
-                    if "To" in msg:
-                        msg.replace_header("To", sub)
-                    else:
-                        msg["To"] = sub
+                    # 1. Create a fresh message for each subscriber
+                    msg = MIMEMultipart()
+                    msg["From"] = f"{SENDER_NAME} <{SENDER}>"
+                    msg["To"] = sub
+                    msg["Subject"] = "[Dealkly] Admin Test – Pipeline Healthy"
+                    
+                    # 2. Generate their unique unsubscribe URL
+                    unsub_url = f"{UNSUBSCRIBE_BASE}?action=unsubscribe&email={urllib.parse.quote(sub)}"
+                    
+                    # 3. Add the magic headers for the Gmail Blue Button!
+                    msg["List-Unsubscribe"] = f"<{unsub_url}>, <mailto:dealkly.contact@gmail.com?subject=unsubscribe>"
+                    msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+                    
+                    # 4. Replace the HTML link and attach
+                    per_html = sample.replace("__UNSUBSCRIBE_LINK__", unsub_url)
+                    msg.attach(MIMEText(per_html, "html"))
+                    
                     server.send_message(msg)
-                    print(f"Sample HTML alert sent to {sub}")
+                    print(f"Sample HTML alert sent to {sub} with Unsubscribe headers.")
         sys.exit(0)
