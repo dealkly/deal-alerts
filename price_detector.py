@@ -161,6 +161,7 @@ img{{border:0;height:auto;display:block;}}
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;box-shadow:0 4px 12px rgba(0,0,0,0.05);">
           <tr>
             <td style="background: linear-gradient(135deg, #92400E, #78350F); padding:32px 24px;text-align:center;">
+              <div style="text-align:right;margin-bottom:8px;"><a href="__UNSUBSCRIBE_LINK__" style="color:#FDE68A;font-size:11px;font-weight:600;text-decoration:underline;">Unsubscribe</a></div>
               <a href="{WEBSITE_LINK}" target="_blank" style="text-decoration:none;"><img src="{LOGO_URL}" alt="" height="36" style="display:block;margin:0 auto;height:36px;width:auto;"></a>
             </td>
           </tr>
