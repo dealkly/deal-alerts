@@ -382,6 +382,12 @@ img{{border:0;height:auto;display:block;}}
             msg["From"] = f"{SENDER_NAME} <{SENDER}>"
             msg["To"] = sub
             msg["Subject"] = subject
+            
+            # --- THE NEW BULK HEADERS ---
+            msg["Precedence"] = "bulk"
+            msg["List-Id"] = "<dealkly-alerts.dealkly.contact.gmail.com>"
+            # ----------------------------
+            
             msg["List-Unsubscribe"] = f"<{unsub_url}>, <mailto:dealkly.contact@gmail.com?subject=unsubscribe>"
             msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
             msg.attach(MIMEText(per_text, "plain"))
@@ -439,6 +445,8 @@ if __name__ == "__main__":
                     unsub_url = f"{UNSUBSCRIBE_BASE}?action=unsubscribe&email={urllib.parse.quote(sub)}"
                     
                     # 3. Add the magic headers for the Gmail Blue Button!
+                    msg["Precedence"] = "bulk"
+                    msg["List-Id"] = "<dealkly-alerts.dealkly.contact.gmail.com>"
                     msg["List-Unsubscribe"] = f"<{unsub_url}>, <mailto:dealkly.contact@gmail.com?subject=unsubscribe>"
                     msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
                     
