@@ -86,13 +86,13 @@ def fetch_ebay_image_url(page_url):
     """Extracts direct image URL and forces JPEG format to bypass Gmail WebP blocks."""
     if not page_url or not isinstance(page_url, str) or not page_url.startswith("http"):
         return ""
-    
+
     if re.search(r'\.(jpg|jpeg|png|webp)(\?.*)?$', page_url, re.IGNORECASE) or "i.ebayimg.com" in page_url:
         return re.sub(r'\.webp', '.jpg', page_url, flags=re.IGNORECASE)
 
     try:
         req = urllib.request.Request(
-            page_url, 
+            page_url,
             headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
         )
         with urllib.request.urlopen(req, timeout=4) as response:
@@ -238,13 +238,13 @@ def send_alert(drops):
             if col in row and pd.notna(row[col]) and str(row[col]).strip() != "":
                 url = str(row[col]).strip()
                 break
-                
+
         if not url:
             continue
 
         drop_val = -row["drop"] if row["drop"] < 0 else row["drop"]
         percent = round((drop_val / row["price_yest"]) * 100)
-        
+
         raw_image_url = ""
         for col in ["image_today", "image", "image_url", "img_today", "img", "thumbnail", "image_yest"]:
             if col in row and pd.notna(row[col]):
@@ -276,7 +276,7 @@ def send_alert(drops):
         return
 
     deal_list = sorted(best_deal.values(), key=lambda x: x["percent"], reverse=True)
-    
+
     # ---------------------------------------------------------
     # CLEAN, HIGH-TRUST SUBJECT LINE LOGIC
     # ---------------------------------------------------------
@@ -287,7 +287,7 @@ def send_alert(drops):
         subject = f"[Dealkly] Price Drop: {top_deal['title']} dropped to ${top_deal['now']:.2f} ({top_deal['percent']}% OFF)"
     else:
         subject = f"[Dealkly] {total_deals} Deals Found: {top_deal['title']} dropped {top_deal['percent']}% OFF"
-    
+
     text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems on your tracked list have dropped:\n\n"
 
     html_content = f"""<!DOCTYPE html>
@@ -334,7 +334,7 @@ img{{border:0;height:auto;display:block;}}
             badge_bg = "#0B1D3A"
 
         text_body += f"[{d['percent']}% OFF] {d['title']}\nWas: ${d['was']:.2f} | Now: ${d['now']:.2f} (Save {d['percent']}%)\nLink: {d['link']}\n\n"
-        
+
         image_html = f'<div style="margin:12px 0 16px 0;text-align:center;"><a href="{d["link"]}" target="_blank"><img src="{d["image"]}" alt="{d["title"]}" width="160" style="max-width:160px;max-height:160px;height:auto;border-radius:8px;border:1px solid #E2E8F0;margin:0 auto;display:block;"></a></div>' if d["image"] else ""
         button_link = d["image"] if d["image"] else d["link"]
 
@@ -381,7 +381,8 @@ img{{border:0;height:auto;display:block;}}
             msg["From"] = f"{SENDER_NAME} <{SENDER}>"
             msg["To"] = sub
             msg["Subject"] = subject
-            msg["List-Unsubscribe"] = f"<{unsub_url}>"
+            msg["List-Unsubscribe"] = f"<{unsub_url}>, <mailto:dealkly.contact@gmail.com?subject=unsubscribe>"
+            msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
             msg.attach(MIMEText(per_text, "plain"))
             msg.attach(MIMEText(per_html, "html"))
             server.send_message(msg)
