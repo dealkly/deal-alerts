@@ -161,7 +161,6 @@ img{{border:0;height:auto;display:block;}}
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;box-shadow:0 4px 12px rgba(0,0,0,0.05);">
           <tr>
             <td style="background: linear-gradient(135deg, #92400E, #78350F); padding:32px 24px;text-align:center;">
-              <div style="text-align:right;margin-bottom:8px;"><a href="__UNSUBSCRIBE_LINK__" style="color:#FDE68A;font-size:11px;font-weight:600;text-decoration:underline;">Unsubscribe</a></div>
               <a href="{WEBSITE_LINK}" target="_blank" style="text-decoration:none;"><img src="{LOGO_URL}" alt="" height="36" style="display:block;margin:0 auto;height:36px;width:auto;"></a>
             </td>
           </tr>
@@ -382,12 +381,6 @@ img{{border:0;height:auto;display:block;}}
             msg["From"] = f"{SENDER_NAME} <{SENDER}>"
             msg["To"] = sub
             msg["Subject"] = subject
-            
-            # --- THE NEW BULK HEADERS ---
-            msg["Precedence"] = "bulk"
-            msg["List-Id"] = "<dealkly-alerts.dealkly.contact.gmail.com>"
-            # ----------------------------
-            
             msg["List-Unsubscribe"] = f"<{unsub_url}>, <mailto:dealkly.contact@gmail.com?subject=unsubscribe>"
             msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
             msg.attach(MIMEText(per_text, "plain"))
@@ -432,28 +425,17 @@ if __name__ == "__main__":
         sample = build_sample_deal_html()
         subscribers = load_subscribers()
         if subscribers:
+            msg = MIMEMultipart()
+            msg["From"] = f"{SENDER_NAME} <{SENDER}>"
+            msg["Subject"] = "[Dealkly] Admin Test – Pipeline Healthy"
+            msg.attach(MIMEText(sample, "html"))
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.login(SENDER, PASSWORD)
                 for sub in subscribers:
-                    # 1. Create a fresh message for each subscriber
-                    msg = MIMEMultipart()
-                    msg["From"] = f"{SENDER_NAME} <{SENDER}>"
-                    msg["To"] = sub
-                    msg["Subject"] = "[Dealkly] Admin Test – Pipeline Healthy"
-                    
-                    # 2. Generate their unique unsubscribe URL
-                    unsub_url = f"{UNSUBSCRIBE_BASE}?action=unsubscribe&email={urllib.parse.quote(sub)}"
-                    
-                    # 3. Add the magic headers for the Gmail Blue Button!
-                    msg["Precedence"] = "bulk"
-                    msg["List-Id"] = "<dealkly-alerts.dealkly.contact.gmail.com>"
-                    msg["List-Unsubscribe"] = f"<{unsub_url}>, <mailto:dealkly.contact@gmail.com?subject=unsubscribe>"
-                    msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
-                    
-                    # 4. Replace the HTML link and attach
-                    per_html = sample.replace("__UNSUBSCRIBE_LINK__", unsub_url)
-                    msg.attach(MIMEText(per_html, "html"))
-                    
+                    if "To" in msg:
+                        msg.replace_header("To", sub)
+                    else:
+                        msg["To"] = sub
                     server.send_message(msg)
-                    print(f"Sample HTML alert sent to {sub} with Unsubscribe headers.")
+                    print(f"Sample HTML alert sent to {sub}")
         sys.exit(0)
