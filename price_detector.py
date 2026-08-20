@@ -383,6 +383,7 @@ img{{border:0;height:auto;display:block;}}
             msg["Subject"] = subject
             msg["List-Unsubscribe"] = f"<{unsub_url}>, <mailto:dealkly.contact@gmail.com?subject=unsubscribe>"
             msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+            msg["Precedence"] = "bulk"
             msg.attach(MIMEText(per_text, "plain"))
             msg.attach(MIMEText(per_html, "html"))
             server.send_message(msg)
