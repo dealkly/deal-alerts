@@ -35,7 +35,7 @@ PREMIUM_LINK = "https://dealkly.gumroad.com/l/premium-alerts"
 WEBSITE_LINK = "https://dealkly.github.io/deal-alerts/"
 PRIVACY_LINK = "https://dealkly.github.io/deal-alerts/privacy.html"
 CONTACT_LINK = "mailto:dealkly.contact@gmail.com"
-UNSUBSCRIBE_BASE = "https://script.google.com/macros/s/AKfycbw5NyLcBLQl1ZI_uWTTLtUXnniNxN0avSt291mpT5C4cxakKf2-1js6EfvwyhAFVl4/exec"
+UNSUBSCRIBE_BASE = "https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec"
 
 # Rotating Gold Luxury Diamond SVG
 GOLD_DIAMOND_SVG = (
