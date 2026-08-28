@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dealkly – Contact</title>
+
+    <!-- Favicon package matching root directory -->
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="manifest" href="./site.webmanifest">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-[#FFFDF7] text-gray-700 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="text-white" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-4xl mx-auto px-6 py-8">
+            <a href="index.html" class="inline-flex items-center text-amber-300 hover:text-amber-200 transition">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                Back to Home
+            </a>
+            <h1 class="text-4xl font-extrabold mt-4">Contact</h1>
+            <p class="text-amber-100 mt-2">Have a question or feedback? Send a message below.</p>
+        </div>
+    </header>
+
+    <!-- Contact Form -->
+    <main class="flex-grow flex items-center justify-center px-6 py-16 w-full">
+        <div class="max-w-md w-full bg-white border border-amber-200 rounded-2xl p-8 shadow-sm">
+            <form id="contactForm" class="space-y-5">
+                <input type="hidden" name="action" value="contact">
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-gray-800">Email Address</label>
+                    <input type="email" id="email" name="email" required
+                        class="mt-2 w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-semibold text-gray-800">Message</label>
+                    <textarea id="message" name="message" rows="5" required
+                        class="mt-2 w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800"></textarea>
+                </div>
+                <button type="submit" id="submitBtn"
+                    class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md"
+                    style="background: linear-gradient(135deg, #D97706, #B45309);">
+                    SEND MESSAGE
+                </button>
+            </form>
+            <div id="statusMessage" class="hidden mt-4 text-center text-sm font-semibold"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-amber-100 py-8 mt-auto" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <p>&copy; 2026 Dealkly. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = document.getElementById('submitBtn');
+            const status = document.getElementById('statusMessage');
+
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
+            const formData = new FormData(form);
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: new URLSearchParams(formData)
+            })
+            .then(() => {
+                status.textContent = 'Message sent. Dealkly will respond if needed.';
+                status.className = 'mt-4 text-center text-sm font-semibold text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3 block';
+                form.reset();
+                submitBtn.textContent = 'SEND MESSAGE';
+                submitBtn.disabled = false;
+            })
+            .catch(() => {
+                status.textContent = 'Error sending message. Please try again.';
+                status.className = 'mt-4 text-center text-sm font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3 block';
+                submitBtn.textContent = 'SEND MESSAGE';
+                submitBtn.disabled = false;
+            });
+        });
+    </script>
+
+</body>
+</html>
