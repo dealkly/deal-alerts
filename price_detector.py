@@ -277,9 +277,6 @@ def send_alert(drops):
 
     deal_list = sorted(best_deal.values(), key=lambda x: x["percent"], reverse=True)
 
-    # ---------------------------------------------------------
-    # CLEAN, HIGH-TRUST SUBJECT LINE LOGIC
-    # ---------------------------------------------------------
     top_deal = deal_list[0]
     total_deals = len(deal_list)
 
@@ -315,7 +312,6 @@ img{{border:0;height:auto;display:block;}}
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F4F6F8;padding:24px 0;"><tr><td align="center">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;box-shadow:0 4px 12px rgba(0,0,0,0.05);">
 <tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;">
-  <div style="text-align:right;margin-bottom:8px;"><a href="__UNSUBSCRIBE_LINK__" style="color:#FDE68A;font-size:11px;font-weight:600;text-decoration:underline;">Unsubscribe</a></div>
   <a href="{WEBSITE_LINK}" target="_blank"><img src="{LOGO_URL}" alt="" height="36" style="display:block;margin:0 auto;height:36px;width:auto;"></a>
 </td></tr>
 <tr><td style="padding:28px 24px 16px 24px;"><h2 style="color:#0F172A;margin:0 0 8px;font-size:20px;font-weight:800;">Price Drops Detected</h2><p style="color:#64748B;margin:0;font-size:14px;line-height:1.5;">Items on your tracked watchlists have dropped in price. Here are today's verified deals:</p></td></tr>
