@@ -225,6 +225,10 @@ def send_watchlist_setup_email(email):
 
 def send_missing_watchlist_setup_emails(subscribers):
     """Send setup emails to active premium subscribers who have not yet configured a watchlist."""
+    if not subscribers:
+        print("No active premium subscribers found. Skipping premium setup emails.")
+        return
+
     if not GMAIL_APP_PASSWORD:
         print("Skipping premium setup emails: GMAIL_APP_PASSWORD not set.")
         return
