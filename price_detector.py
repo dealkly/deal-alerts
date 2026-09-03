@@ -6,6 +6,7 @@ import sys
 import re
 import urllib.request
 import urllib.parse
+import email.utils
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -377,6 +378,7 @@ img{{border:0;height:auto;display:block;}}
             msg["From"] = f"{SENDER_NAME} <{SENDER}>"
             msg["To"] = sub
             msg["Subject"] = subject
+            msg["Message-ID"] = email.utils.make_msgid(domain="dealkly.github.io")
             msg["List-Unsubscribe"] = f"<{unsub_url}>, <mailto:dealkly.contact@gmail.com?subject=unsubscribe>"
             msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
             msg["Precedence"] = "bulk"
