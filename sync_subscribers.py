@@ -1,12 +1,22 @@
 import os
 import json
 import re
+import smtplib
 import requests
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 GUMROAD_ACCESS_TOKEN = os.environ.get("GUMROAD_ACCESS_TOKEN", "")
+GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "")
 
 PAID_FILE = "paid_subscribers.json"
 WATCHLIST_FILE = "watchlist.json"
+SETUP_EMAIL_FILE = "premium_setup_sent.json"
+
+SENDER = "dealkly.contact@gmail.com"
+SENDER_NAME = "Dealkly Alerts"
+WATCHLIST_SETUP_URL = "https://dealkly.github.io/deal-alerts/watchlist-setup.html"
+CONTACT_URL = "https://dealkly.github.io/deal-alerts/contact.html"
 
 
 def fetch_active_gumroad_subscribers():
@@ -102,29 +112,41 @@ def extract_watchlist_keywords(sale):
     return [part.strip() for part in parts if part.strip()]
 
 
-def read_existing_watchlist():
-    """Read the existing watchlist file if it exists."""
-    if not os.path.exists(WATCHLIST_FILE):
-        return []
+def read_json_file(path, default):
+    """Read a JSON list from a file if it exists."""
+    if not os.path.exists(path):
+        return default
 
     try:
-        with open(WATCHLIST_FILE, "r") as f:
+        with open(path, "r") as f:
             data = json.load(f)
 
             if isinstance(data, list):
                 return data
     except Exception as e:
-        print(f"Warning: Could not read {WATCHLIST_FILE}: {e}")
+        print(f"Warning: Could not read {path}: {e}")
 
-    return []
+    return default
+
+
+def write_json_file(path, data):
+    """Write a JSON list to a file."""
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
+
+
+def read_existing_watchlist():
+    return read_json_file(WATCHLIST_FILE, [])
+
+
+def read_sent_setup_emails():
+    return read_json_file(SETUP_EMAIL_FILE, [])
 
 
 def write_paid_subscribers(subscribers):
     emails = [sub["email"] for sub in subscribers]
 
-    with open(PAID_FILE, "w") as f:
-        json.dump(emails, f, indent=2)
-
+    write_json_file(PAID_FILE, emails)
     print(f"Updated {PAID_FILE}: {len(emails)} emails")
 
 
@@ -145,10 +167,92 @@ def write_watchlist(subscribers):
             "keywords": keywords
         })
 
-    with open(WATCHLIST_FILE, "w") as f:
-        json.dump(merged, f, indent=2)
-
+    write_json_file(WATCHLIST_FILE, merged)
     print(f"Updated {WATCHLIST_FILE}: {len(merged)} watchlist entries")
+
+
+def send_watchlist_setup_email(email):
+    """Send a one-time email asking a premium subscriber to configure their watchlist."""
+    if not GMAIL_APP_PASSWORD:
+        print("Skipping premium setup email: GMAIL_APP_PASSWORD not set.")
+        return False
+
+    subject = "Dealkly Premium – Activate Your Watchlist"
+
+    html_body = f"""
+    <div style="background:#F5EFE6;padding:30px;font-family:Arial,sans-serif;">
+      <div style="max-width:520px;margin:0 auto;background:#FFFFFF;border-radius:14px;overflow:hidden;border:1px solid #E5E7EB;">
+        <div style="background:linear-gradient(135deg,#92400E,#78350F);padding:24px;text-align:center;">
+          <img src="https://dealkly.github.io/deal-alerts/logo_white.png" alt="Dealkly" style="height:34px;width:auto;display:block;margin:0 auto;" />
+        </div>
+        <div style="padding:24px;">
+          <h2 style="color:#1D2023;font-size:20px;margin:0 0 10px;">Premium is Active</h2>
+          <p style="color:#4B5563;font-size:14px;line-height:1.5;margin:0 0 16px;">
+            Set up a personalized watchlist so Dealkly can begin tracking the items that matter.
+          </p>
+          <a href="{WATCHLIST_SETUP_URL}" style="display:inline-block;background:linear-gradient(135deg,#D97706,#B45309);color:#FFFFFF;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px;">Activate Watchlist</a>
+        </div>
+        <div style="background:linear-gradient(135deg,#92400E,#78350F);padding:20px;text-align:center;">
+          <p style="margin:0;font-size:12px;">
+            <a href="{CONTACT_URL}" style="color:#FDE68A;text-decoration:underline;">Contact</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    """
+
+    text_body = (
+        "Dealkly Premium is active.\n\n"
+        "Set up a personalized watchlist so Dealkly can begin tracking the items that matter.\n\n"
+        f"Activate Watchlist: {WATCHLIST_SETUP_URL}\n"
+        f"Contact: {CONTACT_URL}\n"
+    )
+
+    msg = MIMEMultipart("alternative")
+    msg["From"] = f"{SENDER_NAME} <{SENDER}>"
+    msg["To"] = email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(text_body, "plain"))
+    msg.attach(MIMEText(html_body, "html"))
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(SENDER, GMAIL_APP_PASSWORD)
+        server.send_message(msg)
+
+    print(f"Premium setup email sent to {email}")
+    return True
+
+
+def send_missing_watchlist_setup_emails(subscribers):
+    """Send setup emails to active premium subscribers who have not yet configured a watchlist."""
+    if not GMAIL_APP_PASSWORD:
+        print("Skipping premium setup emails: GMAIL_APP_PASSWORD not set.")
+        return
+
+    subscribers_without_keywords = [sub for sub in subscribers if not sub.get("keywords")]
+
+    if not subscribers_without_keywords:
+        print("All active premium subscribers already have watchlists.")
+        return
+
+    already_sent = read_sent_setup_emails()
+
+    for sub in subscribers_without_keywords:
+        email = sub["email"]
+
+        if email in already_sent:
+            continue
+
+        try:
+            sent = send_watchlist_setup_email(email)
+
+            if sent:
+                already_sent.append(email)
+        except Exception as e:
+            print(f"Failed to send premium setup email to {email}: {e}")
+
+    write_json_file(SETUP_EMAIL_FILE, already_sent)
+    print(f"Updated {SETUP_EMAIL_FILE}: {len(already_sent)} sent emails")
 
 
 def main():
@@ -160,6 +264,7 @@ def main():
 
     write_paid_subscribers(subscribers)
     write_watchlist(subscribers)
+    send_missing_watchlist_setup_emails(subscribers)
 
 
 if __name__ == "__main__":
