@@ -7,6 +7,7 @@ import re
 import urllib.request
 import urllib.parse
 import email.utils
+import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -281,10 +282,12 @@ def send_alert(drops):
     top_deal = deal_list[0]
     total_deals = len(deal_list)
 
+    run_stamp = time.strftime("%Y-%m-%d %H:%M")
+
     if total_deals == 1:
-        subject = f"[Dealkly] Price Drop: {top_deal['title']} dropped to ${top_deal['now']:.2f} ({top_deal['percent']}% OFF)"
+        subject = f"[Dealkly] Price Drop: {top_deal['title']} dropped to ${top_deal['now']:.2f} ({top_deal['percent']}% OFF) - {run_stamp}"
     else:
-        subject = f"[Dealkly] {total_deals} Deals Found: {top_deal['title']} dropped {top_deal['percent']}% OFF"
+        subject = f"[Dealkly] {total_deals} Deals Found: {top_deal['title']} dropped {top_deal['percent']}% OFF - {run_stamp}"
 
     text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems in monitored categories have dropped:\n\n"
 
