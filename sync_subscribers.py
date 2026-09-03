@@ -1,21 +1,21 @@
 import os
 import json
+import re
 import requests
 
 GUMROAD_ACCESS_TOKEN = os.environ.get("GUMROAD_ACCESS_TOKEN", "")
-FORMSPREE_API_KEY = os.environ.get("FORMSPREE_API_KEY", "")
 
 PAID_FILE = "paid_subscribers.json"
-FREE_FILE = "free_subscribers.json"
+WATCHLIST_FILE = "watchlist.json"
 
 
 def fetch_active_gumroad_subscribers():
-    """Fetch active premium subscribers from Gumroad."""
+    """Fetch active premium subscribers and their watchlist keywords from Gumroad."""
     if not GUMROAD_ACCESS_TOKEN:
         print("Skipping Gumroad sync: GUMROAD_ACCESS_TOKEN not set.")
         return None
 
-    emails = set()
+    active_subscribers = []
     url = "https://api.gumroad.com/v2/sales"
     params = {"access_token": GUMROAD_ACCESS_TOKEN}
 
@@ -35,8 +35,15 @@ def fetch_active_gumroad_subscribers():
             cancelled = sale.get("subscription_cancelled", False)
             failed = sale.get("subscription_failed", False)
 
-            if email and subscription_id and not cancelled and not failed:
-                emails.add(email)
+            if not email or not subscription_id or cancelled or failed:
+                continue
+
+            watchlist_keywords = extract_watchlist_keywords(sale)
+
+            active_subscribers.append({
+                "email": email,
+                "keywords": watchlist_keywords
+            })
 
         next_url = data.get("next_page_url")
         if next_url:
@@ -45,67 +52,114 @@ def fetch_active_gumroad_subscribers():
         else:
             break
 
-    if not emails:
+    if not active_subscribers:
         print("No active Gumroad subscribers found.")
         return []
 
-    return sorted(emails)
+    return active_subscribers
 
 
-def fetch_formspree_submissions():
-    """Fetch free signup emails from Formspree."""
-    if not FORMSPREE_API_KEY:
-        print("Skipping Formspree sync: FORMSPREE_API_KEY not set.")
-        return None
+def extract_watchlist_keywords(sale):
+    """Extract watchlist keywords from Gumroad custom fields."""
+    raw_keywords = ""
 
-    form_id = "mwvdklly"
-    url = f"https://formspree.io/api/0/forms/{form_id}/submissions"
-    headers = {"Authorization": f"Bearer {FORMSPREE_API_KEY}"}
+    custom_fields = sale.get("custom_fields", {})
 
-    emails = set()
+    if isinstance(custom_fields, list):
+        for field in custom_fields:
+            if isinstance(field, dict):
+                field_name = str(field.get("name", "")).lower()
+                field_value = field.get("value", "")
 
-    while url:
-        resp = requests.get(url, headers=headers, timeout=30)
+                if any(key in field_name for key in ["watchlist", "keyword", "item", "my items"]):
+                    raw_keywords = field_value
+                    break
 
-        if resp.status_code != 200:
-            print(f"Formspree API error: {resp.status_code} {resp.text}")
-            return None
+    elif isinstance(custom_fields, dict):
+        for key, value in custom_fields.items():
+            key_lower = str(key).lower()
 
-        data = resp.json()
-        submissions = data.get("submissions", [])
+            if any(k in key_lower for k in ["watchlist", "keyword", "item", "my items"]):
+                raw_keywords = value
+                break
 
-        for submission in submissions:
-            form_data = submission.get("data", {})
-            email = form_data.get("email")
-            if email:
-                emails.add(email)
+    if not raw_keywords:
+        for alt_key in ["watchlist", "watchlist_keywords", "keywords", "my_items"]:
+            if sale.get(alt_key):
+                raw_keywords = sale.get(alt_key)
+                break
 
-        next_url = data.get("next_page_url") or data.get("next")
-        if next_url:
-            url = next_url
-        else:
-            break
-
-    if not emails:
-        print("No Formspree submissions found.")
+    if not raw_keywords:
         return []
 
-    return sorted(emails)
+    if isinstance(raw_keywords, list):
+        return [str(k).strip() for k in raw_keywords if str(k).strip()]
+
+    text = str(raw_keywords)
+
+    parts = re.split(r"[,|\n]+", text)
+
+    return [part.strip() for part in parts if part.strip()]
+
+
+def read_existing_watchlist():
+    """Read the existing watchlist file if it exists."""
+    if not os.path.exists(WATCHLIST_FILE):
+        return []
+
+    try:
+        with open(WATCHLIST_FILE, "r") as f:
+            data = json.load(f)
+
+            if isinstance(data, list):
+                return data
+    except Exception as e:
+        print(f"Warning: Could not read {WATCHLIST_FILE}: {e}")
+
+    return []
+
+
+def write_paid_subscribers(subscribers):
+    emails = [sub["email"] for sub in subscribers]
+
+    with open(PAID_FILE, "w") as f:
+        json.dump(emails, f, indent=2)
+
+    print(f"Updated {PAID_FILE}: {len(emails)} emails")
+
+
+def write_watchlist(subscribers):
+    existing = read_existing_watchlist()
+
+    current_emails = {sub["email"] for sub in subscribers}
+    merged = [entry for entry in existing if entry.get("email") not in current_emails]
+
+    for sub in subscribers:
+        keywords = sub.get("keywords", [])
+
+        if not keywords:
+            continue
+
+        merged.append({
+            "email": sub["email"],
+            "keywords": keywords
+        })
+
+    with open(WATCHLIST_FILE, "w") as f:
+        json.dump(merged, f, indent=2)
+
+    print(f"Updated {WATCHLIST_FILE}: {len(merged)} watchlist entries")
 
 
 def main():
-    gumroad_emails = fetch_active_gumroad_subscribers()
-    formspree_emails = fetch_formspree_submissions()
+    subscribers = fetch_active_gumroad_subscribers()
 
-    if gumroad_emails is not None:
-        with open(PAID_FILE, "w") as f:
-            json.dump(gumroad_emails, f, indent=2)
-        print(f"Updated {PAID_FILE}: {len(gumroad_emails)} emails")
+    if subscribers is None:
+        print("Gumroad sync skipped.")
+        return
 
-    if formspree_emails is not None:
-        with open(FREE_FILE, "w") as f:
-            json.dump(formspree_emails, f, indent=2)
-        print(f"Updated {FREE_FILE}: {len(formspree_emails)} emails")
+    write_paid_subscribers(subscribers)
+    write_watchlist(subscribers)
 
 
 if __name__ == "__main__":
