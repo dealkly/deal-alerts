@@ -285,7 +285,7 @@ def send_alert(drops):
     else:
         subject = f"[Dealkly] {total_deals} Deals Found: {top_deal['title']} dropped {top_deal['percent']}% OFF"
 
-    text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems on your tracked list have dropped:\n\n"
+    text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems in monitored categories have dropped:\n\n"
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -314,7 +314,7 @@ img{{border:0;height:auto;display:block;}}
 <tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;">
   <a href="{WEBSITE_LINK}" target="_blank"><img src="{LOGO_URL}" alt="" height="36" style="display:block;margin:0 auto;height:36px;width:auto;"></a>
 </td></tr>
-<tr><td style="padding:28px 24px 16px 24px;"><h2 style="color:#0F172A;margin:0 0 8px;font-size:20px;font-weight:800;">Price Drops Detected</h2><p style="color:#64748B;margin:0;font-size:14px;line-height:1.5;">Items on your tracked watchlists have dropped in price. Here are today's verified deals:</p></td></tr>
+<tr><td style="padding:28px 24px 16px 24px;"><h2 style="color:#0F172A;margin:0 0 8px;font-size:20px;font-weight:800;">Price Drops Detected</h2><p style="color:#64748B;margin:0;font-size:14px;line-height:1.5;">Items in Dealkly's monitored categories have dropped in price. Here are today's verified deals:</p></td></tr>
 <tr><td style="padding:8px 24px 24px 24px;">
 """
 
