@@ -4,7 +4,7 @@ import urllib.request
 
 
 PRODUCTS_FILE = "gumroad_products.json"
-DEALS_HTML = "deals.html"
+TOOLS_HTML = "tools.html"
 
 START_MARKER = "<!-- DYNAMIC_GUMROAD_START -->"
 END_MARKER = "<!-- DYNAMIC_GUMROAD_END -->"
@@ -83,15 +83,15 @@ def build_grid(products):
         cards.append(build_card(product, image_url))
 
     inner = "\n".join(cards)
-    return f'<div class="grid grid-cols-1 md:grid-cols-2 gap-6">\n{inner}\n                </div>'
+    return f'<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">\n{inner}\n                </div>'
 
 
 def update_html(grid_block):
-    with open(DEALS_HTML, "r", encoding="utf-8") as f:
+    with open(TOOLS_HTML, "r", encoding="utf-8") as f:
         content = f.read()
 
     if START_MARKER not in content or END_MARKER not in content:
-        print("Markers not found in deals.html")
+        print("Markers not found in tools.html")
         return
 
     pattern = re.compile(
@@ -103,10 +103,10 @@ def update_html(grid_block):
 
     new_content = pattern.sub(replacement, content)
 
-    with open(DEALS_HTML, "w", encoding="utf-8") as f:
+    with open(TOOLS_HTML, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print("deals.html updated with live Gumroad deals.")
+    print("tools.html updated with live Gumroad deals.")
 
 
 def main():
