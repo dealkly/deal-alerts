@@ -46,15 +46,22 @@ jobs:
           ADMIN_PASSWORD_INPUT: ${{ github.event.inputs.password }}
           ADMIN_SECRET: ${{ secrets.ADMIN_TEST_PASSWORD }}
         run: python price_detector.py
-        
+
       - name: Run personalised watchlist checker
         env:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: python watchlist_checker.py
+
+      - name: Generate eBay deals page
+        run: python generate_page.py
+
+      - name: Generate affiliate tools page
+        run: python generate_deals.py
+
       - name: Commit updated files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add books_today.csv paid_subscribers.json free_subscribers.json watchlist.json premium_setup_sent.json || true
-          git diff --staged --quiet || git commit -m "Update prices and subscriber lists [skip ci]"
+          git add books_today.csv paid_subscribers.json free_subscribers.json watchlist.json premium_setup_sent.json deals.html tools.html || true
+          git diff --staged --quiet || git commit -m "Update prices, subscriber lists, and deals pages [skip ci]"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/dealkly/deal-alerts.git
