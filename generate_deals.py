@@ -4,10 +4,13 @@ import urllib.request
 
 
 PRODUCTS_FILE = "gumroad_products.json"
+DEALS_HTML = "deals.html"
 TOOLS_HTML = "tools.html"
 
-START_MARKER = "<!-- DYNAMIC_GUMROAD_START -->"
-END_MARKER = "<!-- DYNAMIC_GUMROAD_END -->"
+GUMROAD_START = "<!-- DYNAMIC_GUMROAD_START -->"
+GUMROAD_END = "<!-- DYNAMIC_GUMROAD_END -->"
+SIDEBAR_START = "<!-- DYNAMIC_SIDEBAR_START -->"
+SIDEBAR_END = "<!-- DYNAMIC_SIDEBAR_END -->"
 
 
 def fetch_og_image(url):
@@ -75,46 +78,94 @@ def build_card(product, image_url):
 """
 
 
-def build_grid(products):
+def build_sidebar_item(product, image_url):
+    if image_url:
+        icon_html = (
+            f'<div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white border border-gray-200 p-1">'
+            f'<img src="{image_url}" alt="{product["name"]}" class="max-w-full max-h-full object-contain">'
+            f'</div>'
+        )
+    else:
+        icon_html = (
+            f'<div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" '
+            f'style="background:linear-gradient(135deg,{product["label_color"]},{product["badge_color"]});">'
+            f'<span class="text-white text-[9px] font-bold text-center leading-tight px-1">{product["label"]}</span>'
+            f'</div>'
+        )
+
+    return f"""
+                        <a href="{product["affiliate_url"]}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group">
+                            {icon_html}
+                            <div class="flex-grow">
+                                <p class="text-xs font-bold text-gray-900 group-hover:text-amber-700 transition leading-snug">{product["name"]}</p>
+                                <p class="text-[11px] text-gray-500 mt-1">{product["description"]}</p>
+                            </div>
+                        </a>
+"""
+
+
+def build_grid(products, images):
     cards = []
     for product in products:
-        image_url = fetch_og_image(product["page_url"])
-        print(f"Fetched image for {product['name']}: {image_url}")
+        image_url = images.get(product["page_url"], "")
         cards.append(build_card(product, image_url))
 
     inner = "\n".join(cards)
     return f'<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">\n{inner}\n                </div>'
 
 
-def update_html(grid_block):
-    with open(TOOLS_HTML, "r", encoding="utf-8") as f:
-        content = f.read()
+def build_sidebar(products, images):
+    items = []
+    for product in products[:3]:
+        image_url = images.get(product["page_url"], "")
+        items.append(build_sidebar_item(product, image_url))
 
-    if START_MARKER not in content or END_MARKER not in content:
-        print("Markers not found in tools.html")
-        return
+    return "\n".join(items)
 
-    pattern = re.compile(
-        re.escape(START_MARKER) + r".*?" + re.escape(END_MARKER),
-        re.DOTALL,
-    )
 
-    replacement = f"{START_MARKER}\n                {grid_block}\n                {END_MARKER}"
-
-    new_content = pattern.sub(replacement, content)
-
-    with open(TOOLS_HTML, "w", encoding="utf-8") as f:
-        f.write(new_content)
-
-    print("tools.html updated with live Gumroad deals.")
+def update_marker(content, start, end, replacement):
+    pattern = re.compile(re.escape(start) + r".*?" + re.escape(end), re.DOTALL)
+    return pattern.sub(f"{start}\n{replacement}\n{end}", content)
 
 
 def main():
     with open(PRODUCTS_FILE, "r", encoding="utf-8") as f:
         products = json.load(f)
 
-    grid_block = build_grid(products)
-    update_html(grid_block)
+    # Fetch each product image once
+    images = {}
+    for product in products:
+        url = product["page_url"]
+        img = fetch_og_image(url)
+        images[url] = img
+        print(f"Fetched image for {product['name']}: {img}")
+
+    grid_block = build_grid(products, images)
+    sidebar_block = build_sidebar(products, images)
+
+    # Update tools.html with full grid
+    with open(TOOLS_HTML, "r", encoding="utf-8") as f:
+        tools_content = f.read()
+
+    if GUMROAD_START in tools_content and GUMROAD_END in tools_content:
+        tools_content = update_marker(tools_content, GUMROAD_START, GUMROAD_END, grid_block)
+        with open(TOOLS_HTML, "w", encoding="utf-8") as f:
+            f.write(tools_content)
+        print("tools.html updated with live Gumroad deals.")
+    else:
+        print("GUMROAD markers not found in tools.html")
+
+    # Update deals.html sidebar widget
+    with open(DEALS_HTML, "r", encoding="utf-8") as f:
+        deals_content = f.read()
+
+    if SIDEBAR_START in deals_content and SIDEBAR_END in deals_content:
+        deals_content = update_marker(deals_content, SIDEBAR_START, SIDEBAR_END, sidebar_block)
+        with open(DEALS_HTML, "w", encoding="utf-8") as f:
+            f.write(deals_content)
+        print("deals.html sidebar updated with live Gumroad deals.")
+    else:
+        print("SIDEBAR markers not found in deals.html")
 
 
 if __name__ == "__main__":
