@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools &amp; Resources – Dealkly</title>
+
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="manifest" href="./site.webmanifest">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-img {
+            filter: brightness(0) saturate(100%) invert(100%);
+            transition: filter 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-[#F4F6F8] text-gray-800 min-h-screen flex flex-col">
+
+    <header class="text-white shadow-md sticky top-0 z-50" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="flex flex-col items-start leading-none">
+                    <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
+                    <span class="text-[10px] font-semibold tracking-wide mt-0.5" style="color:#F5EFE6;">Engineered Alert System</span>
+                </a>
+                <span class="hidden sm:inline-block px-3 py-1 bg-amber-600 text-xs font-bold rounded-full uppercase tracking-wide">Tools</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-5 text-sm font-semibold text-amber-100">
+                <a href="deals.html" class="hover:text-white transition">Live Deals</a>
+                <a href="index.html" class="px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition">What is Dealkly?</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+
+        <div class="max-w-3xl mb-10">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-3">Tools &amp; Resources</h1>
+            <p class="text-gray-600 leading-relaxed">
+                Hand-picked digital tools that fit deal hunters, developers, and creators. Every link below is a partner offer. If a purchase is made through these links, Dealkly may earn a commission at no extra cost to the buyer.
+            </p>
+        </div>
+
+        <!-- DYNAMIC_GUMROAD_START -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white border border-gray-200 rounded-xl p-6 text-center text-gray-500 md:col-span-3">
+                Tools will appear here after the next pipeline run.
+            </div>
+        </div>
+        <!-- DYNAMIC_GUMROAD_END -->
+
+    </main>
+
+    <footer class="text-amber-100 py-8 mt-auto" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-4 text-sm">
+                <a href="deals.html" class="hover:text-white mx-2">Live Deals</a> |
+                <a href="tools.html" class="hover:text-white mx-2">Tools &amp; Resources</a> |
+                <a href="status.html" class="hover:text-white mx-2">System Status</a> |
+                <a href="privacy.html" class="hover:text-white mx-2">Privacy Policy</a> |
+                <a href="terms.html" class="hover:text-white mx-2">Terms</a> |
+                <a href="contact.html" class="hover:text-white mx-2">Contact</a>
+            </p>
+            <p class="text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
