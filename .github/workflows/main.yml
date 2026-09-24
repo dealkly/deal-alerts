@@ -62,6 +62,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add books_today.csv paid_subscribers.json free_subscribers.json watchlist.json premium_setup_sent.json deals.html tools.html || true
+          git add books_today.csv || true
+          git add paid_subscribers.json || true
+          git add free_subscribers.json || true
+          git add watchlist.json || true
+          git add premium_setup_sent.json || true
+          git add deals.html || true
+          git add tools.html || true
           git diff --staged --quiet || git commit -m "Update prices, subscriber lists, and deals pages [skip ci]"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/dealkly/deal-alerts.git
