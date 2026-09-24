@@ -1,0 +1,112 @@
+[
+  {
+    "name": "Microsoft 365 for IT Pros",
+    "badge": "COURSE",
+    "badge_color": "#0B1D3A",
+    "description": "The ultimate guide to managing Microsoft 365.",
+    "page_url": "https://o365itpros.gumroad.com/l/O365IT",
+    "affiliate_url": "https://o365itpros.gumroad.com/l/O365IT?a=446408291",
+    "label": "M365",
+    "label_color": "#1e3a8a",
+    "bg_color": "#eff6ff"
+  },
+  {
+    "name": "AI Video Studio V3 | Davinci",
+    "badge": "AI TOOL",
+    "badge_color": "#DC2626",
+    "description": "Local AI video and image generation for creators.",
+    "page_url": "https://kevinvandermarliere.gumroad.com/l/Aivideostudio",
+    "affiliate_url": "https://kevinvandermarliere.gumroad.com/l/Aivideostudio?a=446408291",
+    "label": "AI V3",
+    "label_color": "#6b21a8",
+    "bg_color": "#faf5ff"
+  },
+  {
+    "name": "GSonic Immersive",
+    "badge": "AUDIO",
+    "badge_color": "#0B1D3A",
+    "description": "Immersive audio measurement and mixing suite.",
+    "page_url": "https://oca2026.gumroad.com/l/ntcuxn",
+    "affiliate_url": "https://oca2026.gumroad.com/l/ntcuxn?a=446408291",
+    "label": "GSonic",
+    "label_color": "#334155",
+    "bg_color": "#f8fafc"
+  },
+  {
+    "name": "Audio Consultation (1 hour)",
+    "badge": "CONSULTATION",
+    "badge_color": "#0B1D3A",
+    "description": "One-on-one session with H.G. Tudor.",
+    "page_url": "https://tudorhg.gumroad.com/l/gindil",
+    "affiliate_url": "https://tudorhg.gumroad.com/l/gindil?a=446408291",
+    "label": "1-Hour",
+    "label_color": "#92400e",
+    "bg_color": "#fffbeb"
+  },
+  {
+    "name": "GSonic Evo 32",
+    "badge": "AUDIO",
+    "badge_color": "#0B1D3A",
+    "description": "Next-level audio production tool.",
+    "page_url": "https://oca2026.gumroad.com/l/evo32",
+    "affiliate_url": "https://oca2026.gumroad.com/l/evo32?a=446408291",
+    "label": "EVO 32",
+    "label_color": "#854d0e",
+    "bg_color": "#fefce8"
+  },
+  {
+    "name": "Ross & Mills: Data Centers Reality Check",
+    "badge": "INDUSTRY",
+    "badge_color": "#0B1D3A",
+    "description": "Critical analysis of the data center industry.",
+    "page_url": "https://rossmillsrant.gumroad.com/l/bldhl",
+    "affiliate_url": "https://rossmillsrant.gumroad.com/l/bldhl?a=446408291",
+    "label": "Data Centers",
+    "label_color": "#065f46",
+    "bg_color": "#ecfdf5"
+  },
+  {
+    "name": "SimpliGen — Local AI Studio",
+    "badge": "AI TOOL",
+    "badge_color": "#DC2626",
+    "description": "Your low-VRAM AI studio for images and video.",
+    "page_url": "https://simpligen.gumroad.com/l/simpligen",
+    "affiliate_url": "https://simpligen.gumroad.com/l/simpligen?a=446408291",
+    "label": "SimpliGen",
+    "label_color": "#5b21b6",
+    "bg_color": "#f5f3ff"
+  },
+  {
+    "name": "Hacking with Swift+",
+    "badge": "COURSE",
+    "badge_color": "#DC2626",
+    "description": "The ultimate investment in your Swift career.",
+    "page_url": "https://twostraws.gumroad.com/l/hws-subscription",
+    "affiliate_url": "https://twostraws.gumroad.com/l/hws-subscription?a=446408291",
+    "label": "HWS+",
+    "label_color": "#86198f",
+    "bg_color": "#fdf4ff"
+  },
+  {
+    "name": "Stellarizer",
+    "badge": "SOFTWARE",
+    "badge_color": "#0B1D3A",
+    "description": "Space-themed creative software.",
+    "page_url": "https://s1gnsofl1fe.gumroad.com/l/stellarizer",
+    "affiliate_url": "https://s1gnsofl1fe.gumroad.com/l/stellarizer?a=446408291",
+    "label": "Stellarizer",
+    "label_color": "#3730a3",
+    "bg_color": "#eef2ff"
+  },
+  {
+    "name": "CatPin — Blender Add-on",
+    "badge": "3D TOOL",
+    "badge_color": "#0B1D3A",
+    "description": "Stylized 3D model painting for Blender.",
+    "page_url": "https://alexsokol.gumroad.com/l/catpin",
+    "affiliate_url": "https://alexsokol.gumroad.com/l/catpin?a=446408291",
+    "label": "CatPin",
+    "label_color": "#9a3412",
+    "bg_color": "#fff7ed"
+  }
+]
