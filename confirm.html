@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm your Dealkly Free Alerts</title>
+
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="manifest" href="./site.webmanifest">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-img {
+            filter: brightness(0) saturate(100%) invert(100%);
+        }
+    </style>
+</head>
+<body class="bg-[#FFFDF7] text-gray-800 min-h-screen flex flex-col">
+
+    <header class="text-white shadow-md" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex flex-col items-start leading-none">
+                <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
+                <span class="text-[10px] font-semibold tracking-wide mt-0.5" style="color:#F5EFE6;">Engineered Alert System</span>
+            </a>
+            <a href="index.html" class="text-amber-100 hover:text-white text-sm font-semibold transition">← Back to Home</a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="max-w-md w-full bg-white border border-amber-200 rounded-2xl p-8 shadow-sm">
+
+            <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Confirm your free alerts</h1>
+            <p class="text-sm text-gray-500 mb-6">Enter the email you signed up with and the 6-digit code from the confirmation email.</p>
+
+            <form id="confirm-form" class="space-y-4" novalidate>
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-gray-800 mb-1">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="you@example.com"
+                        class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
+                </div>
+
+                <div>
+                    <label for="code" class="block text-sm font-semibold text-gray-800 mb-1">Confirmation Code</label>
+                    <input type="text" id="code" name="code" required maxlength="6" pattern="\d{6}" placeholder="6-digit code"
+                        class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
+                </div>
+
+                <button type="submit" id="confirm-btn"
+                    class="w-full text-white font-bold py-4 rounded-xl shadow-md"
+                    style="background: linear-gradient(135deg, #D97706, #B45309);">
+                    CONFIRM FREE ALERTS
+                </button>
+            </form>
+
+            <div id="status-message" class="hidden mt-4 text-sm font-semibold rounded-lg px-4 py-3"></div>
+
+            <p class="mt-6 text-xs text-gray-500 text-center">
+                Need a new code? <a href="index.html#pricing" class="text-amber-700 underline">Subscribe again</a>.
+            </p>
+
+        </div>
+    </main>
+
+    <footer class="text-amber-100 py-6 text-center" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+                <a href="privacy.html" class="hover:text-white transition">Privacy Policy</a>
+                <a href="terms.html" class="hover:text-white transition">Terms of Service</a>
+                <a href="contact.html" class="hover:text-white transition">Contact</a>
+            </div>
+            <p class="mt-3 text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <iframe name="dealkly-confirm-frame" id="dealkly-confirm-frame" style="display:none;" title="Dealkly confirm receiver"></iframe>
+
+    <script>
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
+
+        const form = document.getElementById('confirm-form');
+        const emailInput = document.getElementById('email');
+        const codeInput = document.getElementById('code');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const statusMessage = document.getElementById('status-message');
+        const frame = document.getElementById('dealkly-confirm-frame');
+
+        // Auto-fill from URL params
+        const params = new URLSearchParams(window.location.search);
+        const urlEmail = params.get('email');
+        const urlCode = params.get('code');
+
+        if (urlEmail) emailInput.value = urlEmail;
+        if (urlCode) codeInput.value = urlCode;
+
+        // Auto-submit if both params present
+        if (urlEmail && urlCode) {
+            setTimeout(function () {
+                form.dispatchEvent(new Event('submit', { cancelable: true }));
+            }, 300);
+        }
+
+        function showStatus(message, isError) {
+            statusMessage.textContent = message;
+            statusMessage.className = isError
+                ? 'mt-4 text-sm font-semibold rounded-lg px-4 py-3 text-red-700 bg-red-50 border border-red-200'
+                : 'mt-4 text-sm font-semibold rounded-lg px-4 py-3 text-green-800 bg-green-50 border border-green-200';
+            statusMessage.classList.remove('hidden');
+        }
+
+        function postToScript(params, onResult) {
+            const frameName = 'dealkly-confirm-' + Date.now();
+            frame.setAttribute('name', frameName);
+
+            const tempForm = document.createElement('form');
+            tempForm.method = 'POST';
+            tempForm.action = WEBAPP_URL;
+            tempForm.target = frameName;
+            tempForm.style.display = 'none';
+
+            Object.keys(params).forEach(function (k) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = k;
+                input.value = params[k];
+                tempForm.appendChild(input);
+            });
+
+            document.body.appendChild(tempForm);
+
+            let handled = false;
+            function listener(event) {
+                if (handled) return;
+                handled = true;
+                window.removeEventListener('message', listener);
+                try { document.body.removeChild(tempForm); } catch (e) {}
+                onResult(event.data || {});
+            }
+            window.addEventListener('message', listener);
+
+            tempForm.submit();
+
+            setTimeout(function () {
+                if (handled) return;
+                handled = true;
+                window.removeEventListener('message', listener);
+                try { document.body.removeChild(tempForm); } catch (e) {}
+                onResult({ ok: false, message: 'Request timed out. Please try again.' });
+            }, 15000);
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = emailInput.value.trim().toLowerCase();
+            const code = codeInput.value.trim();
+
+            if (!email || !code) {
+                showStatus('Please enter your email and confirmation code.', true);
+                return;
+            }
+
+            confirmBtn.textContent = 'CONFIRMING...';
+            confirmBtn.disabled = true;
+
+            postToScript({ action: 'confirm', email: email, code: code }, function (result) {
+                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
+                confirmBtn.disabled = false;
+
+                if (result.ok) {
+                    showStatus('Confirmed. Your free alerts are active. Redirecting to live deals…', false);
+                    setTimeout(function () {
+                        window.location.href = 'deals.html';
+                    }, 1800);
+                } else {
+                    showStatus(result.message || 'Confirmation failed. Please try again.', true);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
