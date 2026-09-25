@@ -49,16 +49,15 @@
                     <a href="index.html" class="px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition">What is Dealkly?</a>
                 </nav>
 
-                <!-- Subscribed pill (shown only after signup) -->
-                <div id="subscribed-pill-wrapper" class="hidden relative">
+                <div id="subscribed-pill-wrapper" class="hidden relative" style="z-index:60;">
                     <button id="subscribed-pill" type="button" class="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-800 rounded-full text-xs font-bold hover:bg-green-100 transition shadow-sm">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                         </svg>
                         Subscribed
                     </button>
-                    <div id="subscribed-dropdown" class="hidden absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50">
-                        <a id="unsubscribe-link" href="#" class="block px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-red-50 hover:text-red-700 transition">
+                    <div id="subscribed-dropdown" class="hidden absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden" style="z-index:70;">
+                        <a id="unsubscribe-link-header" href="#" class="block px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-red-50 hover:text-red-700 transition">
                             Unsubscribe
                         </a>
                     </div>
@@ -70,7 +69,7 @@
     <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-6 w-full flex flex-col lg:flex-row gap-8">
 
-        <!-- LEFT COLUMN: eBay deals feed -->
+        <!-- LEFT COLUMN -->
         <div class="w-full lg:w-2/3 xl:w-3/4">
 
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
@@ -90,14 +89,13 @@
 
         </div>
 
-        <!-- RIGHT COLUMN: Sidebar -->
+        <!-- RIGHT COLUMN -->
         <div class="w-full lg:w-1/3 xl:w-1/4 flex flex-col gap-6">
             <div class="sticky top-24 space-y-6">
 
-                <!-- Compact Collapsible Signup Widget -->
+                <!-- Signup Widget -->
                 <div id="signup-card" class="bg-white border-2 border-amber-400 rounded-xl shadow-sm overflow-hidden transition-all duration-300">
 
-                    <!-- State 1: Collapsed one-line link -->
                     <button id="signup-open-btn" type="button" class="w-full flex items-center justify-between px-5 py-3.5 hover:bg-amber-50 transition group text-left state-enter">
                         <span class="text-xs font-bold text-gray-800 group-hover:text-amber-700 leading-snug">
                             Get these top deals sent to your inbox for free
@@ -110,15 +108,15 @@
                         </span>
                     </button>
 
-                    <!-- State 2: Expanded form -->
                     <div id="signup-expanded" class="hidden px-5 pb-5">
                         <div class="flex items-start justify-between mb-3">
                             <p class="text-xs font-bold text-gray-800 leading-snug pr-2">Get these top deals sent to your inbox for free</p>
                             <button id="signup-close-btn" type="button" class="text-gray-400 hover:text-gray-700 text-xl leading-none flex-shrink-0">×</button>
                         </div>
-                        <form id="deals-signup-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="deals-signup-frame" class="space-y-3">
-                            <input type="email" name="email" required placeholder="Enter your email"
+                        <form id="deals-signup-form" novalidate class="space-y-3">
+                            <input type="email" id="deals-signup-email" name="email" required placeholder="Enter your email"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
+                            <p id="deals-signup-error" class="hidden text-[11px] font-semibold text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2 leading-snug"></p>
                             <button type="submit" class="w-full text-white font-bold py-2.5 rounded-lg transition text-sm"
                                 style="background: linear-gradient(135deg, #92400E, #78350F);">
                                 SUBSCRIBE FREE
@@ -127,16 +125,17 @@
                         <iframe name="deals-signup-frame" id="deals-signup-frame" style="display:none;" title="Dealkly signup receiver"></iframe>
                     </div>
 
-                    <!-- State 3: Success -->
-                    <div id="signup-success" class="hidden px-5 py-4 flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-green-800 leading-snug">Subscribed</p>
-                            <p class="text-[11px] text-green-700 leading-snug">Check your inbox for the welcome email.</p>
+                    <div id="signup-success" class="hidden px-5 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-xs font-bold text-green-800 leading-snug">Subscribed</p>
+                                <p class="text-[11px] text-green-700 leading-snug">Welcome email is on the way.</p>
+                            </div>
                         </div>
                     </div>
 
@@ -238,22 +237,38 @@
 
     <script>
         (function () {
-            // Signup widget
+            const signupCard = document.getElementById('signup-card');
             const signupOpenBtn = document.getElementById('signup-open-btn');
             const signupExpanded = document.getElementById('signup-expanded');
             const signupCloseBtn = document.getElementById('signup-close-btn');
             const signupSuccess = document.getElementById('signup-success');
             const dealsSignupForm = document.getElementById('deals-signup-form');
+            const dealsSignupEmail = document.getElementById('deals-signup-email');
+            const dealsSignupError = document.getElementById('deals-signup-error');
 
-            // Header pill
             const subscribedPillWrapper = document.getElementById('subscribed-pill-wrapper');
             const subscribedPill = document.getElementById('subscribed-pill');
             const subscribedDropdown = document.getElementById('subscribed-dropdown');
-            const unsubscribeLink = document.getElementById('unsubscribe-link');
+            const unsubscribeLinkHeader = document.getElementById('unsubscribe-link-header');
 
             const STORAGE_KEY = 'dealkly_subscribed';
             const EMAIL_KEY = 'dealkly_email';
-            const UNSUBSCRIBE_BASE = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
+            const SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
+            const UNSUBSCRIBE_BASE = SIGNUP_ENDPOINT;
+
+            // Strict email regex: no spaces, requires local@domain.tld
+            const EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
+
+            function isValidEmail(value) {
+                if (!value) return false;
+                if (/\s/.test(value)) return false;
+                if (value.indexOf('..') !== -1) return false;
+                if (value.startsWith('.') || value.endsWith('.')) return false;
+                if (value.indexOf('@') !== value.lastIndexOf('@')) return false;
+                const local = value.split('@')[0];
+                if (local.startsWith('.') || local.endsWith('.')) return false;
+                return EMAIL_RE.test(value);
+            }
 
             function addEnter(el) {
                 el.classList.remove('state-enter');
@@ -261,42 +276,65 @@
                 el.classList.add('state-enter');
             }
 
+            function clearError() {
+                dealsSignupError.classList.add('hidden');
+                dealsSignupError.textContent = '';
+                dealsSignupEmail.classList.remove('border-red-400', 'ring-2', 'ring-red-200');
+            }
+
+            function showError(message) {
+                dealsSignupError.textContent = message;
+                dealsSignupError.classList.remove('hidden');
+                dealsSignupEmail.classList.add('border-red-400', 'ring-2', 'ring-red-200');
+            }
+
             function showCollapsed() {
+                signupCard.classList.remove('hidden');
                 signupOpenBtn.classList.remove('hidden');
                 signupExpanded.classList.add('hidden');
                 signupSuccess.classList.add('hidden');
+                clearError();
                 addEnter(signupOpenBtn);
             }
 
             function showExpanded() {
+                signupCard.classList.remove('hidden');
                 signupOpenBtn.classList.add('hidden');
                 signupSuccess.classList.add('hidden');
                 signupExpanded.classList.remove('hidden');
+                clearError();
                 addEnter(signupExpanded);
             }
 
-            function showSuccess() {
+            function showSuccessThenHide() {
                 signupOpenBtn.classList.add('hidden');
                 signupExpanded.classList.add('hidden');
                 signupSuccess.classList.remove('hidden');
                 addEnter(signupSuccess);
+
+                setTimeout(function () {
+                    signupCard.classList.add('hidden');
+                }, 1200);
+            }
+
+            function buildUnsubUrl(email) {
+                return `${UNSUBSCRIBE_BASE}?action=unsubscribe&email=${encodeURIComponent(email || '')}`;
             }
 
             function showPill(email) {
                 subscribedPillWrapper.classList.remove('hidden');
-                unsubscribeLink.href = `${UNSUBSCRIBE_BASE}?action=unsubscribe&email=${encodeURIComponent(email || '')}`;
+                unsubscribeLinkHeader.href = buildUnsubUrl(email);
             }
 
             function hidePill() {
                 subscribedPillWrapper.classList.add('hidden');
             }
 
-            // Init state from localStorage
             const alreadySubscribed = localStorage.getItem(STORAGE_KEY) === 'true';
             const storedEmail = localStorage.getItem(EMAIL_KEY) || '';
 
             if (alreadySubscribed) {
-                showSuccess();
+                signupCard.classList.add('hidden');
                 if (storedEmail) {
                     showPill(storedEmail);
                 }
@@ -304,27 +342,48 @@
                 showCollapsed();
             }
 
-            // Signup widget events
             signupOpenBtn.addEventListener('click', showExpanded);
             signupCloseBtn.addEventListener('click', showCollapsed);
 
-            // Form submit
             if (dealsSignupForm) {
-                dealsSignupForm.addEventListener('submit', function () {
-                    const emailInput = dealsSignupForm.querySelector('input[name="email"]');
-                    const email = emailInput ? emailInput.value.trim() : '';
+                dealsSignupForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    clearError();
 
-                    if (email) {
-                        localStorage.setItem(EMAIL_KEY, email);
+                    const raw = dealsSignupEmail.value;
+                    const email = (raw || '').trim().toLowerCase();
+
+                    if (!email) {
+                        showError('Please enter your email address.');
+                        return;
                     }
+
+                    if (!isValidEmail(email)) {
+                        showError('That does not look like a valid email address. Please check for spaces or missing parts.');
+                        return;
+                    }
+
+                    // Valid — submit silently to the iframe
+                    const formData = new URLSearchParams();
+                    formData.append('email', email);
+
+                    fetch(SIGNUP_ENDPOINT, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: formData.toString()
+                    }).catch(function () {
+                        // Silently ignore network errors — the backend also validates
+                    });
+
+                    localStorage.setItem(EMAIL_KEY, email);
                     localStorage.setItem(STORAGE_KEY, 'true');
 
-                    showSuccess();
+                    showSuccessThenHide();
                     showPill(email);
                 });
             }
 
-            // Pill toggle
             if (subscribedPill) {
                 subscribedPill.addEventListener('click', function (e) {
                     e.stopPropagation();
@@ -332,19 +391,16 @@
                 });
             }
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function () {
                 if (subscribedDropdown) subscribedDropdown.classList.add('hidden');
             });
 
-            // Unsubscribe
-            if (unsubscribeLink) {
-                unsubscribeLink.addEventListener('click', function () {
+            if (unsubscribeLinkHeader) {
+                unsubscribeLinkHeader.addEventListener('click', function () {
                     localStorage.removeItem(STORAGE_KEY);
                     localStorage.removeItem(EMAIL_KEY);
                     hidePill();
                     showCollapsed();
-                    // The href opens the Apps Script unsubscribe URL.
                 });
             }
         })();
