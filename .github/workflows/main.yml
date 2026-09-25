@@ -62,6 +62,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
           git add books_today.csv || true
           git add paid_subscribers.json || true
           git add free_subscribers.json || true
