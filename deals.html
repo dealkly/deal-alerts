@@ -96,7 +96,7 @@
                 <!-- Signup Widget -->
                 <div id="signup-card" class="bg-white border-2 border-amber-400 rounded-xl shadow-sm overflow-hidden transition-all duration-300">
 
-                    <button id="signup-open-btn" type="button" class="w-full flex items-center justify-between px-5 py-3.5 hover:bg-amber-50 transition group text-left state-enter">
+                    <button id="signup-open-btn" type="button" class="w-full flex items-center justify-between px-5 py-3.5 hover:bg-amber-50 transition group text-left">
                         <span class="text-xs font-bold text-gray-800 group-hover:text-amber-700 leading-snug">
                             Get these top deals sent to your inbox for free
                         </span>
@@ -256,7 +256,6 @@
             const SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
             const UNSUBSCRIBE_BASE = SIGNUP_ENDPOINT;
 
-            // Strict email regex: no spaces, requires local@domain.tld
             const EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
 
             function isValidEmail(value) {
@@ -333,11 +332,10 @@
             const alreadySubscribed = localStorage.getItem(STORAGE_KEY) === 'true';
             const storedEmail = localStorage.getItem(EMAIL_KEY) || '';
 
-            if (alreadySubscribed) {
+            // Only hide the card if BOTH flag and email are present.
+            if (alreadySubscribed && storedEmail) {
                 signupCard.classList.add('hidden');
-                if (storedEmail) {
-                    showPill(storedEmail);
-                }
+                showPill(storedEmail);
             } else {
                 showCollapsed();
             }
@@ -363,7 +361,6 @@
                         return;
                     }
 
-                    // Valid — submit silently to the iframe
                     const formData = new URLSearchParams();
                     formData.append('email', email);
 
@@ -373,7 +370,7 @@
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: formData.toString()
                     }).catch(function () {
-                        // Silently ignore network errors — the backend also validates
+                        // Silent — backend also validates
                     });
 
                     localStorage.setItem(EMAIL_KEY, email);
