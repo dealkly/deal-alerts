@@ -38,7 +38,9 @@
             <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Confirm your free alerts</h1>
             <p class="text-sm text-gray-500 mb-6">Enter the email you signed up with and the 6-digit code from the confirmation email.</p>
 
-            <form id="confirm-form" class="space-y-4" novalidate>
+            <form id="confirm-form" method="POST" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" class="space-y-4">
+                <input type="hidden" name="action" value="confirm">
+
                 <div>
                     <label for="email" class="block text-sm font-semibold text-gray-800 mb-1">Email Address</label>
                     <input type="email" id="email" name="email" required placeholder="you@example.com"
@@ -57,8 +59,6 @@
                     CONFIRM FREE ALERTS
                 </button>
             </form>
-
-            <div id="status-message" class="hidden mt-4 text-sm font-semibold rounded-lg px-4 py-3"></div>
 
             <p class="mt-6 text-xs text-gray-500 text-center">
                 Need a new code? <a href="index.html#pricing" class="text-amber-700 underline">Subscribe again</a>.
@@ -79,92 +79,22 @@
     </footer>
 
     <script>
-        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
-
-        const form = document.getElementById('confirm-form');
-        const emailInput = document.getElementById('email');
-        const codeInput = document.getElementById('code');
-        const confirmBtn = document.getElementById('confirm-btn');
-        const statusMessage = document.getElementById('status-message');
-
-        // Auto-fill from URL params
         const params = new URLSearchParams(window.location.search);
         const urlEmail = params.get('email');
         const urlCode = params.get('code');
 
+        const emailInput = document.getElementById('email');
+        const codeInput = document.getElementById('code');
+        const form = document.getElementById('confirm-form');
+
         if (urlEmail) emailInput.value = urlEmail;
         if (urlCode) codeInput.value = urlCode;
 
-        // Auto-submit if both params present
         if (urlEmail && urlCode) {
             setTimeout(function () {
-                form.dispatchEvent(new Event('submit', { cancelable: true }));
-            }, 300);
+                form.submit();
+            }, 400);
         }
-
-        function showStatus(message, isError) {
-            statusMessage.textContent = message;
-            statusMessage.className = isError
-                ? 'mt-4 text-sm font-semibold rounded-lg px-4 py-3 text-red-700 bg-red-50 border border-red-200'
-                : 'mt-4 text-sm font-semibold rounded-lg px-4 py-3 text-green-800 bg-green-50 border border-green-200';
-            statusMessage.classList.remove('hidden');
-        }
-
-        function postToScript(params, onResult) {
-            const callbackName = 'dealkly_confirm_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-
-            const timeoutId = setTimeout(function () {
-                delete window[callbackName];
-                onResult({ ok: false, message: 'Request timed out. Please try again.' });
-            }, 15000);
-
-            window[callbackName] = function (data) {
-                clearTimeout(timeoutId);
-                delete window[callbackName];
-                onResult(data);
-            };
-
-            const query = new URLSearchParams(params);
-            query.set('callback', callbackName);
-
-            const script = document.createElement('script');
-            script.src = WEBAPP_URL + '?' + query.toString();
-            script.onerror = function () {
-                clearTimeout(timeoutId);
-                delete window[callbackName];
-                onResult({ ok: false, message: 'Network error. Please try again.' });
-            };
-            document.body.appendChild(script);
-        }
-
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const email = emailInput.value.trim().toLowerCase();
-            const code = codeInput.value.trim();
-
-            if (!email || !code) {
-                showStatus('Please enter your email and confirmation code.', true);
-                return;
-            }
-
-            confirmBtn.textContent = 'CONFIRMING...';
-            confirmBtn.disabled = true;
-
-            postToScript({ action: 'confirm', email: email, code: code }, function (result) {
-                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
-                confirmBtn.disabled = false;
-
-                if (result.ok) {
-                    showStatus('Confirmed. Your free alerts are active. Redirecting to live deals…', false);
-                    setTimeout(function () {
-                        window.location.href = 'deals.html';
-                    }, 1800);
-                } else {
-                    showStatus(result.message || 'Confirmation failed. Please try again.', true);
-                }
-            });
-        });
     </script>
 
 </body>
