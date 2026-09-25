@@ -78,8 +78,6 @@
         </div>
     </footer>
 
-    <iframe name="dealkly-confirm-frame" id="dealkly-confirm-frame" style="display:none;" title="Dealkly confirm receiver"></iframe>
-
     <script>
         const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
 
@@ -88,7 +86,6 @@
         const codeInput = document.getElementById('code');
         const confirmBtn = document.getElementById('confirm-btn');
         const statusMessage = document.getElementById('status-message');
-        const frame = document.getElementById('dealkly-confirm-frame');
 
         // Auto-fill from URL params
         const params = new URLSearchParams(window.location.search);
@@ -114,44 +111,30 @@
         }
 
         function postToScript(params, onResult) {
-            const frameName = 'dealkly-confirm-' + Date.now();
-            frame.setAttribute('name', frameName);
+            const callbackName = 'dealkly_confirm_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
 
-            const tempForm = document.createElement('form');
-            tempForm.method = 'POST';
-            tempForm.action = WEBAPP_URL;
-            tempForm.target = frameName;
-            tempForm.style.display = 'none';
-
-            Object.keys(params).forEach(function (k) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = k;
-                input.value = params[k];
-                tempForm.appendChild(input);
-            });
-
-            document.body.appendChild(tempForm);
-
-            let handled = false;
-            function listener(event) {
-                if (handled) return;
-                handled = true;
-                window.removeEventListener('message', listener);
-                try { document.body.removeChild(tempForm); } catch (e) {}
-                onResult(event.data || {});
-            }
-            window.addEventListener('message', listener);
-
-            tempForm.submit();
-
-            setTimeout(function () {
-                if (handled) return;
-                handled = true;
-                window.removeEventListener('message', listener);
-                try { document.body.removeChild(tempForm); } catch (e) {}
+            const timeoutId = setTimeout(function () {
+                delete window[callbackName];
                 onResult({ ok: false, message: 'Request timed out. Please try again.' });
             }, 15000);
+
+            window[callbackName] = function (data) {
+                clearTimeout(timeoutId);
+                delete window[callbackName];
+                onResult(data);
+            };
+
+            const query = new URLSearchParams(params);
+            query.set('callback', callbackName);
+
+            const script = document.createElement('script');
+            script.src = WEBAPP_URL + '?' + query.toString();
+            script.onerror = function () {
+                clearTimeout(timeoutId);
+                delete window[callbackName];
+                onResult({ ok: false, message: 'Network error. Please try again.' });
+            };
+            document.body.appendChild(script);
         }
 
         form.addEventListener('submit', function (e) {
