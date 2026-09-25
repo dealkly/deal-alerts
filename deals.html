@@ -42,10 +42,28 @@
                 </a>
                 <span class="hidden sm:inline-block px-3 py-1 bg-red-600 text-xs font-bold rounded-full uppercase tracking-wide">Live Deals</span>
             </div>
-            <nav class="hidden md:flex gap-4 text-sm font-semibold text-amber-100">
-                <a href="tools.html" class="hover:text-white transition px-3 py-2">Tools & Resources</a>
-                <a href="index.html" class="px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition">What is Dealkly?</a>
-            </nav>
+
+            <div class="flex items-center gap-3">
+                <nav class="hidden md:flex gap-4 text-sm font-semibold text-amber-100">
+                    <a href="tools.html" class="hover:text-white transition px-3 py-2">Tools & Resources</a>
+                    <a href="index.html" class="px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition">What is Dealkly?</a>
+                </nav>
+
+                <!-- Subscribed pill (shown only after signup) -->
+                <div id="subscribed-pill-wrapper" class="hidden relative">
+                    <button id="subscribed-pill" type="button" class="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-800 rounded-full text-xs font-bold hover:bg-green-100 transition shadow-sm">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Subscribed
+                    </button>
+                    <div id="subscribed-dropdown" class="hidden absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50">
+                        <a id="unsubscribe-link" href="#" class="block px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-red-50 hover:text-red-700 transition">
+                            Unsubscribe
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -63,303 +81,12 @@
             </div>
 
             <!-- DYNAMIC_DEALS_START -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="deal-grid">
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#FF7F50;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> WHALE DEAL
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/820052588847" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/CvUAAeSwGFpqj7bH/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">2021 Apple MacBook Pro M1 Pro Chip 14" Liquid Retina XDR 16GB RAM 500GB SSD</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$1300.00</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$790.97</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 39%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/820052588847" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="deal-grid">
+                <div class="bg-white border border-gray-200 rounded-xl p-6 text-center text-gray-500 md:col-span-2">
+                    No qualifying deals right now. Check back after the next scheduled scan.
                 </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#0B1D3A;">
-                        🏷️ PRICE DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/257628012072" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/tSUAAeSwHg9qWoYn/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Sony WH-1000XM5 Premium Wireless Noise Canceling Headphones - Grey</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$170.00</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$150.00</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 12%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/257628012072" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#DC2626;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> MEGA DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/188803843499" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/mMAAAeSw8K9p9R~I/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Kate Spade Kickoff 3D Soccer Ball Airpod Pro Second Gen Case New In Box</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$35.00</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$28.00</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 20%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/188803843499" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#DC2626;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> MEGA DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/257659310252" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/G1YAAeSwzIxqcOQ~/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Gourmandise Tamagotchi AirPods Pro 2nd Generation / AirPods Pro Compatible</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$48.93</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$41.71</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 15%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/257659310252" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#FF7F50;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> WHALE DEAL
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/137697863436" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/0SUAAeSwiX1qmpiS/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">NEW Sealed Samsung Galaxy S24 Ultra/S22 Ultra/S23 Ultra/S23+/S22+ 5G Unlocked US</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$365.99</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$163.00</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 55%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/137697863436" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#DC2626;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> MEGA DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/128046986963" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/qh4AAOSwUIVnLHuN/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">NEW Samsung Galaxy S22/S22+/S21 Ultra/ S22 Ultra/S23 Ultra/S24 Ultra Unlocked US</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$279.01</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$235.01</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 16%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/128046986963" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#DC2626;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> MEGA DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/137587845251" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/ozcAAeSwwelqFrRQ/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">NEW SAMSUNG GALAXY S22 ULTRA/S23 ULTRA 5G/S24 ULTRA 5G GSM CDMA FACTORY UNLOCKED</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$279.01</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$235.01</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 16%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/137587845251" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#FF7F50;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> WHALE DEAL
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/128048738537" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/3BcAAeSwFU1qOjZV/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">NEW Samsung Galaxy S24 Ultra/S23 Ultra/S22 Ultra 5G Factory Unlocked US Ship LOT</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$279.01</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$178.01</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 36%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/128048738537" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#DC2626;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> MEGA DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/128048735964" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/Y6oAAOSwZQBm89eb/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">FACTORY NEW Samsung Galaxy S22/S22+/S23+/S24 Ultra/S23 Ultra/S22 Ultra Unlocked</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$279.01</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$235.01</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 16%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/128048735964" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#FF7F50;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> WHALE DEAL
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/178467424613" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/r-0AAeSwWOBqmtEp/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Silicone Band Strap Replacement Fit For Garmin Vivofit JR 2 Tracker Sports</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$20.88</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$7.19</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 66%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/178467424613" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#DC2626;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> MEGA DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/178349616969" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/6kkAAeSwRo9qZ-7s/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Garmin Vivofit JR. 3 Kids Fitness Tracker, Lilac Floral Purple</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$50.00</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$42.50</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 15%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/178349616969" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#DC2626;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> MEGA DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/358836669944" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/zMAAAeSwzZZqYtAi/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">GARMIN VIVOFIT JR. 3 KIDS FITNESS TRACKER LILAC FLORAL BRAND NEW FACTORY SEALED</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$52.95</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$43.50</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 18%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/358836669944" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#0B1D3A;">
-                        🏷️ PRICE DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/178393583524" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/1UIAAeSwDRtqefZQ/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Garmin Vivofit Jr. 3 Kids Fitness Tracker Swim-Proof Lilac Purple New!</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$52.99</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$46.99</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 11%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/178393583524" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#FF7F50;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> WHALE DEAL
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/227175528952" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/yNIAAeSwE39paRmX/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">SwitchBot Hub Mini Smart Remote Home Control IR Blaster - NEW</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$24.00</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$15.99</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 33%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/227175528952" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-                </div>
-<!-- DYNAMIC_DEALS_END -->
+            </div>
+            <!-- DYNAMIC_DEALS_END -->
 
         </div>
 
@@ -511,15 +238,22 @@
 
     <script>
         (function () {
-            const signupCard = document.getElementById('signup-card');
+            // Signup widget
             const signupOpenBtn = document.getElementById('signup-open-btn');
             const signupExpanded = document.getElementById('signup-expanded');
             const signupCloseBtn = document.getElementById('signup-close-btn');
             const signupSuccess = document.getElementById('signup-success');
             const dealsSignupForm = document.getElementById('deals-signup-form');
 
+            // Header pill
+            const subscribedPillWrapper = document.getElementById('subscribed-pill-wrapper');
+            const subscribedPill = document.getElementById('subscribed-pill');
+            const subscribedDropdown = document.getElementById('subscribed-dropdown');
+            const unsubscribeLink = document.getElementById('unsubscribe-link');
+
             const STORAGE_KEY = 'dealkly_subscribed';
-            const alreadySubscribed = localStorage.getItem(STORAGE_KEY) === 'true';
+            const EMAIL_KEY = 'dealkly_email';
+            const UNSUBSCRIBE_BASE = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
 
             function addEnter(el) {
                 el.classList.remove('state-enter');
@@ -548,19 +282,69 @@
                 addEnter(signupSuccess);
             }
 
+            function showPill(email) {
+                subscribedPillWrapper.classList.remove('hidden');
+                unsubscribeLink.href = `${UNSUBSCRIBE_BASE}?action=unsubscribe&email=${encodeURIComponent(email || '')}`;
+            }
+
+            function hidePill() {
+                subscribedPillWrapper.classList.add('hidden');
+            }
+
+            // Init state from localStorage
+            const alreadySubscribed = localStorage.getItem(STORAGE_KEY) === 'true';
+            const storedEmail = localStorage.getItem(EMAIL_KEY) || '';
+
             if (alreadySubscribed) {
                 showSuccess();
+                if (storedEmail) {
+                    showPill(storedEmail);
+                }
             } else {
                 showCollapsed();
             }
 
+            // Signup widget events
             signupOpenBtn.addEventListener('click', showExpanded);
             signupCloseBtn.addEventListener('click', showCollapsed);
 
+            // Form submit
             if (dealsSignupForm) {
                 dealsSignupForm.addEventListener('submit', function () {
+                    const emailInput = dealsSignupForm.querySelector('input[name="email"]');
+                    const email = emailInput ? emailInput.value.trim() : '';
+
+                    if (email) {
+                        localStorage.setItem(EMAIL_KEY, email);
+                    }
                     localStorage.setItem(STORAGE_KEY, 'true');
+
                     showSuccess();
+                    showPill(email);
+                });
+            }
+
+            // Pill toggle
+            if (subscribedPill) {
+                subscribedPill.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    subscribedDropdown.classList.toggle('hidden');
+                });
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function () {
+                if (subscribedDropdown) subscribedDropdown.classList.add('hidden');
+            });
+
+            // Unsubscribe
+            if (unsubscribeLink) {
+                unsubscribeLink.addEventListener('click', function () {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem(EMAIL_KEY);
+                    hidePill();
+                    showCollapsed();
+                    // The href opens the Apps Script unsubscribe URL.
                 });
             }
         })();
