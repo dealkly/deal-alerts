@@ -21,6 +21,13 @@
             filter: brightness(0) saturate(100%) invert(100%);
             transition: filter 0.3s ease;
         }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .state-enter {
+            animation: fadeSlideIn 0.35s ease forwards;
+        }
     </style>
 </head>
 <body class="bg-[#F4F6F8] text-gray-800 min-h-screen flex flex-col">
@@ -33,7 +40,7 @@
                     <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
                     <span class="text-[10px] font-semibold tracking-wide mt-0.5" style="color:#F5EFE6;">Engineered Alert System</span>
                 </a>
-                <span class="hidden sm:inline-block px-3 py-1 bg-red-600 text-xs font-bold rounded-full uppercase tracking-wide">Live Drops</span>
+                <span class="hidden sm:inline-block px-3 py-1 bg-red-600 text-xs font-bold rounded-full uppercase tracking-wide">Live Deals</span>
             </div>
             <nav class="hidden md:flex gap-4 text-sm font-semibold text-amber-100">
                 <a href="tools.html" class="hover:text-white transition px-3 py-2">Tools & Resources</a>
@@ -56,93 +63,12 @@
             </div>
 
             <!-- DYNAMIC_DEALS_START -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="deal-grid">
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#FF7F50;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> WHALE DEAL
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/198499692371" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/Y98AAeSw3yhqV6GR/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">New and never powered on, Dell XPS 13 Silver i7 2.6GHz, 16GB ram, 1TB Nvme</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$899.99</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$799.99</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 11%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/198499692371" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="deal-grid">
+                <div class="bg-white border border-gray-200 rounded-xl p-6 text-center text-gray-500 md:col-span-2">
+                    No qualifying deals right now. Check back after the next scheduled scan.
                 </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#FF7F50;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> WHALE DEAL
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/198577905276" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/qjoAAeSw5D5qBlkR/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Dell XPS 13 9310 13.4" Intel i5 8GB/256GB Silver/Black Carbon Fiber | Brand New</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$799.00</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$699.00</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 13%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/198577905276" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#FF7F50;">
-                        <span class="spin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 3H18L22 9H2L6 3Z" fill="#FFD700"/><path d="M6 3L9 9H15L18 3H6Z" fill="#FFF3A0"/><path d="M12 3L9 9H15L12 3Z" fill="#FFE57F"/><path d="M2 9L12 21L22 9H2Z" fill="#DAA520"/><path d="M9 9L12 21L15 9H9Z" fill="#FFD700"/><path d="M2 9L9 9L12 21L2 9Z" fill="#B8860B"/></svg></span> WHALE DEAL
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/137430647998" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/d0IAAeSwMs1qNGR7/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Dell Latitude 9330 13.3" 2-in-1 Touch i7-12th Gen 32GB RAM 512GB SSD Win 11 Pro</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$1075.00</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$900.00</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 16%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/137430647998" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative">
-                    <div class="absolute top-3 left-3 z-10 text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#0B1D3A;">
-                        🏷️ PRICE DROP
-                    </div>
-                    <div class="h-48 bg-white flex items-center justify-center p-4 border-b border-gray-100"><a href="https://www.ebay.com/itm/135648270034" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/Pt0AAOSwluxkNKeW/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h2 class="text-sm font-bold text-gray-900 leading-snug mb-3 line-clamp-2">Air Jordan 1 Retro High OG PS ‘Yellow Toe’ AQ2664-711 Youth 12C No-Lid</h2>
-                        <div class="mt-auto">
-                            <div class="flex items-end justify-between mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$50.00</span></p>
-                                    <p class="text-2xl font-extrabold text-gray-900 leading-none">$45.00</p>
-                                </div>
-                                <div class="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded">Save 10%</div>
-                            </div>
-                            <a href="https://www.ebay.com/itm/135648270034" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-3 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
-                        </div>
-                    </div>
-                </div>
-
-                </div>
-<!-- DYNAMIC_DEALS_END -->
+            </div>
+            <!-- DYNAMIC_DEALS_END -->
 
         </div>
 
@@ -150,59 +76,103 @@
         <div class="w-full lg:w-1/3 xl:w-1/4 flex flex-col gap-6">
             <div class="sticky top-24 space-y-6">
 
-                <!-- Free Signup -->
-                <div class="bg-white border-2 border-amber-400 rounded-xl p-6 shadow-sm">
-                    <h3 class="text-lg font-extrabold text-gray-900">Get Drops via Email</h3>
-                    <p class="text-sm text-gray-600 mt-2">Get these top deals sent to your inbox for free.</p>
+                <!-- Compact Collapsible Signup Widget -->
+                <div id="signup-card" class="bg-white border-2 border-amber-400 rounded-xl shadow-sm overflow-hidden transition-all duration-300">
 
-                    <form class="mt-4" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-deals-signup-frame">
-                        <input type="email" name="email" required placeholder="Enter your email"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm mb-3">
-                        <button type="submit" class="w-full text-white font-bold py-2 rounded-lg transition"
-                            style="background: linear-gradient(135deg, #92400E, #78350F);">
-                            SUBSCRIBE FREE
-                        </button>
-                    </form>
-                    <iframe name="dealkly-deals-signup-frame" style="display:none;" title="Dealkly signup receiver"></iframe>
+                    <!-- State 1: Collapsed one-line link -->
+                    <button id="signup-open-btn" type="button" class="w-full flex items-center justify-between px-5 py-3.5 hover:bg-amber-50 transition group text-left state-enter">
+                        <span class="text-xs font-bold text-gray-800 group-hover:text-amber-700 leading-snug">
+                            Get these top deals sent to your inbox for free
+                        </span>
+                        <span class="flex items-center gap-1 text-amber-600 flex-shrink-0 ml-2 text-[10px] font-bold uppercase tracking-wider">
+                            Subscribe
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    </button>
+
+                    <!-- State 2: Expanded form -->
+                    <div id="signup-expanded" class="hidden px-5 pb-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <p class="text-xs font-bold text-gray-800 leading-snug pr-2">Get these top deals sent to your inbox for free</p>
+                            <button id="signup-close-btn" type="button" class="text-gray-400 hover:text-gray-700 text-xl leading-none flex-shrink-0">×</button>
+                        </div>
+                        <form id="deals-signup-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="deals-signup-frame" class="space-y-3">
+                            <input type="email" name="email" required placeholder="Enter your email"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
+                            <button type="submit" class="w-full text-white font-bold py-2.5 rounded-lg transition text-sm"
+                                style="background: linear-gradient(135deg, #92400E, #78350F);">
+                                SUBSCRIBE FREE
+                            </button>
+                        </form>
+                        <iframe name="deals-signup-frame" id="deals-signup-frame" style="display:none;" title="Dealkly signup receiver"></iframe>
+                    </div>
+
+                    <!-- State 3: Success -->
+                    <div id="signup-success" class="hidden px-5 py-4 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-green-800 leading-snug">Subscribed</p>
+                            <p class="text-[11px] text-green-700 leading-snug">Check your inbox for the welcome email.</p>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Recommended Tools (dynamic sidebar widget) -->
+                <!-- Recommended Tools (4 products) -->
                 <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-sm font-extrabold text-gray-900 uppercase tracking-wide">Recommended Tools</h3>
-                        <span class="text-[10px] font-bold text-gray-400 uppercase">Partner</span>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-gray-900">Recommended Tools</h3>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Partner</span>
                     </div>
 
                     <div class="space-y-4">
-                        <!-- DYNAMIC_SIDEBAR_START -->
 
                         <a href="https://o365itpros.gumroad.com/l/O365IT?a=446408291" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group">
-                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white border border-gray-200 p-1"><img src="https://public-files.gumroad.com/pk6anh25k666db2y79ejlo89x5a1" alt="Microsoft 365 for IT Pros" class="max-w-full max-h-full object-contain"></div>
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#1e3a8a,#312e81);">
+                                <span class="text-white text-[10px] font-bold">M365</span>
+                            </div>
                             <div class="flex-grow">
                                 <p class="text-xs font-bold text-gray-900 group-hover:text-amber-700 transition leading-snug">Microsoft 365 for IT Pros</p>
-                                <p class="text-[11px] text-gray-500 mt-1">The ultimate guide to managing Microsoft 365.</p>
+                                <p class="text-[11px] text-gray-500 mt-1">The ultimate guide to Microsoft 365.</p>
                             </div>
                         </a>
 
-
-                        <a href="https://kevinvandermarliere.gumroad.com/l/Aivideostudio?a=446408291" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group">
-                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white border border-gray-200 p-1"><img src="https://public-files.gumroad.com/yzihv2pctpyj6unoqm1kuc6zou14" alt="AI Video Studio V3 | Davinci" class="max-w-full max-h-full object-contain"></div>
+                        <a href="https://simpligen.gumroad.com/l/simpligen?a=446408291" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group">
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);">
+                                <span class="text-white text-[9px] font-bold">SIMPLI</span>
+                            </div>
                             <div class="flex-grow">
-                                <p class="text-xs font-bold text-gray-900 group-hover:text-amber-700 transition leading-snug">AI Video Studio V3 | Davinci</p>
-                                <p class="text-[11px] text-gray-500 mt-1">Local AI video and image generation for creators.</p>
+                                <p class="text-xs font-bold text-gray-900 group-hover:text-amber-700 transition leading-snug">SimpliGen — Local AI Studio</p>
+                                <p class="text-[11px] text-gray-500 mt-1">Your low-VRAM AI studio.</p>
                             </div>
                         </a>
 
-
-                        <a href="https://oca2026.gumroad.com/l/ntcuxn?a=446408291" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group">
-                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white border border-gray-200 p-1"><img src="https://public-files.gumroad.com/4dlzn7qpvq8z1jx4drwmanjty3wn" alt="GSonic Immersive" class="max-w-full max-h-full object-contain"></div>
+                        <a href="https://twostraws.gumroad.com/l/hws-subscription?a=446408291" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group">
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#86198f,#c026d3);">
+                                <span class="text-white text-[10px] font-bold">HWS+</span>
+                            </div>
                             <div class="flex-grow">
-                                <p class="text-xs font-bold text-gray-900 group-hover:text-amber-700 transition leading-snug">GSonic Immersive</p>
-                                <p class="text-[11px] text-gray-500 mt-1">Immersive audio measurement and mixing suite.</p>
+                                <p class="text-xs font-bold text-gray-900 group-hover:text-amber-700 transition leading-snug">Hacking with Swift+</p>
+                                <p class="text-[11px] text-gray-500 mt-1">Invest in your Swift career.</p>
                             </div>
                         </a>
 
-<!-- DYNAMIC_SIDEBAR_END -->
+                        <a href="https://alexsokol.gumroad.com/l/catpin?a=446408291" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group">
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#9a3412,#ea580c);">
+                                <span class="text-white text-[10px] font-bold">CAT</span>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-xs font-bold text-gray-900 group-hover:text-amber-700 transition leading-snug">CatPin — Blender Add-on</p>
+                                <p class="text-[11px] text-gray-500 mt-1">Split 3D models for printing.</p>
+                            </div>
+                        </a>
+
                     </div>
 
                     <a href="tools.html" class="block text-center text-xs font-bold mt-5 text-amber-700 hover:text-amber-900 transition">
@@ -247,6 +217,63 @@
             <p class="text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved. eBay is a registered trademark of eBay Inc.</p>
         </div>
     </footer>
+
+    <script>
+        (function () {
+            const signupCard = document.getElementById('signup-card');
+            const signupOpenBtn = document.getElementById('signup-open-btn');
+            const signupExpanded = document.getElementById('signup-expanded');
+            const signupCloseBtn = document.getElementById('signup-close-btn');
+            const signupSuccess = document.getElementById('signup-success');
+            const dealsSignupForm = document.getElementById('deals-signup-form');
+
+            const STORAGE_KEY = 'dealkly_subscribed';
+            const alreadySubscribed = localStorage.getItem(STORAGE_KEY) === 'true';
+
+            function addEnter(el) {
+                el.classList.remove('state-enter');
+                void el.offsetWidth;
+                el.classList.add('state-enter');
+            }
+
+            function showCollapsed() {
+                signupOpenBtn.classList.remove('hidden');
+                signupExpanded.classList.add('hidden');
+                signupSuccess.classList.add('hidden');
+                addEnter(signupOpenBtn);
+            }
+
+            function showExpanded() {
+                signupOpenBtn.classList.add('hidden');
+                signupSuccess.classList.add('hidden');
+                signupExpanded.classList.remove('hidden');
+                addEnter(signupExpanded);
+            }
+
+            function showSuccess() {
+                signupOpenBtn.classList.add('hidden');
+                signupExpanded.classList.add('hidden');
+                signupSuccess.classList.remove('hidden');
+                addEnter(signupSuccess);
+            }
+
+            if (alreadySubscribed) {
+                showSuccess();
+            } else {
+                showCollapsed();
+            }
+
+            signupOpenBtn.addEventListener('click', showExpanded);
+            signupCloseBtn.addEventListener('click', showCollapsed);
+
+            if (dealsSignupForm) {
+                dealsSignupForm.addEventListener('submit', function () {
+                    localStorage.setItem(STORAGE_KEY, 'true');
+                    showSuccess();
+                });
+            }
+        })();
+    </script>
 
 </body>
 </html>
