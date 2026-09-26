@@ -394,7 +394,10 @@
                     <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> True Cost calculation (Item + Shipping)</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
                 </ul>
+
                 <div class="mt-auto w-full">
+
+                    <!-- Step 1: Email + consent -->
                     <form id="free-signup-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3" novalidate>
                         <label for="free-email" class="block text-sm font-semibold text-gray-800">Subscribe to free deal alerts</label>
                         <input type="email" id="free-email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
@@ -404,10 +407,24 @@
                                 I agree to the <a href="privacy.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Privacy Policy</a> and <a href="terms.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Terms of Service</a>.
                             </label>
                         </div>
-                        <button type="submit" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">SUBSCRIBE FREE</button>
+                        <button type="submit" id="free-step1-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">SUBSCRIBE FREE</button>
                     </form>
+
+                    <!-- Step 2: Code entry -->
+                    <form id="free-verify-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3 hidden" novalidate>
+                        <input type="hidden" name="action" value="confirm">
+                        <input type="hidden" id="verify-email-hidden" name="email" value="">
+                        <p class="text-sm text-gray-600 leading-snug">
+                            Confirmation code sent to <strong id="verify-email-display" class="text-amber-700">your email</strong>.
+                        </p>
+                        <label for="free-code" class="block text-sm font-semibold text-gray-800">Enter the 6-digit code</label>
+                        <input type="text" id="free-code" name="code" required maxlength="6" pattern="\d{6}" inputmode="numeric" placeholder="000000" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
+                        <button type="submit" id="free-step2-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">CONFIRM &amp; SUBSCRIBE</button>
+                        <button type="button" id="free-back-btn" class="w-full text-xs text-gray-500 hover:text-amber-700 underline">← Use a different email</button>
+                    </form>
+
                     <p id="free-signup-error" class="hidden mt-3 text-sm font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3"></p>
-                    <p id="free-signup-message" class="hidden mt-3 text-sm font-semibold text-green-800 bg-green-50 border border-green-200 rounded-lg px-4 py-3">Confirmation email sent. Check your inbox and click the link to activate free alerts.</p>
+                    <p id="free-signup-message" class="hidden mt-3 text-sm font-semibold text-green-800 bg-green-50 border border-green-200 rounded-lg px-4 py-3"></p>
                     <iframe name="dealkly-signup-frame" id="dealkly-signup-frame" style="display:none;" title="Dealkly signup receiver"></iframe>
                 </div>
             </div>
@@ -551,39 +568,102 @@
         return true;
     }
 
-    const freeSignupForm = document.getElementById('free-signup-form');
+    const signupForm = document.getElementById('free-signup-form');
+    const verifyForm = document.getElementById('free-verify-form');
     const freeSignupMessage = document.getElementById('free-signup-message');
     const freeSignupError = document.getElementById('free-signup-error');
+    const verifyEmailHidden = document.getElementById('verify-email-hidden');
+    const verifyEmailDisplay = document.getElementById('verify-email-display');
+    const step1Btn = document.getElementById('free-step1-btn');
+    const step2Btn = document.getElementById('free-step2-btn');
+    const backBtn = document.getElementById('free-back-btn');
 
-    if (freeSignupForm && freeSignupMessage) {
-        freeSignupForm.addEventListener('submit', function (e) {
+    function showError(msg) {
+        freeSignupError.textContent = msg;
+        freeSignupError.classList.remove('hidden');
+        freeSignupMessage.classList.add('hidden');
+    }
+    function showMessage(msg) {
+        freeSignupMessage.textContent = msg;
+        freeSignupMessage.classList.remove('hidden');
+        freeSignupError.classList.add('hidden');
+    }
+    function clearFeedback() {
+        freeSignupError.classList.add('hidden');
+        freeSignupMessage.classList.add('hidden');
+    }
+
+    if (signupForm && verifyForm) {
+        signupForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
             const emailInput = document.getElementById('free-email');
             const consentBox = document.getElementById('free-consent');
             const email = emailInput ? emailInput.value.trim() : '';
 
-            freeSignupError.classList.add('hidden');
-            freeSignupMessage.classList.add('hidden');
+            clearFeedback();
 
             if (!isValidEmailFormat(email)) {
-                e.preventDefault();
-                freeSignupError.textContent = 'Please enter a valid email address.';
-                freeSignupError.classList.remove('hidden');
+                showError('Please enter a valid email address.');
                 return;
             }
 
             if (!consentBox || !consentBox.checked) {
-                e.preventDefault();
-                freeSignupError.textContent = 'Please accept the Privacy Policy and Terms of Service.';
-                freeSignupError.classList.remove('hidden');
+                showError('Please accept the Privacy Policy and Terms of Service.');
                 return;
             }
 
-            // Submit to hidden iframe. The Apps Script sends the confirmation email.
-            freeSignupMessage.classList.remove('hidden');
+            step1Btn.textContent = 'SENDING CODE...';
+            step1Btn.disabled = true;
+
+            // Submit quietly to Apps Script (default signup path).
+            signupForm.submit();
+
+            // Move to step 2 immediately.
+            verifyEmailHidden.value = email;
+            verifyEmailDisplay.textContent = email;
 
             setTimeout(function () {
-                freeSignupForm.reset();
-            }, 800);
+                signupForm.classList.add('hidden');
+                verifyForm.classList.remove('hidden');
+                step1Btn.textContent = 'SUBSCRIBE FREE';
+                step1Btn.disabled = false;
+                showMessage('Confirmation code sent. Check your inbox.');
+            }, 600);
+        });
+
+        verifyForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const codeInput = document.getElementById('free-code');
+            const code = codeInput ? codeInput.value.trim() : '';
+
+            clearFeedback();
+
+            if (!/^\d{6}$/.test(code)) {
+                showError('Please enter the 6-digit code from the email.');
+                return;
+            }
+
+            step2Btn.textContent = 'CONFIRMING...';
+            step2Btn.disabled = true;
+
+            // Submit quietly to Apps Script (confirm path).
+            verifyForm.submit();
+
+            // Optimistic success after the request has time to complete.
+            setTimeout(function () {
+                verifyForm.classList.add('hidden');
+                step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
+                step2Btn.disabled = false;
+                showMessage('Confirmed. Your free alerts are active. Check your inbox for the welcome email.');
+            }, 1500);
+        });
+
+        backBtn.addEventListener('click', function () {
+            verifyForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+            clearFeedback();
         });
     }
 </script>
