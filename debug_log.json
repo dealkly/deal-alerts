@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-09-26T09:14:20.951Z",
-    "message": "doPost reached. action="
-  },
-  {
     "time": "2026-09-26T09:14:21.885Z",
     "message": "Free signup: email=meshsami321@gmail.com consent=yes"
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-09-26T19:40:56.821Z",
     "message": "Pending written."
+  },
+  {
+    "time": "2026-09-26T19:40:58.158Z",
+    "message": "Confirmation email sent to meshsami321@gmail.com"
   }
 ]
