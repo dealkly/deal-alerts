@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "email": "meshsami321@gmail.com",
+    "code": "345360",
+    "expiresAt": 1790397338352,
+    "consent": true,
+    "createdAt": 1790395538352,
+    "usedAt": null
+  }
+]
