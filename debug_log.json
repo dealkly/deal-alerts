@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-09-25T20:33:15.951Z",
-    "message": "About to write pending. count=1"
-  },
-  {
     "time": "2026-09-25T20:33:18.300Z",
     "message": "Pending written."
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-09-26T09:58:50.672Z",
     "message": "Confirmation email sent to meshsami321@gmail.com"
+  },
+  {
+    "time": "2026-09-26T10:00:09.985Z",
+    "message": "doPost unsubscribe: email=meshsami321@gmail.com"
   }
 ]
