@@ -141,6 +141,14 @@
         }
 
         function showSuccess() {
+            try {
+                localStorage.setItem('dealkly_subscribed', 'true');
+                if (urlEmail) {
+                    localStorage.setItem('dealkly_email', urlEmail);
+                }
+            } catch (e) {
+                // ignore storage errors
+            }
             confirmPanel.classList.add('hidden');
             successPanel.classList.remove('hidden');
             setTimeout(function () {
