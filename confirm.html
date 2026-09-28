@@ -15,9 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
-        .logo-img {
-            filter: brightness(0) saturate(100%) invert(100%);
-        }
+        .logo-img { filter: brightness(0) saturate(100%) invert(100%); }
     </style>
 </head>
 <body class="bg-[#FFFDF7] text-gray-800 min-h-screen flex flex-col">
@@ -35,30 +33,42 @@
     <main class="flex-grow flex items-center justify-center px-4 py-12">
         <div class="max-w-md w-full bg-white border border-amber-200 rounded-2xl p-8 shadow-sm">
 
-            <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Confirm your free alerts</h1>
-            <p class="text-sm text-gray-500 mb-6">Enter the email you signed up with and the 6-digit code from the confirmation email.</p>
+            <div id="confirm-panel">
+                <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Confirm your free alerts</h1>
+                <p class="text-sm text-gray-500 mb-6">Enter the email you signed up with and the 6-digit code from the confirmation email.</p>
 
-            <form id="confirm-form" method="POST" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" class="space-y-4">
-                <input type="hidden" name="action" value="confirm">
+                <form id="confirm-form" method="POST" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" target="dealkly-confirm-frame" class="space-y-4">
+                    <input type="hidden" name="action" value="confirm">
 
-                <div>
-                    <label for="email" class="block text-sm font-semibold text-gray-800 mb-1">Email Address</label>
-                    <input type="email" id="email" name="email" required placeholder="you@example.com"
-                        class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-800 mb-1">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="you@example.com"
+                            class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
+                    </div>
+
+                    <div>
+                        <label for="code" class="block text-sm font-semibold text-gray-800 mb-1">Confirmation Code</label>
+                        <input type="text" id="code" name="code" required maxlength="6" pattern="\d{6}" placeholder="6-digit code"
+                            class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
+                    </div>
+
+                    <button type="submit" id="confirm-btn"
+                        class="w-full text-white font-bold py-4 rounded-xl shadow-md"
+                        style="background: linear-gradient(135deg, #D97706, #B45309);">
+                        CONFIRM FREE ALERTS
+                    </button>
+                </form>
+            </div>
+
+            <div id="success-panel" class="hidden text-center">
+                <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
                 </div>
-
-                <div>
-                    <label for="code" class="block text-sm font-semibold text-gray-800 mb-1">Confirmation Code</label>
-                    <input type="text" id="code" name="code" required maxlength="6" pattern="\d{6}" placeholder="6-digit code"
-                        class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
-                </div>
-
-                <button type="submit" id="confirm-btn"
-                    class="w-full text-white font-bold py-4 rounded-xl shadow-md"
-                    style="background: linear-gradient(135deg, #D97706, #B45309);">
-                    CONFIRM FREE ALERTS
-                </button>
-            </form>
+                <h2 class="text-xl font-extrabold text-gray-900 mb-2">Confirmed</h2>
+                <p class="text-sm text-gray-500">Redirecting to Live Deals…</p>
+            </div>
 
             <p class="mt-6 text-xs text-gray-500 text-center">
                 Need a new code? <a href="index.html#pricing" class="text-amber-700 underline">Subscribe again</a>.
@@ -78,6 +88,8 @@
         </div>
     </footer>
 
+    <iframe name="dealkly-confirm-frame" id="dealkly-confirm-frame" style="display:none;" title="Dealkly confirm receiver"></iframe>
+
     <script>
         const params = new URLSearchParams(window.location.search);
         const urlEmail = params.get('email');
@@ -86,13 +98,30 @@
         const emailInput = document.getElementById('email');
         const codeInput = document.getElementById('code');
         const form = document.getElementById('confirm-form');
+        const confirmPanel = document.getElementById('confirm-panel');
+        const successPanel = document.getElementById('success-panel');
+        const confirmBtn = document.getElementById('confirm-btn');
 
         if (urlEmail) emailInput.value = urlEmail;
         if (urlCode) codeInput.value = urlCode;
 
+        function showSuccessAndRedirect() {
+            confirmPanel.classList.add('hidden');
+            successPanel.classList.remove('hidden');
+            setTimeout(function () {
+                window.location.replace('deals.html');
+            }, 1500);
+        }
+
+        form.addEventListener('submit', function () {
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'CONFIRMING...';
+            setTimeout(showSuccessAndRedirect, 600);
+        });
+
         if (urlEmail && urlCode) {
             setTimeout(function () {
-                form.submit();
+                form.dispatchEvent(new Event('submit', { cancelable: true }));
             }, 400);
         }
     </script>
