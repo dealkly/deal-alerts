@@ -37,7 +37,7 @@
                 <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Confirm your free alerts</h1>
                 <p class="text-sm text-gray-500 mb-6">Enter the email you signed up with and the 6-digit code from the confirmation email.</p>
 
-                <form id="confirm-form" method="POST" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" target="dealkly-confirm-frame" class="space-y-4">
+                <form id="confirm-form" method="POST" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" class="space-y-4">
                     <input type="hidden" name="action" value="confirm">
 
                     <div>
@@ -88,63 +88,42 @@
         </div>
     </footer>
 
-    <iframe name="dealkly-confirm-frame" id="dealkly-confirm-frame" style="display:none;" title="Dealkly confirm receiver"></iframe>
-
     <script>
-    const params = new URLSearchParams(window.location.search);
-    const urlEmail = params.get('email');
-    const urlCode = params.get('code');
+        const params = new URLSearchParams(window.location.search);
+        const result = params.get('result');
+        const msg = params.get('msg');
+        const urlEmail = params.get('email');
+        const urlCode = params.get('code');
 
-    const emailInput = document.getElementById('email');
-    const codeInput = document.getElementById('code');
-    const form = document.getElementById('confirm-form');
-    const confirmPanel = document.getElementById('confirm-panel');
-    const successPanel = document.getElementById('success-panel');
-    const confirmBtn = document.getElementById('confirm-btn');
+        const emailInput = document.getElementById('email');
+        const codeInput = document.getElementById('code');
+        const form = document.getElementById('confirm-form');
+        const confirmPanel = document.getElementById('confirm-panel');
+        const successPanel = document.getElementById('success-panel');
+        const confirmBtn = document.getElementById('confirm-btn');
 
-    let resultReceived = false;
+        if (urlEmail) emailInput.value = urlEmail;
+        if (urlCode) codeInput.value = urlCode;
 
-    if (urlEmail) emailInput.value = urlEmail;
-    if (urlCode) codeInput.value = urlCode;
-
-    window.addEventListener('message', function (event) {
-        const data = event.data || {};
-        if (typeof data !== 'object' || !('ok' in data)) return;
-
-        resultReceived = true;
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = 'CONFIRM FREE ALERTS';
-
-        if (data.ok) {
+        if (result === 'ok') {
             confirmPanel.classList.add('hidden');
             successPanel.classList.remove('hidden');
             setTimeout(function () {
                 window.location.replace('deals.html');
             }, 1500);
-        } else {
-            alert(data.message || 'Confirmation failed. Please try again.');
+        } else if (result === 'error') {
+            alert(msg || 'Confirmation failed. Please try again.');
+        } else if (urlEmail && urlCode) {
+            setTimeout(function () {
+                form.dispatchEvent(new Event('submit', { cancelable: true }));
+            }, 400);
         }
-    });
 
-    form.addEventListener('submit', function () {
-        confirmBtn.disabled = true;
-        confirmBtn.textContent = 'CONFIRMING...';
-
-        setTimeout(function () {
-            if (!resultReceived) {
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
-                alert('No response received. Please try again.');
-            }
-        }, 8000);
-    });
-
-    if (urlEmail && urlCode) {
-        setTimeout(function () {
-            form.dispatchEvent(new Event('submit', { cancelable: true }));
-        }, 400);
-    }
-</script>
+        form.addEventListener('submit', function () {
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'CONFIRMING...';
+        });
+    </script>
 
 </body>
 </html>
