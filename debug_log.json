@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-09-28T08:53:18.529Z",
-    "message": "doPost reached. action="
-  },
-  {
     "time": "2026-09-28T08:53:20.690Z",
     "message": "Free signup: email=meshsami321@gmail.com consent=yes"
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-09-28T10:32:12.170Z",
     "message": "About to write pending. count=1"
+  },
+  {
+    "time": "2026-09-28T10:32:14.160Z",
+    "message": "Pending written."
   }
 ]
