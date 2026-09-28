@@ -91,6 +91,8 @@
     <iframe name="dealkly-confirm-frame" id="dealkly-confirm-frame" style="display:none;" title="Dealkly confirm receiver"></iframe>
 
     <script>
+        const PENDING_URL = 'https://raw.githubusercontent.com/dealkly/deal-alerts/main/pending_subscribers.json';
+
         const params = new URLSearchParams(window.location.search);
         const urlEmail = params.get('email');
         const urlCode = params.get('code');
@@ -105,8 +107,6 @@
         if (urlEmail) emailInput.value = urlEmail;
         if (urlCode) codeInput.value = urlCode;
 
-        const PENDING_URL = 'https://raw.githubusercontent.com/dealkly/deal-alerts/main/pending_subscribers.json';
-
         function findEntry(list, email, code) {
             if (!Array.isArray(list)) return null;
             for (let i = 0; i < list.length; i += 1) {
@@ -119,7 +119,11 @@
             const url = PENDING_URL + '?t=' + Date.now();
             const resp = await fetch(url, { cache: 'no-store' });
             if (!resp.ok) return [];
-            return await resp.json();
+            try {
+                return await resp.json();
+            } catch (e) {
+                return [];
+            }
         }
 
         function showSuccess() {
@@ -135,57 +139,60 @@
             confirmBtn.textContent = 'CONFIRM FREE ALERTS';
         }
 
-        function handleResult(ok, message) {
-            if (ok) {
-                showSuccess();
-            } else {
-                alert(message || 'Confirmation failed. Please try again.');
-                resetButton();
+        async function pollForResult(email, code, maxSeconds) {
+            const started = Date.now();
+            const limit = maxSeconds * 1000;
+
+            while (Date.now() - started < limit) {
+                await new Promise(function (r) { setTimeout(r, 1000); });
+                try {
+                    const list = await fetchPending();
+                    const entry = findEntry(list, email, code);
+                    if (entry && entry.usedAt) {
+                        return { ok: true };
+                    }
+                } catch (e) {
+                    // keep polling
+                }
             }
+            return { ok: false, message: 'Confirmation did not complete. Please check your network and try again.' };
         }
 
         async function runConfirm(email, code) {
             confirmBtn.disabled = true;
             confirmBtn.textContent = 'CONFIRMING...';
 
-            let wasUsedBefore = false;
-
+            // Pre-check: is the code already used?
             try {
                 const before = await fetchPending();
                 const entryBefore = findEntry(before, email, code);
-                if (entryBefore && entryBefore.usedAt) wasUsedBefore = true;
+                if (entryBefore && entryBefore.usedAt) {
+                    alert('This confirmation link has already been used. It cannot be used again.');
+                    resetButton();
+                    return;
+                }
             } catch (e) {
-                // Ignore. Fall through.
-            }
-
-            if (wasUsedBefore) {
-                handleResult(false, 'This confirmation link has already been used. It cannot be used again.');
-                return;
+                // ignore, proceed to submit
             }
 
             form.submit();
 
-            await new Promise(function (r) { setTimeout(r, 2500); });
+            const result = await pollForResult(email, code, 20);
 
-            try {
-                const after = await fetchPending();
-                const entryAfter = findEntry(after, email, code);
-
-                if (entryAfter && entryAfter.usedAt) {
-                    handleResult(true, 'Confirmed.');
-                } else if (entryAfter && !entryAfter.usedAt) {
-                    handleResult(false, 'Confirmation is still processing. Please wait a moment and try again.');
-                } else {
-                    handleResult(false, 'This confirmation code is invalid or expired.');
-                }
-            } catch (e) {
-                handleResult(false, 'Could not verify confirmation. Please try again.');
+            if (result.ok) {
+                showSuccess();
+            } else {
+                alert(result.message);
+                resetButton();
             }
         }
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            runConfirm(emailInput.value.trim().toLowerCase(), codeInput.value.trim());
+            const email = emailInput.value.trim().toLowerCase();
+            const code = codeInput.value.trim();
+            if (!email || !code) return;
+            runConfirm(email, code);
         });
 
         if (urlEmail && urlCode) {
