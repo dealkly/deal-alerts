@@ -115,7 +115,9 @@
             alert(msg || 'Confirmation failed. Please try again.');
         } else if (urlEmail && urlCode) {
             setTimeout(function () {
-                form.dispatchEvent(new Event('submit', { cancelable: true }));
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = 'CONFIRMING...';
+                form.submit();
             }, 400);
         }
 
