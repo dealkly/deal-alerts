@@ -42,6 +42,21 @@
             overflow: hidden;
             pointer-events: none;
         }
+        /* Profile widget (post-subscribe state) */
+        .profile-widget { position: relative; }
+        .profile-avatar {
+            background: linear-gradient(135deg, #D97706, #B45309);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .profile-trigger:hover .profile-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(180, 83, 9, 0.35);
+        }
+        .profile-username {
+            color: #F5EFE6;
+            text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);
+            max-width: 84px;
+        }
     </style>
 </head>
 <body class="bg-[#F4F6F8] text-gray-800 min-h-screen flex flex-col">
@@ -63,20 +78,22 @@
                     <a href="index.html" class="px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition">What is Dealkly?</a>
                 </nav>
 
-                <!-- Subscribed pill (shown only after signup) -->
-                <div id="subscribed-pill-wrapper" class="hidden relative">
-                    <button id="subscribed-pill" type="button" class="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-800 rounded-full text-xs font-bold hover:bg-green-100 transition shadow-sm">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                        </svg>
-                        Subscribed
+                <!-- Profile widget (shown only after signup) -->
+                <div id="profile-widget-wrapper" class="hidden profile-widget">
+                    <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
+                        <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                            </svg>
+                        </span>
+                        <span class="profile-username text-[10px] font-semibold leading-none mt-0.5 truncate"></span>
                     </button>
-                    <div id="subscribed-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50">
-                        <div class="px-4 py-2.5 border-b border-gray-100">
-                            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Subscribed email</p>
-                            <p id="subscribed-email-display" class="text-xs font-semibold text-gray-700 truncate">—</p>
+                    <div class="profile-menu hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                        <div class="px-4 py-2 border-b border-gray-100">
+                            <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
+                            <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
                         </div>
-                        <a id="unsubscribe-link" href="#" class="block px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition">
+                        <a href="#" class="profile-unsubscribe block w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
                             Unsubscribe
                         </a>
                     </div>
@@ -350,11 +367,12 @@
             const dealsSignupForm = document.getElementById('deals-signup-form');
             const successUnsubscribeLink = document.getElementById('success-unsubscribe-link');
 
-            const subscribedPillWrapper = document.getElementById('subscribed-pill-wrapper');
-            const subscribedPill = document.getElementById('subscribed-pill');
-            const subscribedDropdown = document.getElementById('subscribed-dropdown');
-            const unsubscribeLink = document.getElementById('unsubscribe-link');
-            const subscribedEmailDisplay = document.getElementById('subscribed-email-display');
+            const profileWidgetWrapper = document.getElementById('profile-widget-wrapper');
+            const profileTrigger = profileWidgetWrapper.querySelector('.profile-trigger');
+            const profileMenu = profileWidgetWrapper.querySelector('.profile-menu');
+            const profileUnsubscribeLink = profileWidgetWrapper.querySelector('.profile-unsubscribe');
+            const profileEmailDisplay = profileWidgetWrapper.querySelector('.profile-email');
+            const profileUsername = profileWidgetWrapper.querySelector('.profile-username');
 
             const STORAGE_KEY = 'dealkly_subscribed';
             const EMAIL_KEY = 'dealkly_email';
@@ -365,6 +383,13 @@
                 el.classList.remove('state-enter');
                 void el.offsetWidth;
                 el.classList.add('state-enter');
+            }
+
+            function usernameFromEmail(email) {
+                if (!email) return 'Account';
+                var local = email.split('@')[0] || '';
+                if (!local) return 'Account';
+                return local.charAt(0).toUpperCase() + local.slice(1);
             }
 
             function showCollapsed() {
@@ -395,23 +420,25 @@
                 signupCard.classList.add('collapsed');
             }
 
-            function showPill(email) {
-                subscribedPillWrapper.classList.remove('hidden');
+            function showProfile(email) {
+                profileWidgetWrapper.classList.remove('hidden');
                 const url = `${UNSUBSCRIBE_BASE}?action=unsubscribe&email=${encodeURIComponent(email || '')}`;
-                unsubscribeLink.href = url;
+                profileUnsubscribeLink.href = url;
                 if (successUnsubscribeLink) successUnsubscribeLink.href = url;
-                if (subscribedEmailDisplay) subscribedEmailDisplay.textContent = email || '—';
+                if (profileEmailDisplay) profileEmailDisplay.textContent = email || '—';
+                if (profileUsername) profileUsername.textContent = usernameFromEmail(email);
             }
 
-            function hidePill() {
-                subscribedPillWrapper.classList.add('hidden');
+            function hideProfile() {
+                profileWidgetWrapper.classList.add('hidden');
+                profileMenu.classList.add('hidden');
             }
 
             const alreadySubscribed = localStorage.getItem(STORAGE_KEY) === 'true';
             const storedEmail = localStorage.getItem(EMAIL_KEY) || '';
 
             if (alreadySubscribed) {
-                showPill(storedEmail);
+                showProfile(storedEmail);
                 // Already subscribed in a previous visit: signup card stays collapsed entirely.
                 collapseCard();
                 signupSuccess.classList.add('hidden');
@@ -433,7 +460,7 @@
                     localStorage.setItem(STORAGE_KEY, 'true');
 
                     showSuccess();
-                    showPill(email);
+                    showProfile(email);
 
                     // After 4 seconds, collapse the signup card completely.
                     setTimeout(function () {
@@ -442,26 +469,26 @@
                 });
             }
 
-            if (subscribedPill) {
-                subscribedPill.addEventListener('click', function (e) {
+            if (profileTrigger) {
+                profileTrigger.addEventListener('click', function (e) {
                     e.stopPropagation();
-                    subscribedDropdown.classList.toggle('hidden');
+                    profileMenu.classList.toggle('hidden');
                 });
             }
 
             document.addEventListener('click', function () {
-                if (subscribedDropdown) subscribedDropdown.classList.add('hidden');
+                if (profileMenu) profileMenu.classList.add('hidden');
             });
 
             function handleUnsubscribe() {
                 localStorage.removeItem(STORAGE_KEY);
                 localStorage.removeItem(EMAIL_KEY);
-                hidePill();
+                hideProfile();
                 showCollapsed();
             }
 
-            if (unsubscribeLink) {
-                unsubscribeLink.addEventListener('click', handleUnsubscribe);
+            if (profileUnsubscribeLink) {
+                profileUnsubscribeLink.addEventListener('click', handleUnsubscribe);
             }
             if (successUnsubscribeLink) {
                 successUnsubscribeLink.addEventListener('click', handleUnsubscribe);
