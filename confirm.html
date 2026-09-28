@@ -91,7 +91,7 @@
     <iframe name="dealkly-confirm-frame" id="dealkly-confirm-frame" style="display:none;" title="Dealkly confirm receiver"></iframe>
 
     <script>
-        const PENDING_URL = 'https://raw.githubusercontent.com/dealkly/deal-alerts/main/pending_subscribers.json';
+        const PENDING_API = 'https://api.github.com/repos/dealkly/deal-alerts/contents/pending_subscribers.json';
 
         const params = new URLSearchParams(window.location.search);
         const urlEmail = params.get('email');
@@ -107,23 +107,37 @@
         if (urlEmail) emailInput.value = urlEmail;
         if (urlCode) codeInput.value = urlCode;
 
+        function decodeBase64Utf8(b64) {
+            const cleaned = b64.replace(/\n/g, '');
+            const binary = atob(cleaned);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+            return new TextDecoder('utf-8').decode(bytes);
+        }
+
+        async function fetchPending() {
+            const url = PENDING_API + '?t=' + Date.now();
+            const resp = await fetch(url, {
+                cache: 'no-store',
+                headers: { 'Accept': 'application/vnd.github+json' }
+            });
+            if (!resp.ok) return [];
+            try {
+                const data = await resp.json();
+                const text = decodeBase64Utf8(data.content || '');
+                const json = JSON.parse(text);
+                return Array.isArray(json) ? json : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
         function findEntry(list, email, code) {
             if (!Array.isArray(list)) return null;
             for (let i = 0; i < list.length; i += 1) {
                 if (list[i].email === email && String(list[i].code) === code) return list[i];
             }
             return null;
-        }
-
-        async function fetchPending() {
-            const url = PENDING_URL + '?t=' + Date.now();
-            const resp = await fetch(url, { cache: 'no-store' });
-            if (!resp.ok) return [];
-            try {
-                return await resp.json();
-            } catch (e) {
-                return [];
-            }
         }
 
         function showSuccess() {
@@ -144,25 +158,23 @@
             const limit = maxSeconds * 1000;
 
             while (Date.now() - started < limit) {
-                await new Promise(function (r) { setTimeout(r, 1000); });
+                await new Promise(function (r) { setTimeout(r, 1500); });
                 try {
                     const list = await fetchPending();
                     const entry = findEntry(list, email, code);
-                    if (entry && entry.usedAt) {
-                        return { ok: true };
-                    }
+                    if (entry && entry.usedAt) return { ok: true };
+                    if (!entry) return { ok: false, message: 'This confirmation code is invalid or expired.' };
                 } catch (e) {
                     // keep polling
                 }
             }
-            return { ok: false, message: 'Confirmation did not complete. Please check your network and try again.' };
+            return { ok: false, message: 'Confirmation did not complete. Please try again.' };
         }
 
         async function runConfirm(email, code) {
             confirmBtn.disabled = true;
             confirmBtn.textContent = 'CONFIRMING...';
 
-            // Pre-check: is the code already used?
             try {
                 const before = await fetchPending();
                 const entryBefore = findEntry(before, email, code);
@@ -172,12 +184,12 @@
                     return;
                 }
             } catch (e) {
-                // ignore, proceed to submit
+                // ignore
             }
 
             form.submit();
 
-            const result = await pollForResult(email, code, 20);
+            const result = await pollForResult(email, code, 30);
 
             if (result.ok) {
                 showSuccess();
