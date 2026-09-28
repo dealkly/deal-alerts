@@ -91,40 +91,60 @@
     <iframe name="dealkly-confirm-frame" id="dealkly-confirm-frame" style="display:none;" title="Dealkly confirm receiver"></iframe>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const urlEmail = params.get('email');
-        const urlCode = params.get('code');
+    const params = new URLSearchParams(window.location.search);
+    const urlEmail = params.get('email');
+    const urlCode = params.get('code');
 
-        const emailInput = document.getElementById('email');
-        const codeInput = document.getElementById('code');
-        const form = document.getElementById('confirm-form');
-        const confirmPanel = document.getElementById('confirm-panel');
-        const successPanel = document.getElementById('success-panel');
-        const confirmBtn = document.getElementById('confirm-btn');
+    const emailInput = document.getElementById('email');
+    const codeInput = document.getElementById('code');
+    const form = document.getElementById('confirm-form');
+    const confirmPanel = document.getElementById('confirm-panel');
+    const successPanel = document.getElementById('success-panel');
+    const confirmBtn = document.getElementById('confirm-btn');
 
-        if (urlEmail) emailInput.value = urlEmail;
-        if (urlCode) codeInput.value = urlCode;
+    let resultReceived = false;
 
-        function showSuccessAndRedirect() {
+    if (urlEmail) emailInput.value = urlEmail;
+    if (urlCode) codeInput.value = urlCode;
+
+    window.addEventListener('message', function (event) {
+        const data = event.data || {};
+        if (typeof data !== 'object' || !('ok' in data)) return;
+
+        resultReceived = true;
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'CONFIRM FREE ALERTS';
+
+        if (data.ok) {
             confirmPanel.classList.add('hidden');
             successPanel.classList.remove('hidden');
             setTimeout(function () {
                 window.location.replace('deals.html');
             }, 1500);
+        } else {
+            alert(data.message || 'Confirmation failed. Please try again.');
         }
+    });
 
-        form.addEventListener('submit', function () {
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = 'CONFIRMING...';
-            setTimeout(showSuccessAndRedirect, 600);
-        });
+    form.addEventListener('submit', function () {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'CONFIRMING...';
 
-        if (urlEmail && urlCode) {
-            setTimeout(function () {
-                form.dispatchEvent(new Event('submit', { cancelable: true }));
-            }, 400);
-        }
-    </script>
+        setTimeout(function () {
+            if (!resultReceived) {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
+                alert('No response received. Please try again.');
+            }
+        }, 8000);
+    });
+
+    if (urlEmail && urlCode) {
+        setTimeout(function () {
+            form.dispatchEvent(new Event('submit', { cancelable: true }));
+        }, 400);
+    }
+</script>
 
 </body>
 </html>
