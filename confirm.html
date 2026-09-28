@@ -37,7 +37,9 @@
                 <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Confirm your free alerts</h1>
                 <p class="text-sm text-gray-500 mb-6">Enter the email you signed up with and the 6-digit code from the confirmation email.</p>
 
-                <form id="confirm-form" class="space-y-4">
+                <form id="confirm-form" method="POST" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" target="dealkly-confirm-frame" class="space-y-4">
+                    <input type="hidden" name="action" value="confirm">
+
                     <div>
                         <label for="email" class="block text-sm font-semibold text-gray-800 mb-1">Email Address</label>
                         <input type="email" id="email" name="email" required placeholder="you@example.com"
@@ -86,6 +88,8 @@
         </div>
     </footer>
 
+    <iframe name="dealkly-confirm-frame" id="dealkly-confirm-frame" style="display:none;" title="Dealkly confirm receiver"></iframe>
+
     <script>
         const params = new URLSearchParams(window.location.search);
         const urlEmail = params.get('email');
@@ -101,6 +105,23 @@
         if (urlEmail) emailInput.value = urlEmail;
         if (urlCode) codeInput.value = urlCode;
 
+        const PENDING_URL = 'https://raw.githubusercontent.com/dealkly/deal-alerts/main/pending_subscribers.json';
+
+        function findEntry(list, email, code) {
+            if (!Array.isArray(list)) return null;
+            for (let i = 0; i < list.length; i += 1) {
+                if (list[i].email === email && String(list[i].code) === code) return list[i];
+            }
+            return null;
+        }
+
+        async function fetchPending() {
+            const url = PENDING_URL + '?t=' + Date.now();
+            const resp = await fetch(url, { cache: 'no-store' });
+            if (!resp.ok) return [];
+            return await resp.json();
+        }
+
         function showSuccess() {
             confirmPanel.classList.add('hidden');
             successPanel.classList.remove('hidden');
@@ -109,61 +130,66 @@
             }, 1500);
         }
 
-        function handleResult(data) {
-            if (data && data.ok) {
+        function resetButton() {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'CONFIRM FREE ALERTS';
+        }
+
+        function handleResult(ok, message) {
+            if (ok) {
                 showSuccess();
             } else {
-                alert((data && data.message) || 'Confirmation failed. Please try again.');
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
+                alert(message || 'Confirmation failed. Please try again.');
+                resetButton();
             }
         }
 
-        function runConfirm(email, code) {
-            const cb = 'dealkly_confirm_cb_' + Date.now();
+        async function runConfirm(email, code) {
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'CONFIRMING...';
 
-            const timeoutId = setTimeout(function () {
-                delete window[cb];
-                alert('No response received. Please try again.');
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
-            }, 15000);
+            let wasUsedBefore = false;
 
-            window[cb] = function (data) {
-                clearTimeout(timeoutId);
-                delete window[cb];
-                handleResult(data);
-            };
+            try {
+                const before = await fetchPending();
+                const entryBefore = findEntry(before, email, code);
+                if (entryBefore && entryBefore.usedAt) wasUsedBefore = true;
+            } catch (e) {
+                // Ignore. Fall through.
+            }
 
-            const url = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec'
-                + '?action=confirm'
-                + '&email=' + encodeURIComponent(email)
-                + '&code=' + encodeURIComponent(code)
-                + '&callback=' + encodeURIComponent(cb);
+            if (wasUsedBefore) {
+                handleResult(false, 'This confirmation link has already been used. It cannot be used again.');
+                return;
+            }
 
-            const s = document.createElement('script');
-            s.src = url;
-            s.onerror = function () {
-                clearTimeout(timeoutId);
-                delete window[cb];
-                alert('Network error. Please try again.');
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
-            };
-            document.body.appendChild(s);
+            form.submit();
+
+            await new Promise(function (r) { setTimeout(r, 2500); });
+
+            try {
+                const after = await fetchPending();
+                const entryAfter = findEntry(after, email, code);
+
+                if (entryAfter && entryAfter.usedAt) {
+                    handleResult(true, 'Confirmed.');
+                } else if (entryAfter && !entryAfter.usedAt) {
+                    handleResult(false, 'Confirmation is still processing. Please wait a moment and try again.');
+                } else {
+                    handleResult(false, 'This confirmation code is invalid or expired.');
+                }
+            } catch (e) {
+                handleResult(false, 'Could not verify confirmation. Please try again.');
+            }
         }
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = 'CONFIRMING...';
             runConfirm(emailInput.value.trim().toLowerCase(), codeInput.value.trim());
         });
 
         if (urlEmail && urlCode) {
             setTimeout(function () {
-                confirmBtn.disabled = true;
-                confirmBtn.textContent = 'CONFIRMING...';
                 runConfirm(urlEmail, urlCode);
             }, 400);
         }
