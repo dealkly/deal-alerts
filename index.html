@@ -554,6 +554,10 @@
 </script>
 
 <script>
+    // GitHub API endpoint for the free subscriber list [digital space].
+    // api.github.com is used intentionally. raw.githubusercontent.com is CDN-cached and returns stale data.
+    const FREE_SUBS_API = 'https://api.github.com/repos/dealkly/deal-alerts/contents/free_subscribers.json';
+
     function isValidEmailFormat(email) {
         if (!email || typeof email !== 'string') return false;
         const trimmed = email.trim();
@@ -566,6 +570,33 @@
         const typoDomains = ['gmail.con','gmail.co','gmial.com','gnail.com','gmail.cm','yahoo.con','hotmail.con','outlook.con','gmail.comm'];
         if (typoDomains.indexOf(domain) !== -1) return false;
         return true;
+    }
+
+    // Fetches free_subscribers.json from GitHub API, decodes Base64, and checks for the email.
+    // Fails open: if the check cannot be completed, the signup is not blocked.
+    async function isEmailAlreadySubscribed(email) {
+        const target = String(email || '').trim().toLowerCase();
+        if (!target) return false;
+        try {
+            const res = await fetch(FREE_SUBS_API + '?t=' + Date.now(), {
+                headers: { 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (!res.ok) return false;
+            const data = await res.json();
+            if (!data || !data.content) return false;
+            const decoded = atob(data.content.replace(/\s/g, ''));
+            const parsed = JSON.parse(decoded);
+            if (!Array.isArray(parsed)) return false;
+            return parsed.some(function (entry) {
+                if (typeof entry === 'string') return entry.trim().toLowerCase() === target;
+                if (entry && typeof entry === 'object' && entry.email) {
+                    return String(entry.email).trim().toLowerCase() === target;
+                }
+                return false;
+            });
+        } catch (err) {
+            return false;
+        }
     }
 
     const signupForm = document.getElementById('free-signup-form');
@@ -594,7 +625,7 @@
     }
 
     if (signupForm && verifyForm) {
-        signupForm.addEventListener('submit', function (e) {
+        signupForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const emailInput = document.getElementById('free-email');
@@ -613,8 +644,19 @@
                 return;
             }
 
-            step1Btn.textContent = 'SENDING CODE...';
+            step1Btn.textContent = 'CHECKING...';
             step1Btn.disabled = true;
+
+            // Duplicate guard: check free_subscribers.json before submitting.
+            const alreadySubscribed = await isEmailAlreadySubscribed(email);
+            if (alreadySubscribed) {
+                showError('This email is already subscribed.');
+                step1Btn.textContent = 'SUBSCRIBE FREE';
+                step1Btn.disabled = false;
+                return;
+            }
+
+            step1Btn.textContent = 'SENDING CODE...';
 
             // Submit quietly to Apps Script (default signup path).
             signupForm.submit();
@@ -628,7 +670,7 @@
                 verifyForm.classList.remove('hidden');
                 step1Btn.textContent = 'SUBSCRIBE FREE';
                 step1Btn.disabled = false;
-                showMessage('Confirmation code sent. Check your inbox.');
+                showMessage('Confirmation email sent. Check your inbox and click the link to activate free alerts. The 6-digit code below can also be used.');
             }, 600);
         });
 
@@ -656,7 +698,7 @@
                 verifyForm.classList.add('hidden');
                 step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
                 step2Btn.disabled = false;
-                showMessage('Confirmed. Your free alerts are active. Check your inbox for the welcome email.');
+                showMessage('Confirmed. Check your inbox for the welcome email. Free alerts are now active.');
             }, 1500);
         });
 
