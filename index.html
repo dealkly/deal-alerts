@@ -188,6 +188,25 @@
         .modal-close:hover {
             color: #0f172a;
         }
+        /* Profile widget (post-subscribe state) */
+        .profile-widget { position: relative; }
+        .profile-avatar {
+            background: linear-gradient(135deg, #D97706, #B45309);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .profile-trigger:hover .profile-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(180, 83, 9, 0.35);
+        }
+        .profile-username {
+            color: #F5EFE6;
+            text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);
+            max-width: 84px;
+        }
+        #dropdown-header .profile-username {
+            color: #1D2023;
+            text-shadow: none;
+        }
     </style>
 </head>
 <body class="font-light text-gray-700 bg-white">
@@ -206,7 +225,28 @@
             <a href="deals.html" class="nav-link">Live Deals</a>
             <a href="tools.html" class="nav-link">Tools</a>
         </div>
-        <a href="#pricing" class="btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get Started</a>
+        <div class="auth-slot flex items-center">
+            <a href="#pricing" class="get-started-btn btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get Started</a>
+            <div class="profile-widget hidden">
+                <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
+                    <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
+                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                        </svg>
+                    </span>
+                    <span class="profile-username text-[10px] font-semibold leading-none mt-0.5 truncate"></span>
+                </button>
+                <div class="profile-menu hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div class="px-4 py-2 border-b border-gray-100">
+                        <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
+                        <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
+                    </div>
+                    <button type="button" class="profile-unsubscribe w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
+                        Unsubscribe
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -224,7 +264,28 @@
             <a href="deals.html" class="nav-link">Live Deals</a>
             <a href="tools.html" class="nav-link">Tools</a>
         </div>
-        <a href="#pricing" class="btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get Started</a>
+        <div class="auth-slot flex items-center">
+            <a href="#pricing" class="get-started-btn btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get Started</a>
+            <div class="profile-widget hidden">
+                <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
+                    <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
+                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                        </svg>
+                    </span>
+                    <span class="profile-username text-[10px] font-semibold leading-none mt-0.5 truncate"></span>
+                </button>
+                <div class="profile-menu hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div class="px-4 py-2 border-b border-gray-100">
+                        <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
+                        <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
+                    </div>
+                    <button type="button" class="profile-unsubscribe w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
+                        Unsubscribe
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -553,6 +614,113 @@
     });
 </script>
 
+<!-- Profile widget logic. Runs on page load and after in-page confirmation. -->
+<script>
+    (function () {
+        var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
+
+        function getState() {
+            var subscribed = localStorage.getItem('dealkly_subscribed') === 'true';
+            var email = (localStorage.getItem('dealkly_email') || '').trim();
+            return { subscribed: subscribed, email: email };
+        }
+
+        function usernameFromEmail(email) {
+            if (!email) return 'Account';
+            var local = email.split('@')[0] || '';
+            if (!local) return 'Account';
+            return local.charAt(0).toUpperCase() + local.slice(1);
+        }
+
+        function closeAllMenus() {
+            document.querySelectorAll('.profile-menu').forEach(function (m) {
+                m.classList.add('hidden');
+            });
+        }
+
+        function renderWidget() {
+            var state = getState();
+            document.querySelectorAll('.auth-slot').forEach(function (slot) {
+                var gs = slot.querySelector('.get-started-btn');
+                var widget = slot.querySelector('.profile-widget');
+                if (!gs || !widget) return;
+
+                if (state.subscribed && state.email) {
+                    gs.classList.add('hidden');
+                    widget.classList.remove('hidden');
+
+                    var nameEl = widget.querySelector('.profile-username');
+                    var emailEl = widget.querySelector('.profile-email');
+                    if (nameEl) nameEl.textContent = usernameFromEmail(state.email);
+                    if (emailEl) emailEl.textContent = state.email;
+                } else {
+                    gs.classList.remove('hidden');
+                    widget.classList.add('hidden');
+                }
+            });
+        }
+
+        function bind() {
+            document.querySelectorAll('.profile-trigger').forEach(function (btn) {
+                if (btn.dataset.bound === '1') return;
+                btn.dataset.bound = '1';
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var menu = btn.parentElement.querySelector('.profile-menu');
+                    if (!menu) return;
+                    var wasHidden = menu.classList.contains('hidden');
+                    closeAllMenus();
+                    if (wasHidden) menu.classList.remove('hidden');
+                });
+            });
+
+            document.querySelectorAll('.profile-unsubscribe').forEach(function (btn) {
+                if (btn.dataset.bound === '1') return;
+                btn.dataset.bound = '1';
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var state = getState();
+                    if (!state.email) return;
+                    if (!window.confirm('Unsubscribe from free deal alerts?')) return;
+
+                    localStorage.removeItem('dealkly_subscribed');
+                    localStorage.removeItem('dealkly_email');
+                    renderWidget();
+
+                    var url = APPS_SCRIPT_URL + '?action=unsubscribe&email=' + encodeURIComponent(state.email);
+                    window.location.href = url;
+                });
+            });
+        }
+
+        document.addEventListener('click', function () {
+            closeAllMenus();
+        });
+
+        function boot() {
+            bind();
+            renderWidget();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', boot);
+        } else {
+            boot();
+        }
+
+        window.DealklyAuth = {
+            refresh: boot,
+            setSubscribed: function (email) {
+                if (!email) return;
+                localStorage.setItem('dealkly_subscribed', 'true');
+                localStorage.setItem('dealkly_email', String(email).trim());
+                boot();
+            }
+        };
+    })();
+</script>
+
 <script>
     // GitHub API endpoint for the free subscriber list [digital space].
     // api.github.com is used intentionally. raw.githubusercontent.com is CDN-cached and returns stale data.
@@ -679,6 +847,7 @@
 
             const codeInput = document.getElementById('free-code');
             const code = codeInput ? codeInput.value.trim() : '';
+            const email = verifyEmailHidden ? verifyEmailHidden.value.trim() : '';
 
             clearFeedback();
 
@@ -699,6 +868,11 @@
                 step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
                 step2Btn.disabled = false;
                 showMessage('Confirmed. Check your inbox for the welcome email. Free alerts are now active.');
+
+                // Flip the header to the profile-icon state.
+                if (email && window.DealklyAuth) {
+                    window.DealklyAuth.setSubscribed(email);
+                }
             }, 1500);
         });
 
