@@ -19,6 +19,21 @@
             filter: brightness(0) saturate(100%) invert(100%);
             transition: filter 0.3s ease;
         }
+        /* Profile widget (post-subscribe state) */
+        .profile-widget { position: relative; }
+        .profile-avatar {
+            background: linear-gradient(135deg, #D97706, #B45309);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .profile-trigger:hover .profile-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(180, 83, 9, 0.35);
+        }
+        .profile-username {
+            color: #F5EFE6;
+            text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);
+            max-width: 84px;
+        }
     </style>
 </head>
 <body class="bg-[#F4F6F8] text-gray-800 min-h-screen flex flex-col">
@@ -32,10 +47,34 @@
                 </a>
                 <span class="hidden sm:inline-block px-3 py-1 bg-amber-600 text-xs font-bold rounded-full uppercase tracking-wide">Tools</span>
             </div>
-            <nav class="hidden md:flex items-center gap-5 text-sm font-semibold text-amber-100">
-                <a href="deals.html" class="hover:text-white transition">Live Deals</a>
-                <a href="index.html" class="px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition">What is Dealkly?</a>
-            </nav>
+
+            <div class="flex items-center gap-3">
+                <nav class="hidden md:flex items-center gap-5 text-sm font-semibold text-amber-100">
+                    <a href="deals.html" class="hover:text-white transition">Live Deals</a>
+                    <a href="index.html" class="px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition">What is Dealkly?</a>
+                </nav>
+
+                <!-- Profile widget (shown only after signup) -->
+                <div id="profile-widget-wrapper" class="hidden profile-widget">
+                    <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
+                        <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                            </svg>
+                        </span>
+                        <span class="profile-username text-[10px] font-semibold leading-none mt-0.5 truncate"></span>
+                    </button>
+                    <div class="profile-menu hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                        <div class="px-4 py-2 border-b border-gray-100">
+                            <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
+                            <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
+                        </div>
+                        <a href="#" class="profile-unsubscribe block w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
+                            Unsubscribe
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -218,6 +257,69 @@
             <p class="text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        (function () {
+            const profileWidgetWrapper = document.getElementById('profile-widget-wrapper');
+            const profileTrigger = profileWidgetWrapper.querySelector('.profile-trigger');
+            const profileMenu = profileWidgetWrapper.querySelector('.profile-menu');
+            const profileUnsubscribeLink = profileWidgetWrapper.querySelector('.profile-unsubscribe');
+            const profileEmailDisplay = profileWidgetWrapper.querySelector('.profile-email');
+            const profileUsername = profileWidgetWrapper.querySelector('.profile-username');
+
+            const STORAGE_KEY = 'dealkly_subscribed';
+            const EMAIL_KEY = 'dealkly_email';
+            const UNSUBSCRIBE_BASE = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
+
+            function usernameFromEmail(email) {
+                if (!email) return 'Account';
+                var local = email.split('@')[0] || '';
+                if (!local) return 'Account';
+                return local.charAt(0).toUpperCase() + local.slice(1);
+            }
+
+            function showProfile(email) {
+                profileWidgetWrapper.classList.remove('hidden');
+                const url = `${UNSUBSCRIBE_BASE}?action=unsubscribe&email=${encodeURIComponent(email || '')}`;
+                profileUnsubscribeLink.href = url;
+                if (profileEmailDisplay) profileEmailDisplay.textContent = email || '—';
+                if (profileUsername) profileUsername.textContent = usernameFromEmail(email);
+            }
+
+            function hideProfile() {
+                profileWidgetWrapper.classList.add('hidden');
+                profileMenu.classList.add('hidden');
+            }
+
+            const alreadySubscribed = localStorage.getItem(STORAGE_KEY) === 'true';
+            const storedEmail = localStorage.getItem(EMAIL_KEY) || '';
+
+            if (alreadySubscribed && storedEmail) {
+                showProfile(storedEmail);
+            }
+
+            if (profileTrigger) {
+                profileTrigger.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    profileMenu.classList.toggle('hidden');
+                });
+            }
+
+            document.addEventListener('click', function () {
+                if (profileMenu) profileMenu.classList.add('hidden');
+            });
+
+            function handleUnsubscribe() {
+                localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(EMAIL_KEY);
+                hideProfile();
+            }
+
+            if (profileUnsubscribeLink) {
+                profileUnsubscribeLink.addEventListener('click', handleUnsubscribe);
+            }
+        })();
+    </script>
 
 </body>
 </html>
