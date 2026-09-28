@@ -37,9 +37,7 @@
                 <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Confirm your free alerts</h1>
                 <p class="text-sm text-gray-500 mb-6">Enter the email you signed up with and the 6-digit code from the confirmation email.</p>
 
-                <form id="confirm-form" method="POST" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" class="space-y-4">
-                    <input type="hidden" name="action" value="confirm">
-
+                <form id="confirm-form" class="space-y-4">
                     <div>
                         <label for="email" class="block text-sm font-semibold text-gray-800 mb-1">Email Address</label>
                         <input type="email" id="email" name="email" required placeholder="you@example.com"
@@ -90,8 +88,6 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const result = params.get('result');
-        const msg = params.get('msg');
         const urlEmail = params.get('email');
         const urlCode = params.get('code');
 
@@ -105,26 +101,72 @@
         if (urlEmail) emailInput.value = urlEmail;
         if (urlCode) codeInput.value = urlCode;
 
-        if (result === 'ok') {
+        function showSuccess() {
             confirmPanel.classList.add('hidden');
             successPanel.classList.remove('hidden');
             setTimeout(function () {
-                window.location.replace('deals.html');
+                window.location.href = 'deals.html';
             }, 1500);
-        } else if (result === 'error') {
-            alert(msg || 'Confirmation failed. Please try again.');
-        } else if (urlEmail && urlCode) {
+        }
+
+        function handleResult(data) {
+            if (data && data.ok) {
+                showSuccess();
+            } else {
+                alert((data && data.message) || 'Confirmation failed. Please try again.');
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
+            }
+        }
+
+        function runConfirm(email, code) {
+            const cb = 'dealkly_confirm_cb_' + Date.now();
+
+            const timeoutId = setTimeout(function () {
+                delete window[cb];
+                alert('No response received. Please try again.');
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
+            }, 15000);
+
+            window[cb] = function (data) {
+                clearTimeout(timeoutId);
+                delete window[cb];
+                handleResult(data);
+            };
+
+            const url = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec'
+                + '?action=confirm'
+                + '&email=' + encodeURIComponent(email)
+                + '&code=' + encodeURIComponent(code)
+                + '&callback=' + encodeURIComponent(cb);
+
+            const s = document.createElement('script');
+            s.src = url;
+            s.onerror = function () {
+                clearTimeout(timeoutId);
+                delete window[cb];
+                alert('Network error. Please try again.');
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'CONFIRM FREE ALERTS';
+            };
+            document.body.appendChild(s);
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'CONFIRMING...';
+            runConfirm(emailInput.value.trim().toLowerCase(), codeInput.value.trim());
+        });
+
+        if (urlEmail && urlCode) {
             setTimeout(function () {
                 confirmBtn.disabled = true;
                 confirmBtn.textContent = 'CONFIRMING...';
-                form.submit();
+                runConfirm(urlEmail, urlCode);
             }, 400);
         }
-
-        form.addEventListener('submit', function () {
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = 'CONFIRMING...';
-        });
     </script>
 
 </body>
