@@ -207,6 +207,21 @@
             color: #1D2023;
             text-shadow: none;
         }
+        /* Toast (feedback banner after sign out / unsubscribe) */
+        #dealkly-toast {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 10001;
+            pointer-events: none;
+        }
+        #dealkly-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body class="font-light text-gray-700 bg-white">
@@ -241,6 +256,9 @@
                         <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
                         <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
                     </div>
+                    <button type="button" class="profile-signout w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        Sign out
+                    </button>
                     <button type="button" class="profile-unsubscribe w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
                         Unsubscribe
                     </button>
@@ -280,6 +298,9 @@
                         <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
                         <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
                     </div>
+                    <button type="button" class="profile-signout w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        Sign out
+                    </button>
                     <button type="button" class="profile-unsubscribe w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
                         Unsubscribe
                     </button>
@@ -554,6 +575,17 @@
     </div>
 </div>
 
+<!-- Toast for sign-out / unsubscribe feedback -->
+<div id="dealkly-toast" class="px-5 py-3 rounded-lg shadow-lg text-sm font-semibold text-white" style="background: linear-gradient(135deg, #D97706, #B45309);"></div>
+
+<!-- Hidden iframe + forms for POST actions (sign out, unsubscribe) -->
+<iframe name="dealkly-action-frame" id="dealkly-action-frame" style="display:none;" title="Dealkly action receiver"></iframe>
+<form id="dealkly-action-form" method="POST" target="dealkly-action-frame" style="display:none;">
+    <input type="hidden" name="action" id="action-name" value="">
+    <input type="hidden" name="email" id="action-email" value="">
+    <input type="hidden" name="token" id="action-token" value="">
+</form>
+
 <script>
     const transparentHeader = document.getElementById('transparent-header');
     const dropdownHeader = document.getElementById('dropdown-header');
@@ -578,9 +610,6 @@
         return false;
     }
 
-    // Tailwind CDN applies styles after the first paint, so the threshold has to be
-    // recalculated a few times until the layout has settled. Without this the threshold
-    // stays at 0 and the dropdown header shows immediately, stacking on the transparent one.
     let thresholdTries = 0;
     const thresholdTimer = setInterval(function () {
         if (updateThreshold() || thresholdTries++ > 40) {
@@ -598,7 +627,6 @@
         if (!ticking) {
             window.requestAnimationFrame(function () {
                 const currentScrollY = window.scrollY;
-                // Guard: if the threshold is still 0 for any reason, never show the dropdown.
                 const isPast = threshold > 0 && currentScrollY >= threshold;
 
                 if (isPast) {
@@ -633,15 +661,34 @@
     });
 </script>
 
-<!-- Profile widget logic. Runs on page load and after in-page confirmation. -->
+<!-- Profile widget logic -->
 <script>
     (function () {
         var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
 
+        var actionForm = document.getElementById('dealkly-action-form');
+        var actionName = document.getElementById('action-name');
+        var actionEmail = document.getElementById('action-email');
+        var actionToken = document.getElementById('action-token');
+
+        var toast = document.getElementById('dealkly-toast');
+        var toastTimer = null;
+
+        function showToast(msg) {
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add('show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
         function getState() {
             var subscribed = localStorage.getItem('dealkly_subscribed') === 'true';
             var email = (localStorage.getItem('dealkly_email') || '').trim();
-            return { subscribed: subscribed, email: email };
+            var token = (localStorage.getItem('dealkly_token') || '').trim();
+            return { subscribed: subscribed, email: email, token: token };
         }
 
         function usernameFromEmail(email) {
@@ -655,6 +702,14 @@
             document.querySelectorAll('.profile-menu').forEach(function (m) {
                 m.classList.add('hidden');
             });
+        }
+
+        function clearLocalState() {
+            try {
+                localStorage.removeItem('dealkly_subscribed');
+                localStorage.removeItem('dealkly_email');
+                localStorage.removeItem('dealkly_token');
+            } catch (e) {}
         }
 
         function renderWidget() {
@@ -679,6 +734,43 @@
             });
         }
 
+        // ---- message handler for POST actions (sign out / unsubscribe) ----
+        var pendingAction = '';
+
+        window.addEventListener('message', function (event) {
+            var data = event.data;
+            if (!data || typeof data !== 'object') return;
+            if (!pendingAction) return;
+
+            if (pendingAction === 'signout') {
+                pendingAction = '';
+                clearLocalState();
+                renderWidget();
+                showToast('Signed out.');
+                return;
+            }
+
+            if (pendingAction === 'unsubscribe') {
+                pendingAction = '';
+                clearLocalState();
+                renderWidget();
+                if (data.ok === false && data.message) {
+                    showToast(data.message);
+                } else {
+                    showToast('You have been unsubscribed.');
+                }
+                return;
+            }
+        });
+
+        function submitAction(action, email, token) {
+            actionName.value = action;
+            actionEmail.value = email || '';
+            actionToken.value = token || '';
+            actionForm.submit();
+        }
+
+        // ---- bind buttons ----
         function bind() {
             document.querySelectorAll('.profile-trigger').forEach(function (btn) {
                 if (btn.dataset.bound === '1') return;
@@ -693,6 +785,34 @@
                 });
             });
 
+            document.querySelectorAll('.profile-signout').forEach(function (btn) {
+                if (btn.dataset.bound === '1') return;
+                btn.dataset.bound = '1';
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var state = getState();
+
+                    closeAllMenus();
+                    pendingAction = 'signout';
+
+                    // Clear local state immediately (UI flips right away).
+                    clearLocalState();
+                    renderWidget();
+                    showToast('Signed out.');
+
+                    // Also invalidate the server session if there is a token.
+                    if (state.token) {
+                        submitAction('logout', state.email, state.token);
+                    }
+
+                    // Safety net so a stuck pendingAction does not block future messages.
+                    setTimeout(function () {
+                        if (pendingAction === 'signout') pendingAction = '';
+                    }, 8000);
+                });
+            });
+
             document.querySelectorAll('.profile-unsubscribe').forEach(function (btn) {
                 if (btn.dataset.bound === '1') return;
                 btn.dataset.bound = '1';
@@ -701,14 +821,22 @@
                     e.stopPropagation();
                     var state = getState();
                     if (!state.email) return;
-                    if (!window.confirm('Unsubscribe from free deal alerts?')) return;
+                    if (!window.confirm('Unsubscribe from free deal alerts? This cannot be undone from this menu.')) return;
 
-                    localStorage.removeItem('dealkly_subscribed');
-                    localStorage.removeItem('dealkly_email');
-                    renderWidget();
+                    closeAllMenus();
+                    pendingAction = 'unsubscribe';
+                    submitAction('unsubscribe', state.email, state.token);
 
-                    var url = APPS_SCRIPT_URL + '?action=unsubscribe&email=' + encodeURIComponent(state.email);
-                    window.location.href = url;
+                    // Safety net
+                    setTimeout(function () {
+                        if (pendingAction === 'unsubscribe') {
+                            pendingAction = '';
+                            // Even if the server is slow, honour the local click.
+                            clearLocalState();
+                            renderWidget();
+                            showToast('You have been unsubscribed.');
+                        }
+                    }, 8000);
                 });
             });
         }
@@ -742,7 +870,6 @@
 
 <script>
     // GitHub API endpoint for the free subscriber list [digital space].
-    // api.github.com is used intentionally. raw.githubusercontent.com is CDN-cached and returns stale data.
     const FREE_SUBS_API = 'https://api.github.com/repos/dealkly/deal-alerts/contents/free_subscribers.json';
 
     function isValidEmailFormat(email) {
@@ -759,8 +886,6 @@
         return true;
     }
 
-    // Fetches free_subscribers.json from GitHub API, decodes Base64, and checks for the email.
-    // Fails open: if the check cannot be completed, the signup is not blocked.
     async function isEmailAlreadySubscribed(email) {
         const target = String(email || '').trim().toLowerCase();
         if (!target) return false;
@@ -834,7 +959,6 @@
             step1Btn.textContent = 'CHECKING...';
             step1Btn.disabled = true;
 
-            // Duplicate guard: check free_subscribers.json before submitting.
             const alreadySubscribed = await isEmailAlreadySubscribed(email);
             if (alreadySubscribed) {
                 showError('This email is already subscribed.');
@@ -845,10 +969,8 @@
 
             step1Btn.textContent = 'SENDING CODE...';
 
-            // Submit quietly to Apps Script (default signup path).
             signupForm.submit();
 
-            // Move to step 2 immediately.
             verifyEmailHidden.value = email;
             verifyEmailDisplay.textContent = email;
 
@@ -878,17 +1000,14 @@
             step2Btn.textContent = 'CONFIRMING...';
             step2Btn.disabled = true;
 
-            // Submit quietly to Apps Script (confirm path).
             verifyForm.submit();
 
-            // Optimistic success after the request has time to complete.
             setTimeout(function () {
                 verifyForm.classList.add('hidden');
                 step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
                 step2Btn.disabled = false;
                 showMessage('Confirmed. Check your inbox for the welcome email. Free alerts are now active.');
 
-                // Flip the header to the profile-icon state.
                 if (email && window.DealklyAuth) {
                     window.DealklyAuth.setSubscribed(email);
                 }
