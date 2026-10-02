@@ -564,23 +564,42 @@
         const logo = transparentHeader.querySelector('.logo-img');
         const nav = transparentHeader.querySelector('.nav-links');
         const btn = transparentHeader.querySelector('.btn-silky');
-        if (!logo || !nav || !btn) return;
+        if (!logo || !nav || !btn) return false;
 
         const topLogo = logo.getBoundingClientRect().top + window.scrollY;
         const topNav = nav.getBoundingClientRect().top + window.scrollY;
         const topBtn = btn.getBoundingClientRect().top + window.scrollY;
-        threshold = Math.min(topLogo, topNav, topBtn);
+        const newThreshold = Math.min(topLogo, topNav, topBtn);
+
+        if (newThreshold > 0) {
+            threshold = newThreshold;
+            return true;
+        }
+        return false;
     }
 
-    window.addEventListener('load', updateThreshold);
-    window.addEventListener('resize', updateThreshold);
-    updateThreshold();
+    // Tailwind CDN applies styles after the first paint, so the threshold has to be
+    // recalculated a few times until the layout has settled. Without this the threshold
+    // stays at 0 and the dropdown header shows immediately, stacking on the transparent one.
+    let thresholdTries = 0;
+    const thresholdTimer = setInterval(function () {
+        if (updateThreshold() || thresholdTries++ > 40) {
+            clearInterval(thresholdTimer);
+        }
+    }, 100);
 
-    window.addEventListener('scroll', () => {
+    window.addEventListener('load', function () {
+        updateThreshold();
+        setTimeout(updateThreshold, 500);
+    });
+    window.addEventListener('resize', updateThreshold);
+
+    window.addEventListener('scroll', function () {
         if (!ticking) {
-            window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(function () {
                 const currentScrollY = window.scrollY;
-                const isPast = currentScrollY >= threshold;
+                // Guard: if the threshold is still 0 for any reason, never show the dropdown.
+                const isPast = threshold > 0 && currentScrollY >= threshold;
 
                 if (isPast) {
                     dropdownHeader.classList.add('show-down');
