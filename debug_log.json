@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-09-28T16:37:47.298Z",
-    "message": "Already subscribed: meshsami321@gmail.com"
-  },
-  {
     "time": "2026-09-28T16:42:17.481Z",
     "message": "doPost reached. action="
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-10-09T06:22:07.090Z",
     "message": "About to write pending. count=2"
+  },
+  {
+    "time": "2026-10-09T06:22:09.080Z",
+    "message": "Pending written."
   }
 ]
