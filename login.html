@@ -224,9 +224,6 @@
                 return regex.test(trimmed);
             }
 
-            // JSONP: load the Apps Script reply as a <script> tag so the browser
-            // executes it in this page's context. This bypasses the iframe X-Frame-Options
-            // restriction that Apps Script applies to its redirect responses.
             function jsonp(action, params, onDone) {
                 var cbName = 'dealkly_cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
                 var done = false;
@@ -380,7 +377,7 @@
                 try {
                     localStorage.setItem('dealkly_welcomed', 'true');
                 } catch (e) {}
-                window.location.href = 'index.html';
+                window.location.href = 'home.html';
             });
 
             try {
