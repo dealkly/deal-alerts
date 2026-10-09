@@ -89,10 +89,9 @@
     </header>
 
     <section class="fade-in" style="background: linear-gradient(135deg, #92400E, #78350F);">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-white">
-            <p class="text-amber-200 text-xs uppercase tracking-widest font-bold mb-2">Your dashboard</p>
-            <h1 class="text-3xl md:text-4xl font-extrabold mb-3 hero-greeting">Welcome.</h1>
-            <p class="text-amber-100 max-w-2xl leading-relaxed">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-white">
+            <p class="text-amber-200 text-[10px] uppercase tracking-widest font-bold mb-3">Your dashboard</p>
+            <p class="text-amber-100 max-w-2xl leading-relaxed text-base md:text-lg">
                 Dealkly is watching eBay around the clock. When a real price drop is detected, it lands in your inbox. Here is your quick hub.
             </p>
         </div>
@@ -326,8 +325,6 @@
                 wrapper.querySelector('.profile-email').textContent = state.email;
             }
             if (signinWrap) signinWrap.style.display = 'none';
-
-            document.querySelector('.hero-greeting').textContent = 'Welcome, ' + usernameFromEmail(state.email) + '.';
 
             document.querySelectorAll('.status-email').forEach(function (el) { el.textContent = state.email; });
 
