@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-09-28T16:44:36.782Z",
-    "message": "Free signup: email=meshsami321@gmail.com consent=yes"
-  },
-  {
     "time": "2026-09-28T16:44:38.350Z",
     "message": "Already subscribed: meshsami321@gmail.com"
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-10-09T06:22:15.938Z",
     "message": "Free signup: email=meshsami321@gmail.com consent=yes"
+  },
+  {
+    "time": "2026-10-09T06:22:17.726Z",
+    "message": "About to write pending. count=2"
   }
 ]
