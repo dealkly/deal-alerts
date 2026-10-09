@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-09-28T09:51:26.496Z",
-    "message": "doPost unsubscribe: email=meshsami321@gmail.com"
-  },
-  {
     "time": "2026-09-28T09:52:11.633Z",
     "message": "doPost reached. action="
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-10-09T04:48:14.486Z",
     "message": "Pending written."
+  },
+  {
+    "time": "2026-10-09T04:48:16.019Z",
+    "message": "Confirmation email sent to meshsami321@gmail.com"
   }
 ]
