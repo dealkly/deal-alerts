@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-10-09T06:19:13.477Z",
-    "message": "Free signup: email=tesfawtsions@gmail.com consent=yes"
-  },
-  {
     "time": "2026-10-09T06:19:14.630Z",
     "message": "Already subscribed: tesfawtsions@gmail.com"
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-10-09T15:08:15.678Z",
     "message": "Pending written."
+  },
+  {
+    "time": "2026-10-09T15:08:17.484Z",
+    "message": "Confirmation email sent to meshsami321@gmail.com"
   }
 ]
