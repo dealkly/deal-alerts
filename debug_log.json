@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-10-09T06:19:14.630Z",
-    "message": "Already subscribed: tesfawtsions@gmail.com"
-  },
-  {
     "time": "2026-10-09T06:19:23.445Z",
     "message": "doPost reached. action="
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-10-09T15:08:17.484Z",
     "message": "Confirmation email sent to meshsami321@gmail.com"
+  },
+  {
+    "time": "2026-10-09T16:33:01.295Z",
+    "message": "doPost unsubscribe: email=meshsami321@gmail.com"
   }
 ]
