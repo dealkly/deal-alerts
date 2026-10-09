@@ -188,7 +188,6 @@
         .modal-close:hover {
             color: #0f172a;
         }
-        /* Profile widget (post-subscribe state) */
         .profile-widget { position: relative; }
         .profile-avatar {
             background: linear-gradient(135deg, #D97706, #B45309);
@@ -207,7 +206,6 @@
             color: #1D2023;
             text-shadow: none;
         }
-        /* Toast (feedback banner after sign out / unsubscribe) */
         #dealkly-toast {
             position: fixed;
             top: 16px;
@@ -256,6 +254,12 @@
                         <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
                         <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
                     </div>
+                    <a href="home.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        Home
+                    </a>
+                    <a href="account.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        My Account
+                    </a>
                     <button type="button" class="profile-signout w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
                         Sign out
                     </button>
@@ -298,6 +302,12 @@
                         <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
                         <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
                     </div>
+                    <a href="home.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        Home
+                    </a>
+                    <a href="account.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        My Account
+                    </a>
                     <button type="button" class="profile-signout w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
                         Sign out
                     </button>
@@ -479,35 +489,50 @@
 
                 <div class="mt-auto w-full">
 
-                    <!-- Step 1: Email + consent -->
-                    <form id="free-signup-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3" novalidate>
-                        <label for="free-email" class="block text-sm font-semibold text-gray-800">Subscribe to free deal alerts</label>
-                        <input type="email" id="free-email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
-                        <div class="flex items-start gap-2">
-                            <input type="checkbox" id="free-consent" name="consent" value="yes" required class="mt-1 h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500 flex-shrink-0">
-                            <label for="free-consent" class="text-xs text-gray-600 leading-snug">
-                                I agree to the <a href="privacy.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Privacy Policy</a> and <a href="terms.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Terms of Service</a>.
-                            </label>
-                        </div>
-                        <button type="submit" id="free-step1-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">SUBSCRIBE FREE</button>
-                    </form>
-
-                    <!-- Step 2: Code entry -->
-                    <form id="free-verify-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3 hidden" novalidate>
-                        <input type="hidden" name="action" value="confirm">
-                        <input type="hidden" id="verify-email-hidden" name="email" value="">
-                        <p class="text-sm text-gray-600 leading-snug">
-                            Confirmation code sent to <strong id="verify-email-display" class="text-amber-700">your email</strong>.
+                    <!-- Signed-in state (shown instead of the form) -->
+                    <div id="free-signedin-panel" class="hidden bg-green-50 border border-green-200 rounded-xl p-4">
+                        <p class="text-xs font-bold text-green-800 mb-1">You are signed in</p>
+                        <p class="text-xs text-green-700 leading-snug">
+                            Free alerts will be sent to <strong class="free-account-email">—</strong>.
                         </p>
-                        <label for="free-code" class="block text-sm font-semibold text-gray-800">Enter the 6-digit code</label>
-                        <input type="text" id="free-code" name="code" required maxlength="6" pattern="\d{6}" inputmode="numeric" placeholder="000000" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
-                        <button type="submit" id="free-step2-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">CONFIRM &amp; SUBSCRIBE</button>
-                        <button type="button" id="free-back-btn" class="w-full text-xs text-gray-500 hover:text-amber-700 underline">← Use a different email</button>
-                    </form>
+                        <a href="account.html" class="block mt-3 text-center text-xs font-bold text-white py-2.5 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                            Manage my account →
+                        </a>
+                    </div>
 
-                    <p id="free-signup-error" class="hidden mt-3 text-sm font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3"></p>
-                    <p id="free-signup-message" class="hidden mt-3 text-sm font-semibold text-green-800 bg-green-50 border border-green-200 rounded-lg px-4 py-3"></p>
-                    <iframe name="dealkly-signup-frame" id="dealkly-signup-frame" style="display:none;" title="Dealkly signup receiver"></iframe>
+                    <!-- Form (shown when not signed in) -->
+                    <div id="free-form-panel">
+
+                        <!-- Step 1: Email + consent -->
+                        <form id="free-signup-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3" novalidate>
+                            <label for="free-email" class="block text-sm font-semibold text-gray-800">Subscribe to free deal alerts</label>
+                            <input type="email" id="free-email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
+                            <div class="flex items-start gap-2">
+                                <input type="checkbox" id="free-consent" name="consent" value="yes" required class="mt-1 h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500 flex-shrink-0">
+                                <label for="free-consent" class="text-xs text-gray-600 leading-snug">
+                                    I agree to the <a href="privacy.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Privacy Policy</a> and <a href="terms.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Terms of Service</a>.
+                                </label>
+                            </div>
+                            <button type="submit" id="free-step1-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">SUBSCRIBE FREE</button>
+                        </form>
+
+                        <!-- Step 2: Code entry -->
+                        <form id="free-verify-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3 hidden" novalidate>
+                            <input type="hidden" name="action" value="confirm">
+                            <input type="hidden" id="verify-email-hidden" name="email" value="">
+                            <p class="text-sm text-gray-600 leading-snug">
+                                Confirmation code sent to <strong id="verify-email-display" class="text-amber-700">your email</strong>.
+                            </p>
+                            <label for="free-code" class="block text-sm font-semibold text-gray-800">Enter the 6-digit code</label>
+                            <input type="text" id="free-code" name="code" required maxlength="6" pattern="\d{6}" inputmode="numeric" placeholder="000000" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
+                            <button type="submit" id="free-step2-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">CONFIRM &amp; SUBSCRIBE</button>
+                            <button type="button" id="free-back-btn" class="w-full text-xs text-gray-500 hover:text-amber-700 underline">← Use a different email</button>
+                        </form>
+
+                        <p id="free-signup-error" class="hidden mt-3 text-sm font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3"></p>
+                        <p id="free-signup-message" class="hidden mt-3 text-sm font-semibold text-green-800 bg-green-50 border border-green-200 rounded-lg px-4 py-3"></p>
+                        <iframe name="dealkly-signup-frame" id="dealkly-signup-frame" style="display:none;" title="Dealkly signup receiver"></iframe>
+                    </div>
                 </div>
             </div>
 
@@ -575,10 +600,8 @@
     </div>
 </div>
 
-<!-- Toast for sign-out / unsubscribe feedback -->
 <div id="dealkly-toast" class="px-5 py-3 rounded-lg shadow-lg text-sm font-semibold text-white" style="background: linear-gradient(135deg, #D97706, #B45309);"></div>
 
-<!-- Hidden iframe + forms for POST actions (sign out, unsubscribe) -->
 <iframe name="dealkly-action-frame" id="dealkly-action-frame" style="display:none;" title="Dealkly action receiver"></iframe>
 <form id="dealkly-action-form" method="POST" target="dealkly-action-frame" style="display:none;">
     <input type="hidden" name="action" id="action-name" value="">
@@ -661,7 +684,6 @@
     });
 </script>
 
-<!-- Profile widget logic -->
 <script>
     (function () {
         var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
@@ -732,9 +754,24 @@
                     widget.classList.add('hidden');
                 }
             });
+
+            // Toggle the free plan card between the form and the "signed in" panel
+            var freeFormPanel = document.getElementById('free-form-panel');
+            var freeSignedinPanel = document.getElementById('free-signedin-panel');
+            if (freeFormPanel && freeSignedinPanel) {
+                if (state.subscribed && state.email) {
+                    freeFormPanel.classList.add('hidden');
+                    freeSignedinPanel.classList.remove('hidden');
+                    freeSignedinPanel.querySelectorAll('.free-account-email').forEach(function (el) {
+                        el.textContent = state.email;
+                    });
+                } else {
+                    freeFormPanel.classList.remove('hidden');
+                    freeSignedinPanel.classList.add('hidden');
+                }
+            }
         }
 
-        // ---- message handler for POST actions (sign out / unsubscribe) ----
         var pendingAction = '';
 
         window.addEventListener('message', function (event) {
@@ -770,7 +807,6 @@
             actionForm.submit();
         }
 
-        // ---- bind buttons ----
         function bind() {
             document.querySelectorAll('.profile-trigger').forEach(function (btn) {
                 if (btn.dataset.bound === '1') return;
@@ -796,17 +832,14 @@
                     closeAllMenus();
                     pendingAction = 'signout';
 
-                    // Clear local state immediately (UI flips right away).
                     clearLocalState();
                     renderWidget();
                     showToast('Signed out.');
 
-                    // Also invalidate the server session if there is a token.
                     if (state.token) {
                         submitAction('logout', state.email, state.token);
                     }
 
-                    // Safety net so a stuck pendingAction does not block future messages.
                     setTimeout(function () {
                         if (pendingAction === 'signout') pendingAction = '';
                     }, 8000);
@@ -827,11 +860,9 @@
                     pendingAction = 'unsubscribe';
                     submitAction('unsubscribe', state.email, state.token);
 
-                    // Safety net
                     setTimeout(function () {
                         if (pendingAction === 'unsubscribe') {
                             pendingAction = '';
-                            // Even if the server is slow, honour the local click.
                             clearLocalState();
                             renderWidget();
                             showToast('You have been unsubscribed.');
@@ -869,13 +900,9 @@
 </script>
 
 <script>
-    // GitHub API endpoint for the free subscriber list [digital space].
-   <script>
     const FREE_SUBS_API = 'https://api.github.com/repos/dealkly/deal-alerts/contents/free_subscribers.json';
     const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
 
-    // JSONP helper — reads Apps Script replies as a <script> tag.
-    // Apps Script blocks iframes (X-Frame-Options) and fetch (CORS), so JSONP is the only way.
     function dealklyJsonp(action, params, onDone) {
         var cbName = 'dealkly_cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
         var done = false;
@@ -1013,8 +1040,6 @@
 
             step1Btn.textContent = 'SENDING CODE...';
 
-            // Fire-and-forget POST to Apps Script. Server sends the confirmation email.
-            // The reply is not readable (CORS/X-Frame-Options), but the email is what matters.
             signupForm.submit();
 
             verifyEmailHidden.value = email;
@@ -1046,7 +1071,6 @@
             step2Btn.textContent = 'CONFIRMING...';
             step2Btn.disabled = true;
 
-            // REAL verification via JSONP. The server's reply is now read.
             dealklyJsonp('confirm', { email: email, code: code }, function (data, err) {
                 if (err || !data) {
                     showError('No response from server. Please try again.');
