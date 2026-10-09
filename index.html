@@ -870,7 +870,51 @@
 
 <script>
     // GitHub API endpoint for the free subscriber list [digital space].
+   <script>
     const FREE_SUBS_API = 'https://api.github.com/repos/dealkly/deal-alerts/contents/free_subscribers.json';
+    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
+
+    // JSONP helper — reads Apps Script replies as a <script> tag.
+    // Apps Script blocks iframes (X-Frame-Options) and fetch (CORS), so JSONP is the only way.
+    function dealklyJsonp(action, params, onDone) {
+        var cbName = 'dealkly_cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+        var done = false;
+        var script = document.createElement('script');
+
+        var timeout = setTimeout(function () {
+            if (done) return;
+            done = true;
+            cleanup();
+            onDone(null, 'timeout');
+        }, 30000);
+
+        function cleanup() {
+            clearTimeout(timeout);
+            try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+            if (script && script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[cbName] = function (data) {
+            if (done) return;
+            done = true;
+            cleanup();
+            onDone(data, null);
+        };
+
+        var qs = 'action=' + encodeURIComponent(action) + '&callback=' + encodeURIComponent(cbName);
+        Object.keys(params).forEach(function (k) {
+            qs += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+        });
+
+        script.src = WEBAPP_URL + '?' + qs;
+        script.onerror = function () {
+            if (done) return;
+            done = true;
+            cleanup();
+            onDone(null, 'network');
+        };
+        document.head.appendChild(script);
+    }
 
     function isValidEmailFormat(email) {
         if (!email || typeof email !== 'string') return false;
@@ -969,6 +1013,8 @@
 
             step1Btn.textContent = 'SENDING CODE...';
 
+            // Fire-and-forget POST to Apps Script. Server sends the confirmation email.
+            // The reply is not readable (CORS/X-Frame-Options), but the email is what matters.
             signupForm.submit();
 
             verifyEmailHidden.value = email;
@@ -1000,9 +1046,22 @@
             step2Btn.textContent = 'CONFIRMING...';
             step2Btn.disabled = true;
 
-            verifyForm.submit();
+            // REAL verification via JSONP. The server's reply is now read.
+            dealklyJsonp('confirm', { email: email, code: code }, function (data, err) {
+                if (err || !data) {
+                    showError('No response from server. Please try again.');
+                    step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
+                    step2Btn.disabled = false;
+                    return;
+                }
 
-            setTimeout(function () {
+                if (!data.ok) {
+                    showError(data.message || 'Invalid or expired code.');
+                    step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
+                    step2Btn.disabled = false;
+                    return;
+                }
+
                 verifyForm.classList.add('hidden');
                 step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
                 step2Btn.disabled = false;
@@ -1011,7 +1070,7 @@
                 if (email && window.DealklyAuth) {
                     window.DealklyAuth.setSubscribed(email);
                 }
-            }, 1500);
+            });
         });
 
         backBtn.addEventListener('click', function () {
