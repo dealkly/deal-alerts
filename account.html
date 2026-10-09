@@ -81,7 +81,7 @@
                     </div>
                 </div>
 
-                <div class="hidden md:block">
+                <div class="hidden md:block" id="signin-wrap">
                     <a href="login.html" class="signin-btn px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition text-sm font-semibold">Sign in</a>
                 </div>
             </div>
@@ -250,14 +250,29 @@
             function render() {
                 var state = getState();
 
+                var wrapper = document.getElementById('profile-widget-wrapper');
+                var signinWrap = document.getElementById('signin-wrap');
+
                 if (!state.email) {
                     stateSignedOut.classList.remove('hidden');
                     stateSignedIn.classList.add('hidden');
+
+                    if (wrapper) wrapper.classList.add('hidden');
+                    if (signinWrap) signinWrap.style.display = '';
                     return;
                 }
 
                 stateSignedOut.classList.add('hidden');
                 stateSignedIn.classList.remove('hidden');
+
+                if (wrapper) {
+                    wrapper.classList.remove('hidden');
+                    var nameEl = wrapper.querySelector('.profile-username');
+                    var emailEl = wrapper.querySelector('.profile-email');
+                    if (nameEl) nameEl.textContent = usernameFromEmail(state.email);
+                    if (emailEl) emailEl.textContent = state.email;
+                }
+                if (signinWrap) signinWrap.style.display = 'none';
 
                 document.querySelectorAll('.account-username').forEach(function (el) {
                     el.textContent = usernameFromEmail(state.email);
