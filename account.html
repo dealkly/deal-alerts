@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account – Dealkly</title>
+
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="manifest" href="./site.webmanifest">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-img { filter: brightness(0) saturate(100%) invert(100%); }
+        .fade-in { animation: fadeIn 0.35s ease forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .profile-widget { position: relative; }
+        .profile-avatar {
+            background: linear-gradient(135deg, #D97706, #B45309);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .profile-trigger:hover .profile-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(180, 83, 9, 0.35);
+        }
+        .profile-username {
+            color: #F5EFE6;
+            text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);
+            max-width: 84px;
+        }
+        #dealkly-toast {
+            position: fixed; top: 16px; left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 10001; pointer-events: none;
+        }
+        #dealkly-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body class="bg-[#FFFDF7] text-gray-700 min-h-screen flex flex-col">
+
+    <header class="text-white shadow-md sticky top-0 z-50" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex flex-col items-start leading-none">
+                <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
+                <span class="text-[10px] font-semibold tracking-wide mt-0.5" style="color:#F5EFE6;">Engineered Alert System</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <nav class="hidden md:flex gap-4 text-sm font-semibold text-amber-100">
+                    <a href="home.html" class="hover:text-white transition px-3 py-2">Home</a>
+                    <a href="deals.html" class="hover:text-white transition px-3 py-2">Live Deals</a>
+                    <a href="tools.html" class="hover:text-white transition px-3 py-2">Tools</a>
+                </nav>
+
+                <div id="profile-widget-wrapper" class="hidden profile-widget">
+                    <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
+                        <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                            </svg>
+                        </span>
+                        <span class="profile-username text-[10px] font-semibold leading-none mt-0.5 truncate"></span>
+                    </button>
+                    <div class="profile-menu hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                        <div class="px-4 py-2 border-b border-gray-100">
+                            <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
+                            <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
+                        </div>
+                        <a href="home.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Home</a>
+                        <a href="account.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">My Account</a>
+                        <button type="button" class="profile-signout w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Sign out</button>
+                        <button type="button" class="profile-unsubscribe w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">Unsubscribe</button>
+                    </div>
+                </div>
+
+                <div class="hidden md:block">
+                    <a href="login.html" class="signin-btn px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition text-sm font-semibold">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full fade-in">
+
+        <div class="mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-2">My Account</h1>
+            <p class="text-gray-500">Manage your Dealkly subscription and settings.</p>
+        </div>
+
+        <div id="state-signedout" class="hidden bg-white border border-amber-200 rounded-2xl p-8 shadow-sm text-center">
+            <h2 class="text-xl font-extrabold text-gray-900 mb-3">You are not signed in</h2>
+            <p class="text-sm text-gray-600 mb-6">Sign in with your email to view your account.</p>
+            <a href="login.html" class="inline-block text-white font-bold px-6 py-3 rounded-xl shadow-md transition" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                Sign in
+            </a>
+        </div>
+
+        <div id="state-signedin" class="hidden space-y-6">
+
+            <div class="bg-white border border-amber-200 rounded-2xl p-8 shadow-sm">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-0.5">Welcome</p>
+                        <h2 class="text-2xl font-extrabold text-gray-900 account-username">—</h2>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-amber-50 border border-amber-100 rounded-xl p-4">
+                        <p class="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">Signed in as</p>
+                        <p class="text-sm font-semibold text-gray-800 truncate account-email">—</p>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-100 rounded-xl p-4">
+                        <p class="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">Account type</p>
+                        <p class="text-sm font-semibold text-gray-800" id="account-plan">Free</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white border border-amber-200 rounded-2xl p-8 shadow-sm">
+                <h3 class="text-lg font-extrabold text-gray-900 mb-4">Free alerts</h3>
+
+                <div id="sub-active" class="hidden">
+                    <div class="flex items-start gap-3 mb-4">
+                        <span class="inline-block w-3 h-3 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                        <div>
+                            <p class="text-sm font-bold text-green-800">Active</p>
+                            <p class="text-sm text-gray-600">Deal alerts are being sent to <strong class="account-email">—</strong>.</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                        You receive automated alerts whenever a qualifying deal is detected across the monitored eBay categories.
+                    </p>
+                </div>
+
+                <div id="sub-inactive" class="hidden">
+                    <div class="flex items-start gap-3 mb-4">
+                        <span class="inline-block w-3 h-3 rounded-full bg-gray-300 mt-1.5 flex-shrink-0"></span>
+                        <div>
+                            <p class="text-sm font-bold text-gray-700">Not subscribed</p>
+                            <p class="text-sm text-gray-600">You are signed in, but not receiving deal alerts.</p>
+                        </div>
+                    </div>
+                    <a href="index.html#pricing" class="inline-block text-white font-bold px-5 py-2.5 rounded-lg shadow-sm text-sm transition" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                        Subscribe to free alerts
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-[#FEF9ED] border border-amber-200 rounded-2xl p-8 shadow-sm">
+                <h3 class="text-lg font-extrabold text-[#92400E] mb-2">Want to track your own items?</h3>
+                <p class="text-sm text-gray-700 leading-relaxed mb-4">
+                    Premium subscribers create custom watchlists. Dealkly watches eBay for the exact keywords chosen, and sends alerts when the price drops.
+                </p>
+                <ul class="text-sm text-gray-600 space-y-2 mb-5">
+                    <li class="flex items-center gap-2"><span class="text-amber-500">✔</span> Track specific models</li>
+                    <li class="flex items-center gap-2"><span class="text-amber-500">✔</span> Unlimited keywords</li>
+                    <li class="flex items-center gap-2"><span class="text-amber-500">✔</span> Priority alert dispatch</li>
+                </ul>
+                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer"
+                    class="inline-block text-white font-bold px-5 py-3 rounded-lg shadow-sm transition text-sm"
+                    style="background: linear-gradient(135deg, #D97706, #B45309);">
+                    Upgrade to Premium ($3/mo)
+                </a>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                <h3 class="text-lg font-extrabold text-gray-900 mb-4">Account actions</h3>
+                <div class="space-y-3">
+                    <button type="button" id="account-signout-btn" class="w-full text-left px-5 py-3 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 text-sm font-semibold text-gray-700 transition">
+                        Sign out of this device
+                    </button>
+                    <button type="button" id="account-unsubscribe-btn" class="w-full text-left px-5 py-3 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-sm font-semibold text-red-700 transition">
+                        Unsubscribe from free alerts
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-amber-100 py-8" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm mb-2">
+                <a href="index.html" class="hover:text-white mx-2">Home</a> |
+                <a href="deals.html" class="hover:text-white mx-2">Live Deals</a> |
+                <a href="tools.html" class="hover:text-white mx-2">Tools &amp; Resources</a> |
+                <a href="privacy.html" class="hover:text-white mx-2">Privacy Policy</a> |
+                <a href="contact.html" class="hover:text-white mx-2">Contact</a>
+            </p>
+            <p class="text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="dealkly-toast" class="px-5 py-3 rounded-lg shadow-lg text-sm font-semibold text-white" style="background: linear-gradient(135deg, #D97706, #B45309);"></div>
+
+    <iframe name="dealkly-action-frame" id="dealkly-action-frame" style="display:none;" title="Dealkly action receiver"></iframe>
+    <form id="dealkly-action-form" method="POST" target="dealkly-action-frame" style="display:none;">
+        <input type="hidden" name="action" id="action-name" value="">
+        <input type="hidden" name="email" id="action-email" value="">
+        <input type="hidden" name="token" id="action-token" value="">
+    </form>
+
+    <script>
+        (function () {
+            var stateSignedOut = document.getElementById('state-signedout');
+            var stateSignedIn = document.getElementById('state-signedin');
+            var stateSubActive = document.getElementById('sub-active');
+            var stateSubInactive = document.getElementById('sub-inactive');
+
+            var toast = document.getElementById('dealkly-toast');
+            var toastTimer = null;
+
+            function showToast(msg) {
+                if (!toast) return;
+                toast.textContent = msg;
+                toast.classList.add('show');
+                if (toastTimer) clearTimeout(toastTimer);
+                toastTimer = setTimeout(function () {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            function getState() {
+                var subscribed = localStorage.getItem('dealkly_subscribed') === 'true';
+                var email = (localStorage.getItem('dealkly_email') || '').trim();
+                var token = (localStorage.getItem('dealkly_token') || '').trim();
+                return { subscribed: subscribed, email: email, token: token };
+            }
+
+            function usernameFromEmail(email) {
+                if (!email) return 'Account';
+                var local = email.split('@')[0] || '';
+                if (!local) return 'Account';
+                return local.charAt(0).toUpperCase() + local.slice(1);
+            }
+
+            function render() {
+                var state = getState();
+
+                if (!state.email) {
+                    stateSignedOut.classList.remove('hidden');
+                    stateSignedIn.classList.add('hidden');
+                    return;
+                }
+
+                stateSignedOut.classList.add('hidden');
+                stateSignedIn.classList.remove('hidden');
+
+                document.querySelectorAll('.account-username').forEach(function (el) {
+                    el.textContent = usernameFromEmail(state.email);
+                });
+                document.querySelectorAll('.account-email').forEach(function (el) {
+                    el.textContent = state.email;
+                });
+
+                if (state.subscribed) {
+                    stateSubActive.classList.remove('hidden');
+                    stateSubInactive.classList.add('hidden');
+                } else {
+                    stateSubActive.classList.add('hidden');
+                    stateSubInactive.classList.remove('hidden');
+                }
+
+                var unsubBtn = document.getElementById('account-unsubscribe-btn');
+                if (unsubBtn) {
+                    if (state.subscribed) {
+                        unsubBtn.classList.remove('hidden');
+                    } else {
+                        unsubBtn.classList.add('hidden');
+                    }
+                }
+            }
+
+            function submitAction(action, email, token) {
+                document.getElementById('action-name').value = action;
+                document.getElementById('action-email').value = email || '';
+                document.getElementById('action-token').value = token || '';
+                document.getElementById('dealkly-action-form').submit();
+            }
+
+            document.getElementById('account-signout-btn').addEventListener('click', function () {
+                var state = getState();
+                if (state.token) {
+                    submitAction('logout', state.email, state.token);
+                }
+                try {
+                    localStorage.removeItem('dealkly_subscribed');
+                    localStorage.removeItem('dealkly_email');
+                    localStorage.removeItem('dealkly_token');
+                } catch (e) {}
+                showToast('Signed out.');
+                setTimeout(function () { window.location.href = 'index.html'; }, 800);
+            });
+
+            document.getElementById('account-unsubscribe-btn').addEventListener('click', function () {
+                var state = getState();
+                if (!state.email) return;
+                if (!window.confirm('Unsubscribe from free deal alerts? This cannot be undone from this page.')) return;
+
+                submitAction('unsubscribe', state.email, state.token);
+
+                try {
+                    localStorage.removeItem('dealkly_subscribed');
+                } catch (e) {}
+
+                showToast('You have been unsubscribed.');
+                setTimeout(render, 500);
+            });
+
+            render();
+        })();
+    </script>
+
+</body>
+</html>
