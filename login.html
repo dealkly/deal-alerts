@@ -147,7 +147,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                 </svg>
             </div>
-            <h2 id="welcome-heading" class="text-xl font-extrabold text-gray-900 mb-2">Welcome back</h2>
+            <h2 class="text-xl font-extrabold text-gray-900 mb-2">Welcome to Dealkly</h2>
             <p class="text-sm text-gray-600 leading-relaxed mb-6">
                 You are signed in as <strong id="welcome-email" class="text-amber-700"></strong>.
             </p>
@@ -189,7 +189,6 @@
             var codeEmailDisplay = document.getElementById('code-email-display');
 
             var welcomeModal = document.getElementById('welcome-modal');
-            var welcomeHeading = document.getElementById('welcome-heading');
             var welcomeEmail = document.getElementById('welcome-email');
             var welcomeOkBtn = document.getElementById('welcome-ok-btn');
 
@@ -330,11 +329,6 @@
                     if (alreadyWelcomed) {
                         window.location.href = 'home.html';
                     } else {
-                        // First-time ever: heading says "Welcome to Dealkly".
-                        // Returning user: heading says "Welcome back".
-                        if (welcomeHeading) {
-                            welcomeHeading.textContent = 'Welcome to Dealkly';
-                        }
                         welcomeEmail.textContent = data.email || currentEmail;
                         welcomeModal.classList.remove('hidden');
                         welcomeModal.classList.add('flex');
