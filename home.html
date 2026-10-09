@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home – Dealkly</title>
+
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="manifest" href="./site.webmanifest">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-img { filter: brightness(0) saturate(100%) invert(100%); }
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .profile-widget { position: relative; }
+        .profile-avatar {
+            background: linear-gradient(135deg, #D97706, #B45309);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .profile-trigger:hover .profile-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(180, 83, 9, 0.35);
+        }
+        .profile-username {
+            color: #F5EFE6;
+            text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);
+            max-width: 84px;
+        }
+        .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 20px 30px -12px rgba(0,0,0,0.12); }
+        #dealkly-toast {
+            position: fixed; top: 16px; left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 10001; pointer-events: none;
+        }
+        #dealkly-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body class="bg-[#FFFDF7] text-gray-700 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="text-white shadow-md sticky top-0 z-50" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="home.html" class="flex flex-col items-start leading-none">
+                <img src="./logo.png" alt="Dealkly Logo" class="h-8 w-auto logo-img" />
+                <span class="text-[10px] font-semibold tracking-wide mt-0.5" style="color:#F5EFE6;">Engineered Alert System</span>
+            </a>
+
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex gap-4 text-sm font-semibold text-amber-100">
+                    <a href="home.html" class="text-white border-b-2 border-amber-300 pb-0.5">Home</a>
+                    <a href="deals.html" class="hover:text-white transition">Live Deals</a>
+                    <a href="tools.html" class="hover:text-white transition">Tools</a>
+                    <a href="account.html" class="hover:text-white transition">Account</a>
+                </nav>
+
+                <div id="profile-widget-wrapper" class="hidden profile-widget">
+                    <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
+                        <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                            </svg>
+                        </span>
+                        <span class="profile-username text-[10px] font-semibold leading-none mt-0.5 truncate"></span>
+                    </button>
+                    <div class="profile-menu hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                        <div class="px-4 py-2 border-b border-gray-100">
+                            <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
+                            <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
+                        </div>
+                        <a href="home.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Home</a>
+                        <a href="account.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">My Account</a>
+                        <button type="button" class="profile-signout w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Sign out</button>
+                        <button type="button" class="profile-unsubscribe w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">Unsubscribe</button>
+                    </div>
+                </div>
+
+                <div class="hidden md:block">
+                    <a href="login.html" class="signin-btn px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition text-sm font-semibold">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="fade-in" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-white">
+            <p class="text-amber-200 text-xs uppercase tracking-widest font-bold mb-2">Your dashboard</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold mb-3 hero-greeting">Welcome back.</h1>
+            <p class="text-amber-100 max-w-2xl leading-relaxed">
+                Dealkly is watching eBay around the clock. When a real price drop is detected, it lands in your inbox. Here is your quick hub.
+            </p>
+        </div>
+    </section>
+
+    <!-- Status strip -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 w-full">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 fade-in">
+
+            <div class="bg-white border border-amber-200 rounded-2xl p-5 shadow-sm card-hover">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #FDE68A, #FCD34D);">
+                        <svg class="w-4 h-4 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </span>
+                    <p class="text-[10px] uppercase tracking-wider font-bold text-gray-500">Alerts sent to</p>
+                </div>
+                <p class="text-sm font-semibold text-gray-800 truncate status-email">—</p>
+            </div>
+
+            <div class="bg-white border border-amber-200 rounded-2xl p-5 shadow-sm card-hover">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" id="status-dot-bg">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    </span>
+                    <p class="text-[10px] uppercase tracking-wider font-bold text-gray-500">Alert status</p>
+                </div>
+                <p class="text-sm font-semibold text-gray-800" id="status-label">—</p>
+            </div>
+
+            <div class="bg-white border border-amber-200 rounded-2xl p-5 shadow-sm card-hover">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    <p class="text-[10px] uppercase tracking-wider font-bold text-gray-500">Current plan</p>
+                </div>
+                <p class="text-sm font-semibold text-gray-800" id="status-plan">Free</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Quick actions -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 w-full">
+        <h2 class="text-xl font-extrabold text-gray-900 mb-4">Quick actions</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 fade-in">
+
+            <a href="deals.html" class="group bg-white border border-amber-200 rounded-2xl p-5 shadow-sm card-hover flex flex-col items-start">
+                <span class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background: linear-gradient(135deg, #FDE68A, #FCD34D);">
+                    <svg class="w-5 h-5 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </span>
+                <p class="text-sm font-bold text-gray-900 group-hover:text-amber-700 transition">Browse live deals</p>
+                <p class="text-xs text-gray-500 mt-1 leading-snug">Fresh drops updated every 4 hours.</p>
+            </a>
+
+            <a href="account.html" class="group bg-white border border-amber-200 rounded-2xl p-5 shadow-sm card-hover flex flex-col items-start">
+                <span class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background: linear-gradient(135deg, #FDE68A, #FCD34D);">
+                    <svg class="w-5 h-5 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </span>
+                <p class="text-sm font-bold text-gray-900 group-hover:text-amber-700 transition">Manage account</p>
+                <p class="text-xs text-gray-500 mt-1 leading-snug">Email, alerts, subscription.</p>
+            </a>
+
+            <a href="tools.html" class="group bg-white border border-amber-200 rounded-2xl p-5 shadow-sm card-hover flex flex-col items-start">
+                <span class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background: linear-gradient(135deg, #FDE68A, #FCD34D);">
+                    <svg class="w-5 h-5 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <p class="text-sm font-bold text-gray-900 group-hover:text-amber-700 transition">Explore tools</p>
+                <p class="text-xs text-gray-500 mt-1 leading-snug">Hand-picked partner resources.</p>
+            </a>
+
+            <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="group bg-white border border-amber-300 rounded-2xl p-5 shadow-sm card-hover flex flex-col items-start" style="background: linear-gradient(180deg, #FFFFFF, #FEF9ED);">
+                <span class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                </span>
+                <p class="text-sm font-bold text-gray-900 group-hover:text-amber-700 transition">Go premium</p>
+                <p class="text-xs text-gray-500 mt-1 leading-snug">Custom watchlists for $3/mo.</p>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- Recent deals preview -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 w-full">
+        <div class="flex items-end justify-between mb-4">
+            <div>
+                <h2 class="text-xl font-extrabold text-gray-900">Fresh deals right now</h2>
+                <p class="text-sm text-gray-500 mt-1">A sample of what the scanner detected most recently.</p>
+            </div>
+            <a href="deals.html" class="hidden sm:inline-flex items-center text-sm font-bold text-amber-700 hover:text-amber-900">
+                See all deals
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 fade-in">
+
+            <a href="deals.html" class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
+                <div class="relative h-36 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
+                    <span class="absolute top-2 left-2 text-white text-[9px] font-bold px-2 py-1 rounded uppercase tracking-wider" style="background:#DC2626;">Mega Drop</span>
+                    <svg class="w-14 h-14 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                <div class="p-4">
+                    <p class="text-xs font-bold text-gray-900 leading-snug line-clamp-2 mb-2">Audio and headphones price drops</p>
+                    <p class="text-lg font-extrabold text-gray-900">Up to 25% off</p>
+                </div>
+            </a>
+
+            <a href="deals.html" class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
+                <div class="relative h-36 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                    <span class="absolute top-2 left-2 text-white text-[9px] font-bold px-2 py-1 rounded uppercase tracking-wider" style="background:#DC2626;">Mega Drop</span>
+                    <svg class="w-14 h-14 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                </div>
+                <div class="p-4">
+                    <p class="text-xs font-bold text-gray-900 leading-snug line-clamp-2 mb-2">Smartphones and tablets on sale</p>
+                    <p class="text-lg font-extrabold text-gray-900">Up to 18% off</p>
+                </div>
+            </a>
+
+            <a href="deals.html" class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
+                <div class="relative h-36 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                    <span class="absolute top-2 left-2 text-white text-[9px] font-bold px-2 py-1 rounded uppercase tracking-wider" style="background:#0B1D3A;">Price Drop</span>
+                    <svg class="w-14 h-14 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                </div>
+                <div class="p-4">
+                    <p class="text-xs font-bold text-gray-900 leading-snug line-clamp-2 mb-2">PC parts and components</p>
+                    <p class="text-lg font-extrabold text-gray-900">Up to 15% off</p>
+                </div>
+            </a>
+
+            <a href="deals.html" class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
+                <div class="relative h-36 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+                    <span class="absolute top-2 left-2 text-white text-[9px] font-bold px-2 py-1 rounded uppercase tracking-wider" style="background:#DC2626;">Mega Drop</span>
+                    <svg class="w-14 h-14 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                </div>
+                <div class="p-4">
+                    <p class="text-xs font-bold text-gray-900 leading-snug line-clamp-2 mb-2">Smart home and networking</p>
+                    <p class="text-lg font-extrabold text-gray-900">Up to 22% off</p>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- Categories you're tracking -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 w-full">
+        <h2 class="text-xl font-extrabold text-gray-900 mb-1">Categories Dealkly watches for you</h2>
+        <p class="text-sm text-gray-500 mb-4">Sixteen high-demand tech and hardware categories. All included free.</p>
+        <div class="flex flex-wrap gap-2 fade-in">
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Laptops</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Desktops</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Graphics Cards</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">CPUs</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">RAM</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Motherboards</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Smartphones</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Tablets</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Monitors</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Keyboards</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Mice</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Headsets</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Networking</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Storage</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Smart Home</span>
+            <span class="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-700">Gaming Consoles</span>
+        </div>
+    </section>
+
+    <!-- Premium upsell -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 w-full">
+        <div class="rounded-2xl p-8 md:p-10 text-white fade-in" style="background: linear-gradient(135deg, #92400E, #78350F);">
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
+                <div class="max-w-2xl">
+                    <p class="text-amber-200 text-xs uppercase tracking-widest font-bold mb-2">Optional upgrade</p>
+                    <h2 class="text-2xl md:text-3xl font-extrabold mb-3">Track the exact items you care about</h2>
+                    <p class="text-amber-100 leading-relaxed">
+                        Free alerts cover broad categories. Premium subscribers create their own watchlists — specific models, brands, or keywords — and get a personal alert whenever the price drops.
+                    </p>
+                </div>
+                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer"
+                    class="flex-shrink-0 bg-white text-[#92400E] font-bold px-6 py-3 rounded-lg shadow-lg hover:bg-amber-50 transition whitespace-nowrap">
+                    Upgrade – $3/mo →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-amber-100 py-8 mt-16" style="background: linear-gradient(135deg, #92400E, #78350F);">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm mb-2">
+                <a href="home.html" class="hover:text-white mx-2">Home</a> |
+                <a href="deals.html" class="hover:text-white mx-2">Live Deals</a> |
+                <a href="tools.html" class="hover:text-white mx-2">Tools &amp; Resources</a> |
+                <a href="account.html" class="hover:text-white mx-2">Account</a> |
+                <a href="privacy.html" class="hover:text-white mx-2">Privacy</a> |
+                <a href="contact.html" class="hover:text-white mx-2">Contact</a>
+            </p>
+            <p class="text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="dealkly-toast" class="px-5 py-3 rounded-lg shadow-lg text-sm font-semibold text-white" style="background: linear-gradient(135deg, #D97706, #B45309);"></div>
+
+    <iframe name="dealkly-action-frame" id="dealkly-action-frame" style="display:none;" title="Dealkly action receiver"></iframe>
+    <form id="dealkly-action-form" method="POST" target="dealkly-action-frame" style="display:none;">
+        <input type="hidden" name="action" id="action-name" value="">
+        <input type="hidden" name="email" id="action-email" value="">
+        <input type="hidden" name="token" id="action-token" value="">
+    </form>
+
+    <script>
+        (function () {
+            var state = {
+                email: (localStorage.getItem('dealkly_email') || '').trim(),
+                token: (localStorage.getItem('dealkly_token') || '').trim(),
+                subscribed: localStorage.getItem('dealkly_subscribed') === 'true'
+            };
+
+            // Guard: not signed in → back to landing
+            if (!state.email) {
+                window.location.replace('index.html');
+                return;
+            }
+
+            function usernameFromEmail(email) {
+                if (!email) return 'there';
+                var local = email.split('@')[0] || '';
+                if (!local) return 'there';
+                return local.charAt(0).toUpperCase() + local.slice(1);
+            }
+
+            // Header widget
+            var wrapper = document.getElementById('profile-widget-wrapper');
+            var signinBtn = document.querySelector('.signin-btn');
+            if (wrapper) {
+                wrapper.classList.remove('hidden');
+                wrapper.querySelector('.profile-username').textContent = usernameFromEmail(state.email);
+                wrapper.querySelector('.profile-email').textContent = state.email;
+            }
+            if (signinBtn) signinBtn.parentElement.classList.add('hidden');
+
+            // Greeting
+            document.querySelector('.hero-greeting').textContent = 'Welcome back, ' + usernameFromEmail(state.email) + '.';
+
+            // Status
+            document.querySelectorAll('.status-email').forEach(function (el) { el.textContent = state.email; });
+
+            var statusLabel = document.getElementById('status-label');
+            var statusDotBg = document.getElementById('status-dot-bg');
+            if (state.subscribed) {
+                statusLabel.textContent = 'Active';
+                statusDotBg.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+            } else {
+                statusLabel.textContent = 'Not subscribed';
+                statusDotBg.style.background = 'linear-gradient(135deg, #9CA3AF, #6B7280)';
+            }
+
+            // Widget menus
+            function closeAllMenus() {
+                document.querySelectorAll('.profile-menu').forEach(function (m) { m.classList.add('hidden'); });
+            }
+
+            var trigger = wrapper.querySelector('.profile-trigger');
+            var menu = wrapper.querySelector('.profile-menu');
+            trigger.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var wasHidden = menu.classList.contains('hidden');
+                closeAllMenus();
+                if (wasHidden) menu.classList.remove('hidden');
+            });
+            document.addEventListener('click', closeAllMenus);
+
+            // Toast
+            var toast = document.getElementById('dealkly-toast');
+            var toastTimer = null;
+            function showToast(msg) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                if (toastTimer) clearTimeout(toastTimer);
+                toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 3000);
+            }
+
+            function submitAction(action, email, token) {
+                document.getElementById('action-name').value = action;
+                document.getElementById('action-email').value = email || '';
+                document.getElementById('action-token').value = token || '';
+                document.getElementById('dealkly-action-form').submit();
+            }
+
+            function clearLocal() {
+                try {
+                    localStorage.removeItem('dealkly_subscribed');
+                    localStorage.removeItem('dealkly_email');
+                    localStorage.removeItem('dealkly_token');
+                } catch (e) {}
+            }
+
+            // Sign out
+            wrapper.querySelector('.profile-signout').addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (state.token) submitAction('logout', state.email, state.token);
+                clearLocal();
+                showToast('Signed out.');
+                setTimeout(function () { window.location.href = 'index.html'; }, 700);
+            });
+
+            // Unsubscribe
+            wrapper.querySelector('.profile-unsubscribe').addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!window.confirm('Unsubscribe from free deal alerts?')) return;
+                submitAction('unsubscribe', state.email, state.token);
+                try { localStorage.removeItem('dealkly_subscribed'); } catch (err) {}
+                showToast('You have been unsubscribed.');
+                setTimeout(function () { location.reload(); }, 900);
+            });
+        })();
+    </script>
+
+</body>
+</html>
