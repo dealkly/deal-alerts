@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-09-28T10:32:12.170Z",
-    "message": "About to write pending. count=1"
-  },
-  {
     "time": "2026-09-28T10:32:14.160Z",
     "message": "Pending written."
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-10-09T06:19:12.174Z",
     "message": "Already subscribed: tesfawtsions@gmail.com"
+  },
+  {
+    "time": "2026-10-09T06:19:13.477Z",
+    "message": "Free signup: email=tesfawtsions@gmail.com consent=yes"
   }
 ]
