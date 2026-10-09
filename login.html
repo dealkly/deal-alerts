@@ -2,8 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, ini
-        tial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in – Dealkly</title>
 
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
@@ -40,7 +39,6 @@
 </head>
 <body class="bg-[#FFFDF7] text-gray-700 min-h-screen flex flex-col">
 
-    <!-- Header -->
     <header class="text-white shadow-md" style="background: linear-gradient(135deg, #92400E, #78350F);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <a href="index.html" class="flex flex-col items-start leading-none">
@@ -53,13 +51,11 @@
         </div>
     </header>
 
-    <!-- Main -->
     <main class="flex-grow flex items-center justify-center px-4 py-12">
         <div class="w-full max-w-md">
 
             <div class="bg-white border border-amber-200 rounded-2xl shadow-sm p-8 fade-in">
 
-                <!-- Step 1: Email -->
                 <div id="step-email">
                     <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Sign in to Dealkly</h1>
                     <p class="text-sm text-gray-500 mb-6 leading-relaxed">
@@ -94,7 +90,6 @@
                     </p>
                 </div>
 
-                <!-- Step 2: Code -->
                 <div id="step-code" class="hidden">
                     <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Check your inbox</h1>
                     <p class="text-sm text-gray-500 mb-6 leading-relaxed">
@@ -145,21 +140,6 @@
         </div>
     </main>
 
-    <!-- Hidden iframe used to receive the Apps Script reply without CORS blocking -->
-    <iframe name="dealkly-login-frame" id="dealkly-login-frame" style="display:none;" title="Dealkly login receiver"></iframe>
-
-    <!-- Hidden forms for iframe submission -->
-    <form id="request-login-form" method="POST" target="dealkly-login-frame" style="display:none;">
-        <input type="hidden" name="action" value="request-login">
-        <input type="hidden" name="email" id="request-login-email" value="">
-    </form>
-    <form id="verify-login-form" method="POST" target="dealkly-login-frame" style="display:none;">
-        <input type="hidden" name="action" value="verify-login">
-        <input type="hidden" name="email" id="verify-login-email" value="">
-        <input type="hidden" name="code" id="verify-login-code" value="">
-    </form>
-
-    <!-- Welcome modal (shown once after first successful login) -->
     <div id="welcome-modal" class="hidden fixed inset-0 z-50 items-center justify-center px-4" style="background: rgba(0,0,0,0.55);">
         <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center fade-in">
             <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #D97706, #B45309);">
@@ -182,7 +162,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="text-amber-100 py-6" style="background: linear-gradient(135deg, #92400E, #78350F);">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <p class="text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved.</p>
@@ -191,6 +170,8 @@
 
     <script>
         (function () {
+            var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
+
             var stepEmail = document.getElementById('step-email');
             var stepCode = document.getElementById('step-code');
 
@@ -207,18 +188,11 @@
 
             var codeEmailDisplay = document.getElementById('code-email-display');
 
-            var requestForm = document.getElementById('request-login-form');
-            var requestFormEmail = document.getElementById('request-login-email');
-            var verifyForm = document.getElementById('verify-login-form');
-            var verifyFormEmail = document.getElementById('verify-login-email');
-            var verifyFormCode = document.getElementById('verify-login-code');
-
             var welcomeModal = document.getElementById('welcome-modal');
             var welcomeEmail = document.getElementById('welcome-email');
             var welcomeOkBtn = document.getElementById('welcome-ok-btn');
 
             var currentEmail = '';
-            var pendingAction = '';
 
             function showError(el, msg) {
                 el.textContent = msg;
@@ -250,15 +224,64 @@
                 return regex.test(trimmed);
             }
 
-            window.addEventListener('message', function (event) {
-                var data = event.data;
-                if (!data || typeof data !== 'object') return;
+            // JSONP: load the Apps Script reply as a <script> tag so the browser
+            // executes it in this page's context. This bypasses the iframe X-Frame-Options
+            // restriction that Apps Script applies to its redirect responses.
+            function jsonp(action, params, onDone) {
+                var cbName = 'dealkly_cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+                var done = false;
 
-                if (pendingAction === 'request') {
-                    pendingAction = '';
+                var script = document.createElement('script');
 
-                    if (!data.ok) {
-                        showError(emailError, data.message || 'Could not send code. Please try again.');
+                var timeout = setTimeout(function () {
+                    if (done) return;
+                    done = true;
+                    cleanup();
+                    onDone(null, 'timeout');
+                }, 30000);
+
+                function cleanup() {
+                    clearTimeout(timeout);
+                    try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+                    if (script && script.parentNode) script.parentNode.removeChild(script);
+                }
+
+                window[cbName] = function (data) {
+                    if (done) return;
+                    done = true;
+                    cleanup();
+                    onDone(data, null);
+                };
+
+                var qs = 'action=' + encodeURIComponent(action) + '&callback=' + encodeURIComponent(cbName);
+                Object.keys(params).forEach(function (k) {
+                    qs += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+                });
+
+                script.src = WEBAPP_URL + '?' + qs;
+                script.onerror = function () {
+                    if (done) return;
+                    done = true;
+                    cleanup();
+                    onDone(null, 'network');
+                };
+                document.head.appendChild(script);
+            }
+
+            function requestCode(email) {
+                clearError(emailError);
+
+                if (!isValidEmailFormat(email)) {
+                    showError(emailError, 'Please enter a valid email address.');
+                    return;
+                }
+
+                currentEmail = email;
+                setLoading(sendCodeBtn, true, 'SEND CODE', 'SENDING...');
+
+                jsonp('request-login', { email: email }, function (data, err) {
+                    if (err || !data || !data.ok) {
+                        showError(emailError, (data && data.message) || 'Could not send code. Please try again.');
                         setLoading(sendCodeBtn, false, 'SEND CODE', 'SENDING...');
                         return;
                     }
@@ -273,14 +296,22 @@
                     codeInput.focus();
 
                     setLoading(sendCodeBtn, false, 'SEND CODE', 'SENDING...');
+                });
+            }
+
+            function verifyCode(code) {
+                clearError(codeError);
+
+                if (!/^\d{6}$/.test(code)) {
+                    showError(codeError, 'Please enter the 6-digit code from the email.');
                     return;
                 }
 
-                if (pendingAction === 'verify') {
-                    pendingAction = '';
+                setLoading(verifyCodeBtn, true, 'VERIFY & SIGN IN', 'VERIFYING...');
 
-                    if (!data.ok) {
-                        showError(codeError, data.message || 'Invalid or expired code.');
+                jsonp('verify-login', { email: currentEmail, code: code }, function (data, err) {
+                    if (err || !data || !data.ok) {
+                        showError(codeError, (data && data.message) || 'Invalid or expired code.');
                         setLoading(verifyCodeBtn, false, 'VERIFY & SIGN IN', 'VERIFYING...');
                         return;
                     }
@@ -305,56 +336,7 @@
                         welcomeModal.classList.remove('hidden');
                         welcomeModal.classList.add('flex');
                     }
-                    return;
-                }
-            });
-
-            function requestCode(email) {
-                clearError(emailError);
-
-                if (!isValidEmailFormat(email)) {
-                    showError(emailError, 'Please enter a valid email address.');
-                    return;
-                }
-
-                currentEmail = email;
-                setLoading(sendCodeBtn, true, 'SEND CODE', 'SENDING...');
-
-                pendingAction = 'request';
-                requestFormEmail.value = email;
-                requestForm.submit();
-
-                setTimeout(function () {
-                    if (pendingAction === 'request') {
-                        pendingAction = '';
-                        showError(emailError, 'No response from server. Please try again.');
-                        setLoading(sendCodeBtn, false, 'SEND CODE', 'SENDING...');
-                    }
-                }, 20000);
-            }
-
-            function verifyCode(code) {
-                clearError(codeError);
-
-                if (!/^\d{6}$/.test(code)) {
-                    showError(codeError, 'Please enter the 6-digit code from the email.');
-                    return;
-                }
-
-                setLoading(verifyCodeBtn, true, 'VERIFY & SIGN IN', 'VERIFYING...');
-
-                pendingAction = 'verify';
-                verifyFormEmail.value = currentEmail;
-                verifyFormCode.value = code;
-                verifyForm.submit();
-
-                setTimeout(function () {
-                    if (pendingAction === 'verify') {
-                        pendingAction = '';
-                        showError(codeError, 'No response from server. Please try again.');
-                        setLoading(verifyCodeBtn, false, 'VERIFY & SIGN IN', 'VERIFYING...');
-                    }
-                }, 20000);
+                });
             }
 
             sendCodeBtn.addEventListener('click', function () {
