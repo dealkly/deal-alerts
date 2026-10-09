@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-09-28T16:44:38.350Z",
-    "message": "Already subscribed: meshsami321@gmail.com"
-  },
-  {
     "time": "2026-09-29T12:32:46.200Z",
     "message": "doPost unsubscribe: email=meshsami321@gmail.com"
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-10-09T06:22:17.726Z",
     "message": "About to write pending. count=2"
+  },
+  {
+    "time": "2026-10-09T06:22:19.659Z",
+    "message": "Confirmation email sent to meshsami321@gmail.com"
   }
 ]
