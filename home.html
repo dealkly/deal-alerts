@@ -81,7 +81,7 @@
                     </div>
                 </div>
 
-                <div class="hidden md:block">
+                <div class="hidden md:block" id="signin-wrap">
                     <a href="login.html" class="signin-btn px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition text-sm font-semibold">Sign in</a>
                 </div>
             </div>
@@ -319,13 +319,13 @@
             }
 
             var wrapper = document.getElementById('profile-widget-wrapper');
-            var signinBtn = document.querySelector('.signin-btn');
+            var signinWrap = document.getElementById('signin-wrap');
             if (wrapper) {
                 wrapper.classList.remove('hidden');
                 wrapper.querySelector('.profile-username').textContent = usernameFromEmail(state.email);
                 wrapper.querySelector('.profile-email').textContent = state.email;
             }
-            if (signinBtn) signinBtn.parentElement.classList.add('hidden');
+            if (signinWrap) signinWrap.style.display = 'none';
 
             document.querySelector('.hero-greeting').textContent = 'Welcome, ' + usernameFromEmail(state.email) + '.';
 
