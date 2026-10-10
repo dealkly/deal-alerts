@@ -116,11 +116,58 @@
             </div>
 
             <!-- DYNAMIC_DEALS_START -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="deal-grid">
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 text-center text-gray-500 md:col-span-2">
-                        No qualifying deals right now. Check back after the next scheduled scan.
+<div id="deal-filters" class="flex flex-wrap gap-2 mb-5"><button type="button" class="filter-chip" data-filter="all" style="padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:700;border:1px solid;cursor:pointer;transition:all .2s ease;background:linear-gradient(135deg, #D97706, #B45309);color:#FFFFFF;border-color:#B45309;">All</button><button type="button" class="filter-chip" data-filter="computers" style="padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:700;border:1px solid;cursor:pointer;transition:all .2s ease;background:#FFFFFF;color:#78350F;border-color:#FDE68A;">Computers</button></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3" id="deal-grid">
+
+                <div class="deal-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col relative" data-category="computers">
+                    <div class="absolute top-2 left-2 z-10 text-white text-[9px] font-bold px-2 py-1 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm" style="background-color:#0B1D3A;">
+                        🏷️ PRICE DROP
+                    </div>
+                    <div class="h-32 bg-white flex items-center justify-center p-2 border-b border-gray-100"><a href="https://www.ebay.com/itm/127917999204" target="_blank" rel="noopener noreferrer"><img src="https://i.ebayimg.com/images/g/uJ8AAeSwripqK84v/s-l500.jpg" alt="Product" class="max-h-full object-contain"></a></div>
+                    <div class="p-3 flex flex-col flex-grow">
+                        <h2 class="text-xs font-bold text-gray-900 leading-snug mb-2 line-clamp-2">13-13.3 Inch Waterproof Laptop Bag for MacBook Air/Pro, DELL XPS 13, Acer Chrome</h2>
+                        <div class="mt-auto">
+                            <div class="flex items-end justify-between mb-2">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Was <span class="line-through">$36.64</span></p>
+                                    <p class="text-lg font-extrabold text-gray-900 leading-none">$31.42</p>
+                                </div>
+                                <div class="bg-green-100 text-green-800 text-xs font-bold px-1.5 py-0.5 rounded">Save 14%</div>
+                            </div>
+                            <a href="https://www.ebay.com/itm/127917999204" target="_blank" rel="noopener noreferrer" class="block w-full text-center text-white font-bold py-2 rounded-lg transition text-xs" style="background: linear-gradient(135deg, #D97706, #B45309);">VIEW DEAL ON EBAY →</a>
+                        </div>
                     </div>
                 </div>
+
+                </div>
+
+<script>
+(function () {
+    var chips = document.querySelectorAll('.filter-chip');
+    var cards = document.querySelectorAll('.deal-card');
+    function applyFilter(filter) {
+        chips.forEach(function (b) {
+            if (b.dataset.filter === filter) {
+                b.style.background = 'linear-gradient(135deg, #D97706, #B45309)';
+                b.style.color = '#FFFFFF';
+                b.style.borderColor = '#B45309';
+            } else {
+                b.style.background = '#FFFFFF';
+                b.style.color = '#78350F';
+                b.style.borderColor = '#FDE68A';
+            }
+        });
+        cards.forEach(function (c) {
+            var cat = c.dataset.category || 'other';
+            c.style.display = (filter === 'all' || cat === filter) ? '' : 'none';
+        });
+    }
+    chips.forEach(function (b) {
+        b.addEventListener('click', function () { applyFilter(b.dataset.filter); });
+    });
+})();
+</script>
+
 <!-- DYNAMIC_DEALS_END -->
 
         </div>
