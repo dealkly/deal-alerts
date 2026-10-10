@@ -1,9 +1,5 @@
 [
   {
-    "time": "2026-10-09T06:19:31.358Z",
-    "message": "Confirmation email sent to ttsionsami@gmail.com"
-  },
-  {
     "time": "2026-10-09T06:22:04.607Z",
     "message": "doPost reached. action="
   },
@@ -198,5 +194,9 @@
   {
     "time": "2026-10-10T18:26:28.180Z",
     "message": "Confirmation email sent to meshsami321@gmail.com"
+  },
+  {
+    "time": "2026-10-10T20:15:44.175Z",
+    "message": "doPost unsubscribe: email=meshsami321@gmail.com"
   }
 ]
