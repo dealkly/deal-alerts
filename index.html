@@ -489,9 +489,9 @@
 
                 <div class="mt-auto w-full">
 
-                    <!-- Signed-in state (shown instead of the form) -->
+                    <!-- Subscribed state (shown instead of the form) -->
                     <div id="free-signedin-panel" class="hidden bg-green-50 border border-green-200 rounded-xl p-4">
-                        <p class="text-xs font-bold text-green-800 mb-1">You are signed in</p>
+                        <p class="text-xs font-bold text-green-800 mb-1">You are subscribed</p>
                         <p class="text-xs text-green-700 leading-snug">
                             Free alerts will be sent to <strong class="free-account-email">—</strong>.
                         </p>
@@ -500,10 +500,9 @@
                         </a>
                     </div>
 
-                    <!-- Form (shown when not signed in) -->
+                    <!-- Form (shown when not subscribed) -->
                     <div id="free-form-panel">
 
-                        <!-- Step 1: Email + consent -->
                         <form id="free-signup-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3" novalidate>
                             <label for="free-email" class="block text-sm font-semibold text-gray-800">Subscribe to free deal alerts</label>
                             <input type="email" id="free-email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
@@ -516,7 +515,6 @@
                             <button type="submit" id="free-step1-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">SUBSCRIBE FREE</button>
                         </form>
 
-                        <!-- Step 2: Code entry -->
                         <form id="free-verify-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3 hidden" novalidate>
                             <input type="hidden" name="action" value="confirm">
                             <input type="hidden" id="verify-email-hidden" name="email" value="">
@@ -755,7 +753,6 @@
                 }
             });
 
-            // Toggle the free plan card between the form and the "signed in" panel
             var freeFormPanel = document.getElementById('free-form-panel');
             var freeSignedinPanel = document.getElementById('free-signedin-panel');
             if (freeFormPanel && freeSignedinPanel) {
@@ -1094,6 +1091,10 @@
                 if (email && window.DealklyAuth) {
                     window.DealklyAuth.setSubscribed(email);
                 }
+
+                setTimeout(function () {
+                    window.location.href = 'home.html';
+                }, 1200);
             });
         });
 
