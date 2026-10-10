@@ -73,6 +73,7 @@
 
             <div class="flex items-center gap-3">
                 <nav class="hidden md:flex gap-4 text-sm font-semibold text-amber-100">
+                    <a href="home.html" class="hover:text-white transition px-3 py-2">Home</a>
                     <a href="tools.html" class="hover:text-white transition px-3 py-2">Tools & Resources</a>
                     <a href="index.html" class="px-4 py-2 bg-white text-[#92400E] rounded-md hover:bg-amber-50 transition">What is Dealkly?</a>
                 </nav>
@@ -91,9 +92,10 @@
                             <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Signed in as</p>
                             <p class="text-sm font-semibold text-gray-800 truncate profile-email"></p>
                         </div>
-                        <a href="#" class="profile-unsubscribe block w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
-                            Unsubscribe
-                        </a>
+                        <a href="home.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Home</a>
+                        <a href="account.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">My Account</a>
+                        <button type="button" class="profile-signout w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Sign out</button>
+                        <button type="button" class="profile-unsubscribe w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">Unsubscribe</button>
                     </div>
                 </div>
             </div>
@@ -260,7 +262,7 @@
     <footer class="text-amber-100 py-8 mt-auto" style="background: linear-gradient(135deg, #92400E, #78350F);">
         <div class="max-w-screen-2xl mx-auto px-4 text-center">
             <p class="mb-4 text-sm">
-                <a href="deals.html" class="hover:text-white mx-2">Live Deals</a> |
+                <a href="home.html" class="hover:text-white mx-2">Home</a> |
                 <a href="tools.html" class="hover:text-white mx-2">Tools & Resources</a> |
                 <a href="status.html" class="hover:text-white mx-2">System Status</a> |
                 <a href="privacy.html" class="hover:text-white mx-2">Privacy Policy</a> |
@@ -270,6 +272,14 @@
             <p class="text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved. eBay is a registered trademark of eBay Inc.</p>
         </div>
     </footer>
+
+    <!-- Hidden action form for sign out / unsubscribe -->
+    <iframe name="dealkly-action-frame" id="dealkly-action-frame" style="display:none;" title="Dealkly action receiver"></iframe>
+    <form id="dealkly-action-form" method="POST" target="dealkly-action-frame" style="display:none;">
+        <input type="hidden" name="action" id="action-name" value="">
+        <input type="hidden" name="email" id="action-email" value="">
+        <input type="hidden" name="token" id="action-token" value="">
+    </form>
 
     <script>
         (function () {
@@ -285,11 +295,13 @@
             const profileTrigger = profileWidgetWrapper.querySelector('.profile-trigger');
             const profileMenu = profileWidgetWrapper.querySelector('.profile-menu');
             const profileUnsubscribeLink = profileWidgetWrapper.querySelector('.profile-unsubscribe');
+            const profileSignoutBtn = profileWidgetWrapper.querySelector('.profile-signout');
             const profileEmailDisplay = profileWidgetWrapper.querySelector('.profile-email');
             const profileUsername = profileWidgetWrapper.querySelector('.profile-username');
 
             const STORAGE_KEY = 'dealkly_subscribed';
             const EMAIL_KEY = 'dealkly_email';
+            const TOKEN_KEY = 'dealkly_token';
             const UNSUBSCRIBE_BASE = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
 
             function addEnter(el) {
@@ -348,10 +360,26 @@
                 profileMenu.classList.add('hidden');
             }
 
+            function submitAction(action, email, token) {
+                document.getElementById('action-name').value = action;
+                document.getElementById('action-email').value = email || '';
+                document.getElementById('action-token').value = token || '';
+                document.getElementById('dealkly-action-form').submit();
+            }
+
+            function clearLocal() {
+                try {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem(EMAIL_KEY);
+                    localStorage.removeItem(TOKEN_KEY);
+                } catch (e) {}
+            }
+
             const alreadySubscribed = localStorage.getItem(STORAGE_KEY) === 'true';
             const storedEmail = localStorage.getItem(EMAIL_KEY) || '';
+            const storedToken = localStorage.getItem(TOKEN_KEY) || '';
 
-            if (alreadySubscribed) {
+            if (alreadySubscribed && storedEmail) {
                 showProfile(storedEmail);
                 collapseCard();
                 signupSuccess.classList.add('hidden');
@@ -392,9 +420,14 @@
                 if (profileMenu) profileMenu.classList.add('hidden');
             });
 
-            function handleUnsubscribe() {
-                localStorage.removeItem(STORAGE_KEY);
-                localStorage.removeItem(EMAIL_KEY);
+            function handleUnsubscribe(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!window.confirm('Unsubscribe from free deal alerts?')) return;
+                const email = localStorage.getItem(EMAIL_KEY) || '';
+                const token = localStorage.getItem(TOKEN_KEY) || '';
+                if (email) submitAction('unsubscribe', email, token);
+                clearLocal();
                 hideProfile();
                 showCollapsed();
             }
@@ -403,7 +436,26 @@
                 profileUnsubscribeLink.addEventListener('click', handleUnsubscribe);
             }
             if (successUnsubscribeLink) {
-                successUnsubscribeLink.addEventListener('click', handleUnsubscribe);
+                successUnsubscribeLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const email = localStorage.getItem(EMAIL_KEY) || '';
+                    if (email) {
+                        window.location.href = `${UNSUBSCRIBE_BASE}?action=unsubscribe&email=${encodeURIComponent(email)}`;
+                    }
+                });
+            }
+
+            if (profileSignoutBtn) {
+                profileSignoutBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const email = localStorage.getItem(EMAIL_KEY) || '';
+                    const token = localStorage.getItem(TOKEN_KEY) || '';
+                    if (token) submitAction('logout', email, token);
+                    clearLocal();
+                    hideProfile();
+                    showCollapsed();
+                });
             }
         })();
     </script>
