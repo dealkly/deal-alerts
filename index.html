@@ -987,6 +987,9 @@
     const step2Btn = document.getElementById('free-step2-btn');
     const backBtn = document.getElementById('free-back-btn');
 
+    var formMode = 'signup';
+    var currentEmail = '';
+
     function showError(msg) {
         freeSignupError.textContent = msg;
         freeSignupError.classList.remove('hidden');
@@ -1026,15 +1029,36 @@
             step1Btn.disabled = true;
 
             const alreadySubscribed = await isEmailAlreadySubscribed(email);
+
             if (alreadySubscribed) {
-                freeSignupError.innerHTML = 'This email is already subscribed. <a href="login.html" class="underline font-bold">Sign in instead →</a>';
-                freeSignupError.classList.remove('hidden');
-                freeSignupMessage.classList.add('hidden');
-                step1Btn.textContent = 'SUBSCRIBE FREE';
-                step1Btn.disabled = false;
+                // This email is already a subscriber. Convert to sign-in mode:
+                // send a login code and let the user enter it to reach their account.
+                formMode = 'login';
+                currentEmail = email;
+                step1Btn.textContent = 'SENDING CODE...';
+
+                dealklyJsonp('request-login', { email: email }, function (data, err) {
+                    if (err || !data || !data.ok) {
+                        showError((data && data.message) || 'Could not send sign-in code. Please try again.');
+                        step1Btn.textContent = 'SUBSCRIBE FREE';
+                        step1Btn.disabled = false;
+                        return;
+                    }
+
+                    verifyEmailHidden.value = email;
+                    verifyEmailDisplay.textContent = email;
+                    signupForm.classList.add('hidden');
+                    verifyForm.classList.remove('hidden');
+                    step1Btn.textContent = 'SUBSCRIBE FREE';
+                    step1Btn.disabled = false;
+                    showMessage('This email is already subscribed. A sign-in code has been sent. Enter it below to access your account.');
+                });
                 return;
             }
 
+            // Not yet a subscriber. Normal signup flow.
+            formMode = 'signup';
+            currentEmail = email;
             step1Btn.textContent = 'SENDING CODE...';
 
             signupForm.submit();
@@ -1068,7 +1092,9 @@
             step2Btn.textContent = 'CONFIRMING...';
             step2Btn.disabled = true;
 
-            dealklyJsonp('confirm', { email: email, code: code }, function (data, err) {
+            var action = formMode === 'login' ? 'verify-login' : 'confirm';
+
+            dealklyJsonp(action, { email: email, code: code }, function (data, err) {
                 if (err || !data) {
                     showError('No response from server. Please try again.');
                     step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
@@ -1086,14 +1112,20 @@
                 verifyForm.classList.add('hidden');
                 step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
                 step2Btn.disabled = false;
-                showMessage('Confirmed. Check your inbox for the welcome email. Free alerts are now active.');
 
-                if (email && window.DealklyAuth) {
-                    if (data.token) {
-                        try { localStorage.setItem('dealkly_token', data.token); } catch (err) {}
-                    }
-                    window.DealklyAuth.setSubscribed(email);
+                if (formMode === 'login') {
+                    showMessage('Signed in. Taking you to your dashboard...');
+                } else {
+                    showMessage('Confirmed. Taking you to your dashboard...');
                 }
+
+                try {
+                    if (data.token) {
+                        localStorage.setItem('dealkly_token', data.token);
+                    }
+                    localStorage.setItem('dealkly_email', data.email || email);
+                    localStorage.setItem('dealkly_subscribed', 'true');
+                } catch (errSet) {}
 
                 setTimeout(function () {
                     window.location.href = 'home.html';
@@ -1104,6 +1136,8 @@
         backBtn.addEventListener('click', function () {
             verifyForm.classList.add('hidden');
             signupForm.classList.remove('hidden');
+            formMode = 'signup';
+            currentEmail = '';
             clearFeedback();
         });
     }
