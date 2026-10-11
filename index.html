@@ -1089,6 +1089,9 @@
                 showMessage('Confirmed. Check your inbox for the welcome email. Free alerts are now active.');
 
                 if (email && window.DealklyAuth) {
+                    if (data.token) {
+                        try { localStorage.setItem('dealkly_token', data.token); } catch (err) {}
+                    }
                     window.DealklyAuth.setSubscribed(email);
                 }
 
