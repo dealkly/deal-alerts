@@ -501,7 +501,7 @@
 
                     <div id="free-form-panel">
 
-                        <form id="free-signup-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3" novalidate>
+                        <form id="free-signup-form" class="space-y-3" novalidate>
                             <label for="free-email" class="block text-sm font-semibold text-gray-800">Subscribe to free deal alerts</label>
                             <input type="email" id="free-email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
                             <div class="flex items-start gap-2">
@@ -513,11 +513,10 @@
                             <button type="submit" id="free-step1-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">SUBSCRIBE FREE</button>
                         </form>
 
-                        <form id="free-verify-form" action="https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec" method="POST" target="dealkly-signup-frame" class="space-y-3 hidden" novalidate>
-                            <input type="hidden" name="action" value="confirm">
+                        <form id="free-verify-form" class="space-y-3 hidden" novalidate>
                             <input type="hidden" id="verify-email-hidden" name="email" value="">
                             <p class="text-sm text-gray-600 leading-snug">
-                                Confirmation code sent to <strong id="verify-email-display" class="text-amber-700">your email</strong>.
+                                A 6-digit code was sent to <strong id="verify-email-display" class="text-amber-700">your email</strong>.
                             </p>
                             <label for="free-code" class="block text-sm font-semibold text-gray-800">Enter the 6-digit code</label>
                             <input type="text" id="free-code" name="code" required maxlength="6" pattern="\d{6}" inputmode="numeric" placeholder="000000" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
@@ -527,7 +526,6 @@
 
                         <p id="free-signup-error" class="hidden mt-3 text-sm font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3"></p>
                         <p id="free-signup-message" class="hidden mt-3 text-sm font-semibold text-green-800 bg-green-50 border border-green-200 rounded-lg px-4 py-3"></p>
-                        <iframe name="dealkly-signup-frame" id="dealkly-signup-frame" style="display:none;" title="Dealkly signup receiver"></iframe>
                     </div>
                 </div>
             </div>
@@ -895,7 +893,6 @@
 </script>
 
 <script>
-    const FREE_SUBS_API = 'https://api.github.com/repos/dealkly/deal-alerts/contents/free_subscribers.json';
     const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
 
     function dealklyJsonp(action, params, onDone) {
@@ -952,31 +949,6 @@
         return true;
     }
 
-    async function isEmailAlreadySubscribed(email) {
-        const target = String(email || '').trim().toLowerCase();
-        if (!target) return false;
-        try {
-            const res = await fetch(FREE_SUBS_API + '?t=' + Date.now(), {
-                headers: { 'Accept': 'application/vnd.github.v3+json' }
-            });
-            if (!res.ok) return false;
-            const data = await res.json();
-            if (!data || !data.content) return false;
-            const decoded = atob(data.content.replace(/\s/g, ''));
-            const parsed = JSON.parse(decoded);
-            if (!Array.isArray(parsed)) return false;
-            return parsed.some(function (entry) {
-                if (typeof entry === 'string') return entry.trim().toLowerCase() === target;
-                if (entry && typeof entry === 'object' && entry.email) {
-                    return String(entry.email).trim().toLowerCase() === target;
-                }
-                return false;
-            });
-        } catch (err) {
-            return false;
-        }
-    }
-
     const signupForm = document.getElementById('free-signup-form');
     const verifyForm = document.getElementById('free-verify-form');
     const freeSignupMessage = document.getElementById('free-signup-message');
@@ -986,9 +958,6 @@
     const step1Btn = document.getElementById('free-step1-btn');
     const step2Btn = document.getElementById('free-step2-btn');
     const backBtn = document.getElementById('free-back-btn');
-
-    var formMode = 'signup';
-    var currentEmail = '';
 
     function showError(msg) {
         freeSignupError.textContent = msg;
@@ -1006,7 +975,7 @@
     }
 
     if (signupForm && verifyForm) {
-        signupForm.addEventListener('submit', async function (e) {
+        signupForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
             const emailInput = document.getElementById('free-email');
@@ -1025,54 +994,25 @@
                 return;
             }
 
-            step1Btn.textContent = 'CHECKING...';
+            step1Btn.textContent = 'SENDING CODE...';
             step1Btn.disabled = true;
 
-            const alreadySubscribed = await isEmailAlreadySubscribed(email);
-
-            if (alreadySubscribed) {
-                // This email is already a subscriber. Convert to sign-in mode:
-                // send a login code and let the user enter it to reach their account.
-                formMode = 'login';
-                currentEmail = email;
-                step1Btn.textContent = 'SENDING CODE...';
-
-                dealklyJsonp('request-login', { email: email }, function (data, err) {
-                    if (err || !data || !data.ok) {
-                        showError((data && data.message) || 'Could not send sign-in code. Please try again.');
-                        step1Btn.textContent = 'SUBSCRIBE FREE';
-                        step1Btn.disabled = false;
-                        return;
-                    }
-
-                    verifyEmailHidden.value = email;
-                    verifyEmailDisplay.textContent = email;
-                    signupForm.classList.add('hidden');
-                    verifyForm.classList.remove('hidden');
+            dealklyJsonp('request-login', { email: email }, function (data, err) {
+                if (err || !data || !data.ok) {
+                    showError((data && data.message) || 'Could not send code. Please try again.');
                     step1Btn.textContent = 'SUBSCRIBE FREE';
                     step1Btn.disabled = false;
-                    showMessage('This email is already subscribed. A sign-in code has been sent. Enter it below to access your account.');
-                });
-                return;
-            }
+                    return;
+                }
 
-            // Not yet a subscriber. Normal signup flow.
-            formMode = 'signup';
-            currentEmail = email;
-            step1Btn.textContent = 'SENDING CODE...';
-
-            signupForm.submit();
-
-            verifyEmailHidden.value = email;
-            verifyEmailDisplay.textContent = email;
-
-            setTimeout(function () {
+                verifyEmailHidden.value = email;
+                verifyEmailDisplay.textContent = email;
                 signupForm.classList.add('hidden');
                 verifyForm.classList.remove('hidden');
                 step1Btn.textContent = 'SUBSCRIBE FREE';
                 step1Btn.disabled = false;
-                showMessage('Confirmation email sent. Check your inbox and click the link to activate free alerts. The 6-digit code below can also be used.');
-            }, 600);
+                showMessage('A 6-digit code was sent to your inbox. Enter it below to activate free alerts.');
+            });
         });
 
         verifyForm.addEventListener('submit', function (e) {
@@ -1089,12 +1029,10 @@
                 return;
             }
 
-            step2Btn.textContent = 'CONFIRMING...';
+            step2Btn.textContent = 'VERIFYING...';
             step2Btn.disabled = true;
 
-            var action = formMode === 'login' ? 'verify-login' : 'confirm';
-
-            dealklyJsonp(action, { email: email, code: code }, function (data, err) {
+            dealklyJsonp('verify-login', { email: email, code: code }, function (data, err) {
                 if (err || !data) {
                     showError('No response from server. Please try again.');
                     step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
@@ -1112,12 +1050,7 @@
                 verifyForm.classList.add('hidden');
                 step2Btn.textContent = 'CONFIRM & SUBSCRIBE';
                 step2Btn.disabled = false;
-
-                if (formMode === 'login') {
-                    showMessage('Signed in. Taking you to your dashboard...');
-                } else {
-                    showMessage('Confirmed. Taking you to your dashboard...');
-                }
+                showMessage('Confirmed. Taking you to your dashboard...');
 
                 try {
                     if (data.token) {
@@ -1129,15 +1062,13 @@
 
                 setTimeout(function () {
                     window.location.href = 'home.html';
-                }, 1200);
+                }, 1000);
             });
         });
 
         backBtn.addEventListener('click', function () {
             verifyForm.classList.add('hidden');
             signupForm.classList.remove('hidden');
-            formMode = 'signup';
-            currentEmail = '';
             clearFeedback();
         });
     }
