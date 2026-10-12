@@ -64,15 +64,9 @@
             opacity: 1;
             pointer-events: auto;
         }
-        #dropdown-header .max-w-7xl {
-            height: 3.5rem;
-        }
-        .nav-links {
-            transform: translateY(-12px);
-        }
-        #dropdown-header .nav-links {
-            transform: none;
-        }
+        #dropdown-header .max-w-7xl { height: 3.5rem; }
+        .nav-links { transform: translateY(-12px); }
+        #dropdown-header .nav-links { transform: none; }
         .logo-img {
             filter: brightness(0) saturate(100%) invert(53%) sepia(87%) saturate(2250%) hue-rotate(354deg) brightness(150%) contrast(94%);
             transition: filter 0.3s ease;
@@ -80,10 +74,7 @@
         #dropdown-header .logo-img {
             filter: brightness(0) saturate(100%) invert(39%) sepia(91%) saturate(4096%) hue-rotate(5deg) brightness(91%) contrast(90%);
         }
-        .logo-subtitle {
-            color: #F5EFE6;
-            transition: color 0.3s ease;
-        }
+        .logo-subtitle { color: #F5EFE6; transition: color 0.3s ease; }
         #dropdown-header .logo-subtitle { color: #1D2023; }
         .nav-link {
             color: #ffffff;
@@ -91,14 +82,8 @@
             transition: all 0.3s ease;
         }
         .nav-link:hover { color: #e2e8f0; }
-        #dropdown-header .nav-link {
-            color: #1D2023;
-            text-shadow: none;
-        }
-        .hero-heading {
-            font-family: 'Anek Latin', sans-serif;
-            text-align: justify;
-        }
+        #dropdown-header .nav-link { color: #1D2023; text-shadow: none; }
+        .hero-heading { font-family: 'Anek Latin', sans-serif; text-align: justify; }
         .fade-in-up {
             opacity: 0;
             transform: translateY(30px);
@@ -106,31 +91,14 @@
         }
         .delay-1 { animation-delay: 0.2s; }
         .delay-2 { animation-delay: 0.4s; }
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .card-hover {
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.12);
-        }
-        .btn-marketplace {
-            transition: all 0.3s ease;
-        }
-        .btn-marketplace:hover {
-            transform: scale(1.03) translateY(-1px);
-            box-shadow: 0 12px 24px rgba(180, 83, 9, 0.25);
-        }
-        .btn-silky {
-            background: #F5EFE6;
-            color: #D97706;
-            transition: all 0.3s ease;
-        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 30px -10px rgba(0,0,0,0.12); }
+        .btn-marketplace { transition: all 0.3s ease; }
+        .btn-marketplace:hover { transform: scale(1.03) translateY(-1px); box-shadow: 0 12px 24px rgba(180, 83, 9, 0.25); }
+        .btn-silky { background: #F5EFE6; color: #D97706; transition: all 0.3s ease; }
         .btn-silky:hover {
-            background: #FFFFFF;
-            color: #B45309;
+            background: #FFFFFF; color: #B45309;
             transform: scale(1.03) translateY(-1px);
             box-shadow: 0 12px 24px rgba(245, 239, 230, 0.35);
         }
@@ -152,42 +120,26 @@
             font-weight: 800;
         }
         .modal-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: rgba(0,0,0,0.7);
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 1rem;
+            align-items: center; justify-content: center;
+            z-index: 10000; padding: 1rem;
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
         .modal-content {
             background: #ffffff;
-            max-width: 600px;
-            width: 100%;
-            border-radius: 1rem;
-            padding: 2rem;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-width: 600px; width: 100%;
+            border-radius: 1rem; padding: 2rem;
+            position: relative; max-height: 90vh; overflow-y: auto;
         }
         .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            line-height: 1;
-            cursor: pointer;
-            color: #64748b;
+            position: absolute; top: 1rem; right: 1rem;
+            background: none; border: none;
+            font-size: 1.5rem; line-height: 1;
+            cursor: pointer; color: #64748b;
         }
-        .modal-close:hover {
-            color: #0f172a;
-        }
+        .modal-close:hover { color: #0f172a; }
         .profile-widget { position: relative; }
         .profile-avatar {
             background: linear-gradient(135deg, #D97706, #B45309);
@@ -202,24 +154,15 @@
             text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);
             max-width: 84px;
         }
-        #dropdown-header .profile-username {
-            color: #1D2023;
-            text-shadow: none;
-        }
+        #dropdown-header .profile-username { color: #1D2023; text-shadow: none; }
         #dealkly-toast {
-            position: fixed;
-            top: 16px;
-            left: 50%;
+            position: fixed; top: 16px; left: 50%;
             transform: translateX(-50%) translateY(-20px);
             opacity: 0;
             transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 10001;
-            pointer-events: none;
+            z-index: 10001; pointer-events: none;
         }
-        #dealkly-toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        #dealkly-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body class="font-light text-gray-700 bg-white">
@@ -234,12 +177,12 @@
             <a href="#features" class="nav-link">Introduction</a>
             <a href="#how-it-works" class="nav-link">How it Works</a>
             <a href="#categories" class="nav-link">Features & Benefits</a>
-            <a href="#pricing" class="nav-link">Pricing</a>
+            <a href="#signup" class="nav-link">Get Alerts</a>
             <a href="deals.html" class="nav-link">Live Deals</a>
             <a href="tools.html" class="nav-link">Tools</a>
         </div>
-        <div class="auth-slot flex items-center">
-            <a href="#pricing" class="get-started-btn btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get Started</a>
+        <div class="auth-slot flex items-center gap-3">
+            <a href="#signup" class="get-started-btn btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get free alerts</a>
             <div class="profile-widget hidden">
                 <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
                     <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
@@ -274,12 +217,12 @@
             <a href="#features" class="nav-link">Introduction</a>
             <a href="#how-it-works" class="nav-link">How it Works</a>
             <a href="#categories" class="nav-link">Features & Benefits</a>
-            <a href="#pricing" class="nav-link">Pricing</a>
+            <a href="#signup" class="nav-link">Get Alerts</a>
             <a href="deals.html" class="nav-link">Live Deals</a>
             <a href="tools.html" class="nav-link">Tools</a>
         </div>
-        <div class="auth-slot flex items-center">
-            <a href="#pricing" class="get-started-btn btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get Started</a>
+        <div class="auth-slot flex items-center gap-3">
+            <a href="#signup" class="get-started-btn btn-silky px-5 py-2 rounded font-semibold shadow-sm">Get free alerts</a>
             <div class="profile-widget hidden">
                 <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
                     <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
@@ -312,20 +255,14 @@
                     Real-Time Deal Monitoring
                 </span>
             </span>
-
             <div class="max-w-4xl">
                 <h1 class="fade-in-up delay-1 hero-heading text-4xl md:text-6xl font-normal text-white leading-tight mb-8 drop-shadow-lg">
                     Stay ahead with automated alerts on verified deals across the most popular eBay categories.
                 </h1>
             </div>
-
             <div class="flex flex-wrap justify-center gap-4 w-full">
-                <a href="#features" class="fade-in-up delay-2" style="display:inline-block; font-family:'Inter',system-ui,sans-serif; font-weight:700; font-size:0.875rem; line-height:1.25rem; padding:0.5rem 1.25rem; border-radius:0.25rem; background:linear-gradient(135deg, #D97706, #B45309); color:#FFFFFF; text-decoration:none; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                    LEARN MORE
-                </a>
-                <a href="deals.html" class="fade-in-up delay-2" style="display:inline-block; font-family:'Inter',system-ui,sans-serif; font-weight:700; font-size:0.875rem; line-height:1.25rem; padding:0.5rem 1.25rem; border-radius:0.25rem; background:#FFFFFF; color:#92400E; text-decoration:none; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                    VIEW LIVE DEALS
-                </a>
+                <a href="#features" class="fade-in-up delay-2" style="display:inline-block; font-family:'Inter',system-ui,sans-serif; font-weight:700; font-size:0.875rem; line-height:1.25rem; padding:0.5rem 1.25rem; border-radius:0.25rem; background:linear-gradient(135deg, #D97706, #B45309); color:#FFFFFF; text-decoration:none; box-shadow:0 1px 2px rgba(0,0,0,0.05);">LEARN MORE</a>
+                <a href="deals.html" class="fade-in-up delay-2" style="display:inline-block; font-family:'Inter',system-ui,sans-serif; font-weight:700; font-size:0.875rem; line-height:1.25rem; padding:0.5rem 1.25rem; border-radius:0.25rem; background:#FFFFFF; color:#92400E; text-decoration:none; box-shadow:0 1px 2px rgba(0,0,0,0.05);">VIEW LIVE DEALS</a>
             </div>
         </div>
     </div>
@@ -386,12 +323,12 @@
         </div>
         <div class="flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
-                <img src="https://images.unsplash.com/photo-1639450177811-fc52cc3a17d4?w=800&q=80" alt="Custom Watchlists" class="feature-img">
+                <img src="https://images.unsplash.com/photo-1639450177811-fc52cc3a17d4?w=800&q=80" alt="Instant Alerts" class="feature-img">
             </div>
             <div class="md:w-1/2">
-                <h2 class="text-4xl mb-4"><span class="feature-heading">Custom Watchlists</span></h2>
+                <h2 class="text-4xl mb-4"><span class="feature-heading">Instant Email Alerts</span></h2>
                 <p class="text-lg text-gray-600 leading-relaxed">
-                    Premium subscribers can define their own watchlists for any product or category—whether it's laptops, sneakers, or kitchen appliances—receiving tailored alerts directly to their inbox.
+                    Every qualifying deal is emailed the moment it is detected — with the item, the price drop, and the savings. Free subscribers receive alerts across all monitored categories.
                 </p>
             </div>
         </div>
@@ -439,114 +376,84 @@
                 <button onclick="openCategoryModal()" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309); cursor:pointer; border:none;">Explore Categories</button>
             </div>
             <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
-                <img src="https://images.unsplash.com/photo-1550091230-b5f07d288758?w=600&q=80" alt="Premium Watchlists" class="w-full h-48 object-cover rounded-lg mb-6">
-                <h3 class="font-extrabold text-xl mb-4 text-white">Premium Watchlists</h3>
-                <p class="text-amber-100 mb-6">Create customized watchlists for any product or brand you care about, receiving tailored alerts that match your exact interests.</p>
-                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Set Up Watchlists</a>
+                <img src="https://images.unsplash.com/photo-1550091230-b5f07d288758?w=600&q=80" alt="Custom Watchlists" class="w-full h-48 object-cover rounded-lg mb-6">
+                <h3 class="font-extrabold text-xl mb-4 text-white">Custom Watchlists</h3>
+                <p class="text-amber-100 mb-6">Watch specific models, brands, or keywords. Premium subscribers get a personal alert the moment a matching drop is detected.</p>
+                <a href="premium.html" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">See Premium Options</a>
             </div>
             <div class="p-10 rounded-xl text-left card-hover" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
                 <img src="https://images.unsplash.com/photo-1603808326448-ff7a2d980272?w=600&q=80" alt="Instant Email Notifications" class="w-full h-48 object-cover rounded-lg mb-6">
                 <h3 class="font-extrabold text-xl mb-4 text-white">Instant Email Notifications</h3>
                 <p class="text-amber-100 mb-6">Receive immediate email alerts whenever a qualifying deal is detected, so you can act quickly and secure the best prices.</p>
-                <a href="#pricing" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Subscribe Today</a>
+                <a href="#signup" class="btn-marketplace inline-block font-bold px-4 py-2 rounded-full text-white shadow-sm" style="background: linear-gradient(135deg, #D97706, #B45309);">Get Free Alerts</a>
             </div>
         </div>
     </div>
 </section>
 
-<section id="pricing" class="py-24 bg-white border-t border-amber-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Flexible Plans for Every Deal Hunter</h2>
-        <p class="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">
-            Choose the plan that fits your needs—from casual savings to serious bargain hunting across any category.
+<section id="signup" class="py-24 bg-white border-t border-amber-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-100 mb-5">Free forever · No credit card</span>
+        <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Get price-drop alerts in your inbox</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+            Dealkly watches eBay around the clock. When a genuine drop is detected in any of the monitored tech categories, you get an email — the item, the price, the savings.
         </p>
-        <div class="flex flex-col md:flex-row justify-center items-start gap-8 max-w-4xl mx-auto">
 
-            <div id="free-plan" class="bg-white border border-amber-200 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative text-left card-hover">
-                <h3 class="text-amber-700 font-bold uppercase tracking-widest text-sm mb-2">Free Plan</h3>
-                <div class="text-5xl font-extrabold text-gray-900 mb-6">$0<span class="text-xl text-gray-500 font-normal">/mo</span></div>
-                <ul class="text-gray-600 mb-8 space-y-4 flex-grow">
-                    <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Access to broad category coverage</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> True Cost calculation (Item + Shipping)</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Automated Deal Tiering grades</li>
-                </ul>
+        <div class="bg-[#FEF9ED] border border-amber-200 rounded-2xl p-8 md:p-10 max-w-md mx-auto text-left" id="free-plan">
 
-                <div class="mt-auto w-full">
-
-                    <div id="free-signedin-panel" class="hidden bg-green-50 border border-green-200 rounded-xl p-4">
-                        <p class="text-xs font-bold text-green-800 mb-1">You are subscribed</p>
-                        <p class="text-xs text-green-700 leading-snug">
-                            Free alerts will be sent to <strong class="free-account-email">—</strong>.
-                        </p>
-                        <a href="account.html" class="block mt-3 text-center text-xs font-bold text-white py-2.5 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">
-                            Manage my account →
-                        </a>
-                    </div>
-
-                    <div id="free-form-panel">
-
-                        <form id="free-signup-form" class="space-y-3" novalidate>
-                            <label for="free-email" class="block text-sm font-semibold text-gray-800">Subscribe to free deal alerts</label>
-                            <input type="email" id="free-email" name="email" placeholder="Enter your email address" required class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
-                            <div class="flex items-start gap-2">
-                                <input type="checkbox" id="free-consent" name="consent" value="yes" required class="mt-1 h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500 flex-shrink-0">
-                                <label for="free-consent" class="text-xs text-gray-600 leading-snug">
-                                    I agree to the <a href="privacy.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Privacy Policy</a> and <a href="terms.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Terms of Service</a>.
-                                </label>
-                            </div>
-                            <button type="submit" id="free-step1-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">SUBSCRIBE FREE</button>
-                        </form>
-
-                        <form id="free-verify-form" class="space-y-3 hidden" novalidate>
-                            <input type="hidden" id="verify-email-hidden" name="email" value="">
-                            <p class="text-sm text-gray-600 leading-snug">
-                                A 6-digit code was sent to <strong id="verify-email-display" class="text-amber-700">your email</strong>.
-                            </p>
-                            <label for="free-code" class="block text-sm font-semibold text-gray-800">Enter the 6-digit code</label>
-                            <input type="text" id="free-code" name="code" required maxlength="6" pattern="\d{6}" inputmode="numeric" placeholder="000000" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
-                            <button type="submit" id="free-step2-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">CONFIRM &amp; SUBSCRIBE</button>
-                            <button type="button" id="free-back-btn" class="w-full text-xs text-gray-500 hover:text-amber-700 underline">← Use a different email</button>
-                        </form>
-
-                        <div id="free-welcome-step" class="hidden text-center">
-                            <div class="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #D97706, #B45309);">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                            <h4 class="text-xl font-extrabold text-gray-900 mb-2">Welcome to Dealkly</h4>
-                            <p class="text-sm text-gray-600 leading-relaxed mb-5">
-                                You are subscribed to free deal alerts. Dealkly watches eBay every 4 hours and emails you the moment a genuine price drop is detected in any of the monitored categories.
-                            </p>
-                            <a href="home.html" class="btn-marketplace block w-full text-white font-bold py-4 rounded-xl shadow-md text-center" style="background: linear-gradient(135deg, #D97706, #B45309);">
-                                Go to my dashboard →
-                            </a>
-                        </div>
-
-                        <p id="free-signup-error" class="hidden mt-3 text-sm font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3"></p>
-                        <p id="free-signup-message" class="hidden mt-3 text-sm font-semibold text-green-800 bg-green-50 border border-green-200 rounded-lg px-4 py-3"></p>
-                    </div>
-                </div>
+            <div id="free-signedin-panel" class="hidden bg-green-50 border border-green-200 rounded-xl p-4">
+                <p class="text-xs font-bold text-green-800 mb-1">You are subscribed</p>
+                <p class="text-xs text-green-700 leading-snug">
+                    Free alerts will be sent to <strong class="free-account-email">—</strong>.
+                </p>
+                <a href="account.html" class="block mt-3 text-center text-xs font-bold text-white py-2.5 rounded-lg transition" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                    Manage my account →
+                </a>
             </div>
 
-            <div class="bg-white border-2 rounded-2xl p-10 w-full md:w-1/2 flex flex-col relative text-left card-hover" style="border-color:#D97706;">
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xs font-bold uppercase tracking-widest py-2 px-4 rounded-full shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">Recommended</div>
-                <h3 class="text-amber-700 font-bold uppercase tracking-widest text-sm mb-2 mt-4">Premium Plan</h3>
-                <div class="text-5xl font-extrabold text-gray-900 mb-6">$3<span class="text-xl text-gray-500 font-normal">/mo</span></div>
-                <p class="text-sm text-gray-500 mb-6 -mt-4">Billed through Gumroad</p>
-                <ul class="text-gray-600 mb-6 space-y-4 flex-grow">
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#B45309;">All Free Features</strong></li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#B45309;">"My Items" Custom Tracking</strong></li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#B45309;">Unlimited custom watchlists</strong></li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong style="color:#B45309;">Priority alert dispatch</strong></li>
-                </ul>
+            <div id="free-form-panel">
 
-                <p class="text-sm font-semibold text-gray-900 mb-2">Personalized deal tracking for serious shoppers.</p>
-                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
-                    <p class="text-xs text-gray-700 leading-relaxed">Dealkly uses Gumroad for secure payment processing. After checkout, the custom watchlist activates automatically.</p>
+                <form id="free-signup-form" class="space-y-3" novalidate>
+                    <label for="free-email" class="block text-sm font-semibold text-gray-800">Your email address</label>
+                    <input type="email" id="free-email" name="email" placeholder="you@example.com" required class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800">
+                    <div class="flex items-start gap-2">
+                        <input type="checkbox" id="free-consent" name="consent" value="yes" required class="mt-1 h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500 flex-shrink-0">
+                        <label for="free-consent" class="text-xs text-gray-600 leading-snug">
+                            I agree to the <a href="privacy.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Privacy Policy</a> and <a href="terms.html" class="text-amber-700 underline hover:text-amber-900" target="_blank">Terms of Service</a>.
+                        </label>
+                    </div>
+                    <button type="submit" id="free-step1-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">SUBSCRIBE FREE</button>
+                    <p class="text-[11px] text-gray-500 text-center mt-2">16 categories · No credit card · Cancel anytime</p>
+                </form>
+
+                <form id="free-verify-form" class="space-y-3 hidden" novalidate>
+                    <input type="hidden" id="verify-email-hidden" name="email" value="">
+                    <p class="text-sm text-gray-600 leading-snug">
+                        A 6-digit code was sent to <strong id="verify-email-display" class="text-amber-700">your email</strong>.
+                    </p>
+                    <label for="free-code" class="block text-sm font-semibold text-gray-800">Enter the 6-digit code</label>
+                    <input type="text" id="free-code" name="code" required maxlength="6" pattern="\d{6}" inputmode="numeric" placeholder="000000" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 text-center tracking-widest text-lg font-bold">
+                    <button type="submit" id="free-step2-btn" class="btn-marketplace w-full text-white font-bold py-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #D97706, #B45309);">CONFIRM &amp; SUBSCRIBE</button>
+                    <button type="button" id="free-back-btn" class="w-full text-xs text-gray-500 hover:text-amber-700 underline">← Use a different email</button>
+                </form>
+
+                <div id="free-welcome-step" class="hidden text-center">
+                    <div class="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-extrabold text-gray-900 mb-2">Welcome to Dealkly</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-5">
+                        You are subscribed to free deal alerts. Dealkly watches eBay every 4 hours and emails you the moment a genuine price drop is detected in any of the monitored categories.
+                    </p>
+                    <a href="home.html" class="btn-marketplace block w-full text-white font-bold py-4 rounded-xl shadow-md text-center" style="background: linear-gradient(135deg, #D97706, #B45309);">
+                        Go to my dashboard →
+                    </a>
                 </div>
 
-                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="btn-marketplace block w-full text-white text-center font-bold py-4 rounded shadow-lg mt-auto" style="background: linear-gradient(135deg, #D97706, #B45309);">UPGRADE TO PREMIUM – $3/MO</a>
+                <p id="free-signup-error" class="hidden mt-3 text-sm font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3"></p>
+                <p id="free-signup-message" class="hidden mt-3 text-sm font-semibold text-green-800 bg-green-50 border border-green-200 rounded-lg px-4 py-3"></p>
             </div>
         </div>
     </div>
@@ -559,6 +466,7 @@
         <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
             <a href="deals.html" class="hover:text-white transition">Live Deals</a>
             <a href="tools.html" class="hover:text-white transition">Tools &amp; Resources</a>
+            <a href="premium.html" class="hover:text-white transition">Premium</a>
             <a href="status.html" class="hover:text-white transition">System Status</a>
             <a href="privacy.html" class="hover:text-white transition">Privacy Policy</a>
             <a href="terms.html" class="hover:text-white transition">Terms of Service</a>
@@ -619,18 +527,13 @@
         const topBtn = btn.getBoundingClientRect().top + window.scrollY;
         const newThreshold = Math.min(topLogo, topNav, topBtn);
 
-        if (newThreshold > 0) {
-            threshold = newThreshold;
-            return true;
-        }
+        if (newThreshold > 0) { threshold = newThreshold; return true; }
         return false;
     }
 
     let thresholdTries = 0;
     const thresholdTimer = setInterval(function () {
-        if (updateThreshold() || thresholdTries++ > 40) {
-            clearInterval(thresholdTimer);
-        }
+        if (updateThreshold() || thresholdTries++ > 40) clearInterval(thresholdTimer);
     }, 100);
 
     window.addEventListener('load', function () {
@@ -644,43 +547,36 @@
             window.requestAnimationFrame(function () {
                 const currentScrollY = window.scrollY;
                 const isPast = threshold > 0 && currentScrollY >= threshold;
-
-                if (isPast) {
-                    dropdownHeader.classList.add('show-down');
-                } else {
-                    dropdownHeader.classList.remove('show-down');
-                }
-
+                if (isPast) dropdownHeader.classList.add('show-down');
+                else dropdownHeader.classList.remove('show-down');
                 ticking = false;
             });
             ticking = true;
         }
     });
 
-    function openCategoryModal() {
-        document.getElementById('categoryModal').classList.add('active');
-    }
-    function closeCategoryModal() {
-        document.getElementById('categoryModal').classList.remove('active');
-    }
+    function openCategoryModal() { document.getElementById('categoryModal').classList.add('active'); }
+    function closeCategoryModal() { document.getElementById('categoryModal').classList.remove('active'); }
 
     document.getElementById('categoryModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeCategoryModal();
-        }
+        if (e.target === this) closeCategoryModal();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeCategoryModal();
     });
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeCategoryModal();
-        }
+    document.querySelectorAll('.get-started-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            setTimeout(function () {
+                var emailField = document.getElementById('free-email');
+                if (emailField && emailField.offsetParent !== null) emailField.focus();
+            }, 700);
+        });
     });
 </script>
 
 <script>
     (function () {
-        var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbww2bj6yDbdI-KxIB89h8GgTI0tcYYUhMHW-ecka8UAAzz2UcB-x2ICZU_UAFkBeCoY/exec';
-
         var actionForm = document.getElementById('dealkly-action-form');
         var actionName = document.getElementById('action-name');
         var actionEmail = document.getElementById('action-email');
@@ -694,9 +590,7 @@
             toast.textContent = msg;
             toast.classList.add('show');
             if (toastTimer) clearTimeout(toastTimer);
-            toastTimer = setTimeout(function () {
-                toast.classList.remove('show');
-            }, 3000);
+            toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 3000);
         }
 
         function getState() {
@@ -714,9 +608,7 @@
         }
 
         function closeAllMenus() {
-            document.querySelectorAll('.profile-menu').forEach(function (m) {
-                m.classList.add('hidden');
-            });
+            document.querySelectorAll('.profile-menu').forEach(function (m) { m.classList.add('hidden'); });
         }
 
         function clearLocalState() {
@@ -783,11 +675,8 @@
                 pendingAction = '';
                 clearLocalState();
                 renderWidget();
-                if (data.ok === false && data.message) {
-                    showToast(data.message);
-                } else {
-                    showToast('You have been unsubscribed.');
-                }
+                if (data.ok === false && data.message) showToast(data.message);
+                else showToast('You have been unsubscribed.');
                 return;
             }
         });
@@ -817,24 +706,15 @@
                 if (btn.dataset.bound === '1') return;
                 btn.dataset.bound = '1';
                 btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
+                    e.preventDefault(); e.stopPropagation();
                     var state = getState();
-
                     closeAllMenus();
                     pendingAction = 'signout';
-
                     clearLocalState();
                     renderWidget();
                     showToast('Signed out.');
-
-                    if (state.token) {
-                        submitAction('logout', state.email, state.token);
-                    }
-
-                    setTimeout(function () {
-                        if (pendingAction === 'signout') pendingAction = '';
-                    }, 8000);
+                    if (state.token) submitAction('logout', state.email, state.token);
+                    setTimeout(function () { if (pendingAction === 'signout') pendingAction = ''; }, 8000);
                 });
             });
 
@@ -842,16 +722,13 @@
                 if (btn.dataset.bound === '1') return;
                 btn.dataset.bound = '1';
                 btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
+                    e.preventDefault(); e.stopPropagation();
                     var state = getState();
                     if (!state.email) return;
                     if (!window.confirm('Unsubscribe from free deal alerts? This cannot be undone from this menu.')) return;
-
                     closeAllMenus();
                     pendingAction = 'unsubscribe';
                     submitAction('unsubscribe', state.email, state.token);
-
                     setTimeout(function () {
                         if (pendingAction === 'unsubscribe') {
                             pendingAction = '';
@@ -864,14 +741,9 @@
             });
         }
 
-        document.addEventListener('click', function () {
-            closeAllMenus();
-        });
+        document.addEventListener('click', function () { closeAllMenus(); });
 
-        function boot() {
-            bind();
-            renderWidget();
-        }
+        function boot() { bind(); renderWidget(); }
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', boot);
@@ -979,15 +851,8 @@
 
             clearFeedback();
 
-            if (!isValidEmailFormat(email)) {
-                showError('Please enter a valid email address.');
-                return;
-            }
-
-            if (!consentBox || !consentBox.checked) {
-                showError('Please accept the Privacy Policy and Terms of Service.');
-                return;
-            }
+            if (!isValidEmailFormat(email)) { showError('Please enter a valid email address.'); return; }
+            if (!consentBox || !consentBox.checked) { showError('Please accept the Privacy Policy and Terms of Service.'); return; }
 
             step1Btn.textContent = 'SENDING CODE...';
             step1Btn.disabled = true;
@@ -1018,10 +883,7 @@
 
             clearFeedback();
 
-            if (!/^\d{6}$/.test(code)) {
-                showError('Please enter the 6-digit code from the email.');
-                return;
-            }
+            if (!/^\d{6}$/.test(code)) { showError('Please enter the 6-digit code from the email.'); return; }
 
             step2Btn.textContent = 'VERIFYING...';
             step2Btn.disabled = true;
@@ -1042,9 +904,7 @@
                 }
 
                 try {
-                    if (data.token) {
-                        localStorage.setItem('dealkly_token', data.token);
-                    }
+                    if (data.token) localStorage.setItem('dealkly_token', data.token);
                     localStorage.setItem('dealkly_email', data.email || email);
                     localStorage.setItem('dealkly_subscribed', 'true');
                 } catch (errSet) {}
