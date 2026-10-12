@@ -55,9 +55,10 @@
             position: fixed; inset: 0;
             background: rgba(0,0,0,0.6);
             display: none;
-            align-items: center; justify-content: center;
+            align-items: flex-start;
+            justify-content: center;
             z-index: 10002;
-            padding: 1rem;
+            padding: 3.5rem 1rem;
             overflow-y: auto;
         }
         #premium-modal.active { display: flex; }
@@ -69,8 +70,8 @@
             border: 2px solid #D97706;
             padding: 2.25rem 2rem 2rem 2rem;
             position: relative;
-            max-height: 92vh;
-            overflow-y: auto;
+            max-height: none;
+            margin: auto 0;
             animation: fadeIn 0.3s ease forwards;
         }
         .premium-modal-close {
