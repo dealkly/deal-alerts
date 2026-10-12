@@ -41,6 +41,66 @@
             z-index: 10001; pointer-events: none;
         }
         #dealkly-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .premium-header-btn {
+            background: linear-gradient(135deg, #FDE68A, #FCD34D);
+            color: #78350F;
+            transition: all 0.2s ease;
+        }
+        .premium-header-btn:hover {
+            background: linear-gradient(135deg, #FCD34D, #FBBF24);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+        }
+        #premium-modal {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center; justify-content: center;
+            z-index: 10002;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        #premium-modal.active { display: flex; }
+        .premium-modal-content {
+            background: #FFFFFF;
+            max-width: 460px;
+            width: 100%;
+            border-radius: 1.25rem;
+            border: 2px solid #D97706;
+            padding: 2.25rem 2rem 2rem 2rem;
+            position: relative;
+            max-height: 92vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        .premium-modal-close {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.9rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .premium-modal-close:hover { color: #0f172a; }
+        .recommended-pill {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #D97706, #B45309);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 8px 18px;
+            border-radius: 9999px;
+            box-shadow: 0 6px 14px rgba(180, 83, 9, 0.35);
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body class="bg-[#FFFDF7] text-gray-700 min-h-screen flex flex-col">
@@ -60,6 +120,10 @@
                     <a href="account.html" class="hover:text-white transition">Account</a>
                 </nav>
 
+                <button type="button" id="premium-open-btn" class="hidden md:inline-block premium-header-btn px-4 py-2 rounded-md text-sm font-bold shadow-sm">
+                    Premium
+                </button>
+
                 <div id="profile-widget-wrapper" class="hidden profile-widget">
                     <button type="button" class="profile-trigger flex flex-col items-center focus:outline-none" aria-label="Account">
                         <span class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
@@ -76,6 +140,7 @@
                         </div>
                         <a href="home.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Home</a>
                         <a href="account.html" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">My Account</a>
+                        <button type="button" id="premium-open-btn-menu" class="block w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Premium options</button>
                         <button type="button" class="profile-signout w-full text-left px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">Sign out</button>
                         <button type="button" class="profile-unsubscribe w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">Unsubscribe</button>
                     </div>
@@ -162,13 +227,13 @@
                 <p class="text-xs text-gray-500 mt-1 leading-snug">Hand-picked partner resources.</p>
             </a>
 
-            <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer" class="group bg-white border border-amber-300 rounded-2xl p-5 shadow-sm card-hover flex flex-col items-start" style="background: linear-gradient(180deg, #FFFFFF, #FEF9ED);">
+            <button type="button" id="premium-open-btn-tile" class="group bg-white border border-amber-300 rounded-2xl p-5 shadow-sm card-hover flex flex-col items-start text-left" style="background: linear-gradient(180deg, #FFFFFF, #FEF9ED);">
                 <span class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background: linear-gradient(135deg, #D97706, #B45309);">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                 </span>
                 <p class="text-sm font-bold text-gray-900 group-hover:text-amber-700 transition">Go premium</p>
                 <p class="text-xs text-gray-500 mt-1 leading-snug">Custom watchlists for $3/mo.</p>
-            </a>
+            </button>
 
         </div>
     </section>
@@ -267,10 +332,10 @@
                         Free alerts cover broad categories. Premium subscribers create their own watchlists — specific models, brands, or keywords — and get a personal alert whenever the price drops.
                     </p>
                 </div>
-                <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer"
+                <button type="button" id="premium-open-btn-banner"
                     class="flex-shrink-0 bg-white text-[#92400E] font-bold px-6 py-3 rounded-lg shadow-lg hover:bg-amber-50 transition whitespace-nowrap">
-                    Upgrade – $3/mo →
-                </a>
+                    See Premium options →
+                </button>
             </div>
         </div>
     </section>
@@ -288,6 +353,40 @@
             <p class="text-xs opacity-75">&copy; 2026 Dealkly. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Premium modal -->
+    <div id="premium-modal" role="dialog" aria-modal="true" aria-labelledby="premium-modal-title">
+        <div class="premium-modal-content">
+            <span class="recommended-pill">Recommended</span>
+            <button type="button" class="premium-modal-close" id="premium-modal-close" aria-label="Close">&times;</button>
+
+            <p class="text-amber-700 font-bold uppercase tracking-widest text-xs mb-2 mt-3">Premium Plan</p>
+            <div class="text-5xl font-extrabold text-gray-900 mb-1" id="premium-modal-title">$3<span class="text-xl text-gray-500 font-normal">/mo</span></div>
+            <p class="text-sm text-gray-500 mb-6">Billed through Gumroad</p>
+
+            <ul class="text-gray-600 mb-6 space-y-4">
+                <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> All Free Features</li>
+                <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> "My Items" Custom Tracking</li>
+                <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Unlimited custom watchlists</li>
+                <li class="flex items-center"><svg class="w-5 h-5 mr-3 flex-shrink-0" style="color:#D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Priority alert dispatch</li>
+            </ul>
+
+            <p class="text-sm font-semibold text-gray-900 mb-3">Personalized deal tracking for serious shoppers.</p>
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                <p class="text-xs text-gray-700 leading-relaxed">Dealkly uses Gumroad for secure payment processing. After checkout, the custom watchlist activates automatically.</p>
+            </div>
+
+            <a href="https://dealkly.gumroad.com/l/premium-alerts" target="_blank" rel="noopener noreferrer"
+                class="block w-full text-white text-center font-bold py-4 rounded-lg shadow-lg transition"
+                style="background: linear-gradient(135deg, #D97706, #B45309);">
+                UPGRADE TO PREMIUM – $3/MO
+            </a>
+
+            <button type="button" id="premium-modal-dismiss" class="block w-full text-center text-xs text-gray-500 hover:text-amber-700 underline mt-4">
+                Not now
+            </button>
+        </div>
+    </div>
 
     <div id="dealkly-toast" class="px-5 py-3 rounded-lg shadow-lg text-sm font-semibold text-white" style="background: linear-gradient(135deg, #D97706, #B45309);"></div>
 
@@ -394,6 +493,56 @@
                 try { localStorage.removeItem('dealkly_subscribed'); } catch (err) {}
                 showToast('You have been unsubscribed.');
                 setTimeout(function () { location.reload(); }, 900);
+            });
+        })();
+    </script>
+
+    <script>
+        (function () {
+            var modal = document.getElementById('premium-modal');
+            var closeBtn = document.getElementById('premium-modal-close');
+            var dismissBtn = document.getElementById('premium-modal-dismiss');
+            var openers = [
+                document.getElementById('premium-open-btn'),
+                document.getElementById('premium-open-btn-menu'),
+                document.getElementById('premium-open-btn-tile'),
+                document.getElementById('premium-open-btn-banner')
+            ];
+
+            function openModal() {
+                if (!modal) return;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeModal() {
+                if (!modal) return;
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            openers.forEach(function (btn) {
+                if (!btn) return;
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    document.querySelectorAll('.profile-menu').forEach(function (m) { m.classList.add('hidden'); });
+                    openModal();
+                });
+            });
+
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (dismissBtn) dismissBtn.addEventListener('click', closeModal);
+
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) closeModal();
+                });
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+                    closeModal();
+                }
             });
         })();
     </script>
