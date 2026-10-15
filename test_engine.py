@@ -3,11 +3,14 @@ import time
 import random
 import re
 import os
+import json
+import urllib.parse
 from playwright.sync_api import sync_playwright
 
 # ------------------ CONFIG ------------------
 TODAY_CSV = "books_today.csv"
 YESTERDAY_CSV = "books_yesterday.csv"
+WATCHLIST_FILE = "watchlist.json"
 
 CATEGORIES = [
     # High‑resale Tech & Hardware
@@ -34,6 +37,7 @@ CATEGORIES = [
 ]
 # --------------------------------------------
 
+
 def clean_price(price_str):
     clean_str = re.sub(r'[^\d.]', '', price_str)
     try:
@@ -41,16 +45,61 @@ def clean_price(price_str):
     except ValueError:
         return None
 
+
 def clean_link(url):
     if "?" in url:
         return url.split("?")[0]
     return url
+
+
+def load_premium_keywords():
+    """Read watchlist.json and return a sorted list of unique keywords."""
+    if not os.path.exists(WATCHLIST_FILE):
+        return []
+
+    try:
+        with open(WATCHLIST_FILE, "r") as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"Could not read watchlist.json: {e}")
+        return []
+
+    if not isinstance(data, list):
+        return []
+
+    seen = set()
+    for entry in data:
+        if not isinstance(entry, dict):
+            continue
+        for kw in entry.get("keywords", []):
+            if isinstance(kw, str):
+                clean = kw.strip().lower()
+                if clean:
+                    seen.add(clean)
+    return sorted(seen)
+
+
+def build_premium_search_url(keyword):
+    """Convert a keyword into an eBay search URL, matching the free-search filters."""
+    encoded = urllib.parse.quote_plus(keyword)
+    return (
+        f"https://www.ebay.com/sch/i.html?_nkw={encoded}"
+        f"&_sacat=0&LH_ItemCondition=1000&_sop=15&rt=nc&LH_BIN=1"
+    )
+
 
 # Rotate CSV files
 if os.path.exists(TODAY_CSV):
     if os.path.exists(YESTERDAY_CSV):
         os.remove(YESTERDAY_CSV)
     os.rename(TODAY_CSV, YESTERDAY_CSV)
+
+premium_keywords = load_premium_keywords()
+premium_searches = [(kw, build_premium_search_url(kw)) for kw in premium_keywords]
+
+print(f"Premium keywords loaded: {len(premium_keywords)}")
+for kw, _ in premium_searches:
+    print(f"  + {kw}")
 
 all_products = []
 
@@ -61,7 +110,7 @@ with sync_playwright() as p:
             "--disable-blink-features=AutomationControlled",
             "--no-sandbox",
             "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage"       # stops Page crashed on GitHub Actions
+            "--disable-dev-shm-usage"
         ]
     )
     context = browser.new_context(
@@ -74,24 +123,28 @@ with sync_playwright() as p:
     page.goto("https://www.ebay.com", wait_until="domcontentloaded")
     time.sleep(random.uniform(2, 4))
 
-    for category, url in CATEGORIES:
-        print(f"Scraping category: {category}")
+    # Build the full search list: 16 free + all premium keywords
+    search_plan = [(cat, url, "free", cat) for cat, url in CATEGORIES]
+    search_plan += [(kw, url, "premium", kw) for kw, url in premium_searches]
+
+    for label, url, source, keyword in search_plan:
+        print(f"Scraping [{source}] {label}")
         try:
             page.goto(url, wait_until="domcontentloaded", timeout=30000)
             print(f"  Page title seen: {page.title()}")
 
             if "Pardon Our Interruption" in page.title():
-                print(f"  Blocked by eBay. Skipping category.")
+                print(f"  Blocked by eBay. Skipping {label}.")
                 continue
 
             page.wait_for_selector("a[href*='/itm/']", timeout=20000)
         except Exception as e:
-            print(f"  Timeout/error loading {category}: {e}")
+            print(f"  Timeout/error loading {label}: {e}")
             print("  Re‑warming session...")
             try:
                 page.goto("https://www.ebay.com", wait_until="domcontentloaded")
                 time.sleep(random.uniform(2, 4))
-            except:
+            except Exception:
                 pass
             continue
 
@@ -101,7 +154,7 @@ with sync_playwright() as p:
             time.sleep(random.uniform(1.5, 2.5))
             page.mouse.move(random.randint(100, 800), random.randint(100, 600))
 
-        # -------- Extraction with total price AND image URL --------
+        # Extraction (same logic as before)
         products = page.evaluate("""
             () => {
                 const results = [];
@@ -124,7 +177,7 @@ with sync_playwright() as p:
                     }
 
                     let itemPrice = null;
-                    const priceRegex = /(?:US\s*\$|\$|£|€)\s?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?/;
+                    const priceRegex = /(?:US\\s*\\$|\\$|£|€)\\s?[0-9]{1,3}(?:,?[0-9]{3})*(?:\\.[0-9]{2})?/;
                     const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
                     let node;
                     while ((node = walker.nextNode())) {
@@ -139,13 +192,13 @@ with sync_playwright() as p:
                         shippingText = shippingEl.textContent.trim();
                     } else {
                         const allText = container.innerText;
-                        const shipMatch = allText.match(/(\+?\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?\s*shipping)|(Free\s*shipping)/i);
+                        const shipMatch = allText.match(/(\\+?\\$\\d{1,3}(?:,\\d{3})*(?:\\.\\d{2})?\\s*shipping)|(Free\\s*shipping)/i);
                         if (shipMatch) shippingText = shipMatch[0];
                     }
 
                     let totalPrice = itemPrice;
                     if (shippingText && !/free/i.test(shippingText)) {
-                        const shipPriceMatch = shippingText.match(/\$[\d,]+\.?\d*/);
+                        const shipPriceMatch = shippingText.match(/\\$[\\d,]+\\.?\\d*/);
                         if (shipPriceMatch) {
                             const shipVal = parseFloat(shipPriceMatch[0].replace('$','').replace(',',''));
                             if (!isNaN(shipVal)) {
@@ -165,7 +218,7 @@ with sync_playwright() as p:
                     }
                     if (!condition) {
                         const ct = container.innerText;
-                        const matches = ct.match(/(Brand New|New\s*\(Other\)|Open box|Certified Refurbished|Seller Refurbished|Used|Pre-owned|For parts or not working)/i);
+                        const matches = ct.match(/(Brand New|New\\s*\\(Other\\)|Open box|Certified Refurbished|Seller Refurbished|Used|Pre-owned|For parts or not working)/i);
                         if (matches) condition = matches[0];
                     }
 
@@ -185,7 +238,7 @@ with sync_playwright() as p:
                             url: url,
                             condition: condition || 'Unknown',
                             hasImage: hasImage,
-                            image: imgSrc           // ⬅ ADD THE IMAGE URL
+                            image: imgSrc
                         });
                     }
                 });
@@ -193,24 +246,29 @@ with sync_playwright() as p:
             }
         """)
 
-        # Filter new & available items, use total_price as the tracked price
+        # Filter new & available items
         category_items = 0
         for item in products:
             condition = item.get("condition", "").lower()
             is_new = any(word in condition for word in ["brand new", "new", "unused"])
-            if not is_new: continue
-            if not item.get("hasImage", False): continue
+            if not is_new:
+                continue
+            if not item.get("hasImage", False):
+                continue
 
             price_str = item.get("total_price") or item.get("price")
             price_num = clean_price(price_str)
-            if price_num is None: continue
+            if price_num is None:
+                continue
 
             all_products.append({
                 "title": item["title"],
                 "price": price_num,
                 "link": item["url"],
-                "category": category,
-                "image": item.get("image", "")   # ⬅ SAVE THE IMAGE URL
+                "category": label,
+                "image": item.get("image", ""),
+                "source": source,
+                "keyword": keyword
             })
             category_items += 1
 
@@ -219,12 +277,15 @@ with sync_playwright() as p:
 
     browser.close()
 
-# Save CSV (now includes image column)
+# Save CSV (now includes source and keyword columns)
 if all_products:
     df = pd.DataFrame(all_products)
     df = df.drop_duplicates(subset=["link"])
-    df[["title", "price", "link", "image"]].to_csv(TODAY_CSV, index=False)
+    df[["title", "price", "link", "category", "image", "source", "keyword"]].to_csv(TODAY_CSV, index=False)
     print(f"\nDone. {len(df)} unique products saved to {TODAY_CSV}")
+    free_count = (df["source"] == "free").sum()
+    premium_count = (df["source"] == "premium").sum()
+    print(f"  free: {free_count}  premium: {premium_count}")
 else:
     print("\nNo products found. Creating empty CSV.")
-    pd.DataFrame(columns=["title", "price", "link", "image"]).to_csv(TODAY_CSV, index=False)
+    pd.DataFrame(columns=["title", "price", "link", "category", "image", "source", "keyword"]).to_csv(TODAY_CSV, index=False)
