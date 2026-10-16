@@ -228,9 +228,21 @@ def send_alert(drops):
         print("Zero price drops.")
         return
 
-    filtered = drops[((-drops["drop"] / drops["price_yest"]) * 100 >= MIN_DROP_PERCENT) & (drops["price_today"] >= MIN_ITEM_PRICE)]
+    # Free-tier digest: keep only free-source drops.
+    # Premium-source drops are handled separately by watchlist_checker.py.
+    # Backward compatible: older CSVs may not have source_today yet.
+    if "source_today" in drops.columns:
+        free_drops = drops[drops["source_today"] == "free"]
+    else:
+        free_drops = drops
+
+    if free_drops.empty:
+        print("No free-source drops today. Nothing to send in the general digest.")
+        return
+
+    filtered = free_drops[((-free_drops["drop"] / free_drops["price_yest"]) * 100 >= MIN_DROP_PERCENT) & (free_drops["price_today"] >= MIN_ITEM_PRICE)]
     if filtered.empty:
-        print("No drops passed quality filters.")
+        print("No free-source drops passed quality filters.")
         return
 
     best_deal = {}
@@ -289,7 +301,7 @@ def send_alert(drops):
     else:
         subject = f"[Dealkly] {total_deals} Deals Found: {top_deal['title']} dropped {top_deal['percent']}% OFF - {run_stamp}"
 
-    text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems in monitored categories have dropped:\n\n"
+    text_body = "DEALKLY ALERTS - VERIFIED PRICE DROPS DETECTED\n" + "=" * 45 + "\n\nItems in monitored products have dropped:\n\n"
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -318,7 +330,7 @@ img{{border:0;height:auto;display:block;}}
 <tr><td style="background: linear-gradient(135deg, #92400E, #78350F); padding:24px;text-align:center;">
   <a href="{WEBSITE_LINK}" target="_blank"><img src="{LOGO_URL}" alt="" height="36" style="display:block;margin:0 auto;height:36px;width:auto;"></a>
 </td></tr>
-<tr><td style="padding:28px 24px 16px 24px;"><h2 style="color:#0F172A;margin:0 0 8px;font-size:20px;font-weight:800;">Price Drops Detected</h2><p style="color:#64748B;margin:0;font-size:14px;line-height:1.5;">Items in Dealkly's monitored categories have dropped in price. Here are today's verified deals:</p></td></tr>
+<tr><td style="padding:28px 24px 16px 24px;"><h2 style="color:#0F172A;margin:0 0 8px;font-size:20px;font-weight:800;">Price Drops Detected</h2><p style="color:#64748B;margin:0;font-size:14px;line-height:1.5;">Items in Dealkly's tracked products have dropped in price. Here are today's verified deals:</p></td></tr>
 <tr><td style="padding:8px 24px 24px 24px;">
 """
 
@@ -403,7 +415,8 @@ def send_daily_beacon(drops, product_count):
         body += "\nAll drops (unfiltered):\n"
         for _, row in drops.iterrows():
             drop_percent = round((-row["drop"] / row["price_yest"]) * 100)
-            body += f"- {row['title']}: ${row['price_yest']:.2f} → ${row['price_today']:.2f} ({drop_percent}%)\n"
+            source = row.get("source_today", "free")
+            body += f"- [{source}] {row['title']}: ${row['price_yest']:.2f} → ${row['price_today']:.2f} ({drop_percent}%)\n"
     body += f"\n—\nDealkly\nhttps://dealkly.github.io/deal-alerts/"
 
     msg = MIMEMultipart()
