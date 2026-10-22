@@ -2,125 +2,207 @@ import json
 import pandas as pd
 import smtplib
 import os
+import re
+import uuid
+from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # --- CONFIGURATION ---
 WATCHLIST_FILE = "watchlist.json"
+PAID_FILE = "paid_subscribers.json"
 TODAY_CSV = "books_today.csv"
+YESTERDAY_CSV = "books_yesterday.csv"
+
 SENDER = "dealkly.contact@gmail.com"
 SENDER_NAME = "Dealkly Alerts"
 PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
-PREMIUM_URL = "https://dealkly.gumroad.com/l/premium-alerts"
+
 WEBSITE_LINK = "https://dealkly.github.io/deal-alerts/"
+UNSUBSCRIBE_LINK = "https://dealkly.github.io/deal-alerts/account.html"
 CONTACT_LINK = "https://dealkly.github.io/deal-alerts/contact.html"
 # ---------------------
 
 if not PASSWORD:
     raise ValueError("GMAIL_APP_PASSWORD environment variable not set.")
 
-
-def load_watchlist():
-    if not os.path.exists(WATCHLIST_FILE):
+def load_json(filename):
+    if not os.path.exists(filename):
         return []
-
-    with open(WATCHLIST_FILE, "r") as f:
+    with open(filename, "r") as f:
         data = json.load(f)
+    return data if isinstance(data, list) else []
 
-    if isinstance(data, list):
-        return data
+def load_csv(filename):
+    if not os.path.exists(filename):
+        return pd.DataFrame()
+    return pd.read_csv(filename)
 
-    return []
-
-
-def load_todays_deals():
-    if not os.path.exists(TODAY_CSV):
+def find_premium_drops(today_df, yesterday_df):
+    """Compare today and yesterday, filter to premium, and return actual drops."""
+    if today_df.empty or yesterday_df.empty:
         return pd.DataFrame()
 
-    return pd.read_csv(TODAY_CSV)
+    # Filter to premium items only (assuming test_engine.py adds a 'source' column)
+    if 'source' in today_df.columns:
+        today_prem = today_df[today_df['source'] == 'premium'].copy()
+        yesterday_prem = yesterday_df[yesterday_df['source'] == 'premium'].copy()
+    else:
+        print("Warning: 'source' column missing. Assuming all items are premium for this test.")
+        today_prem = today_df.copy()
+        yesterday_prem = yesterday_df.copy()
 
+    if today_prem.empty or yesterday_prem.empty:
+        return pd.DataFrame()
 
-def check_watchlist(deals_df, watchlist):
-    """Return a list of (subscriber_email, matched_rows) tuples."""
-    notifications = []
+    # Merge on title to find items present both days
+    merged = pd.merge(today_prem, yesterday_prem, on='title', suffixes=('_today', '_yesterday'))
 
-    for entry in watchlist:
-        email = entry.get("email")
-        keywords = entry.get("keywords", [])
+    # Find actual price drops
+    merged['price_today'] = pd.to_numeric(merged['price_today'], errors='coerce')
+    merged['price_yesterday'] = pd.to_numeric(merged['price_yesterday'], errors='coerce')
+    
+    drops = merged[merged['price_today'] < merged['price_yesterday']].copy()
+    
+    # Calculate savings
+    drops['discount'] = drops['price_yesterday'] - drops['price_today']
+    
+    return drops
 
-        if not email or not keywords:
-            continue
+def build_email_html(matched_deals):
+    """Build the branded HTML email."""
+    
+    rows_html = ""
+    for _, row in matched_deals.iterrows():
+        title = row.get('title', 'Unknown Item')
+        price_today = row['price_today']
+        price_yesterday = row['price_yesterday']
+        link = row.get('link_today', row.get('link', '#'))
+        image = row.get('image_today', row.get('image', ''))
+        keyword = row.get('keyword', 'Your Watchlist')
 
-        pattern = "|".join(keywords)
+        image_html = f'<img src="{image}" alt="Item" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-right: 15px;">' if image else ''
 
-        try:
-            matches = deals_df[deals_df["title"].str.contains(pattern, case=False, na=False)]
-        except Exception as e:
-            print(f"Watchlist matching error for {email}: {e}")
-            continue
+        rows_html += f"""
+        <div style="border: 1px solid #FDE68A; border-radius: 12px; padding: 15px; margin-bottom: 15px; background-color: #FFFDF7; display: flex; align-items: center;">
+            {image_html}
+            <div style="flex-grow: 1;">
+                <p style="margin: 0 0 5px 0; font-size: 11px; font-weight: bold; color: #B45309; text-transform: uppercase;">Matched: {keyword}</p>
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1D2023;"><a href="{link}" style="color: #1D2023; text-decoration: none;">{title}</a></h3>
+                <p style="margin: 0; font-size: 14px; color: #64748b;">
+                    <span style="text-decoration: line-through;">${price_yesterday:.2f}</span> 
+                    <strong style="color: #D97706; font-size: 18px; margin-left: 8px;">${price_today:.2f}</strong>
+                </p>
+            </div>
+        </div>
+        """
 
-        if not matches.empty:
-            notifications.append((email, matches))
-
-    return notifications
-
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <body style="font-family: 'Inter', system-ui, sans-serif; background-color: #F5EFE6; margin: 0; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div style="background: linear-gradient(135deg, #92400E, #78350F); padding: 30px 20px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Dealkly Premium Alert</h1>
+                <p style="color: #FDE68A; margin: 5px 0 0 0; font-size: 14px;">A specific item on your watchlist just dropped.</p>
+            </div>
+            <div style="padding: 30px 20px;">
+                {rows_html}
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="{WEBSITE_LINK}" style="display: inline-block; background: linear-gradient(135deg, #D97706, #B45309); color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold;">Browse Live Deals</a>
+                </div>
+            </div>
+            <div style="background: #FFFDF7; padding: 20px; text-align: center; border-top: 1px solid #FDE68A; font-size: 12px; color: #64748b;">
+                <p style="margin: 0 0 10px 0;">You are receiving this because you are a Premium subscriber on Dealkly.</p>
+                <p style="margin: 0;">
+                    <a href="{UNSUBSCRIBE_LINK}" style="color: #92400E;">Manage Account</a> | 
+                    <a href="{CONTACT_LINK}" style="color: #92400E;">Contact Support</a>
+                </p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return html
 
 def send_watchlist_email(subscriber_email, matched_deals):
     total = len(matched_deals)
-    subject = f"[Dealkly] {total} Personalized Deal Alert" if total == 1 else f"[Dealkly] {total} Personalized Deal Alerts"
-
-    body = f"Dealkly found {total} deal(s) matching the watchlist.\n\n"
-
-    for _, row in matched_deals.iterrows():
-        body += f"• {row['title']}\n"
-
-        try:
-            body += f"  Total cost: ${float(row['price']):.2f}\n"
-        except Exception:
-            body += f"  Total cost: {row.get('price', 'N/A')}\n"
-
-        body += f"  Link: {row.get('link', '')}\n\n"
-
-    body += "—\n"
-    body += "Want to track more items? Upgrade to Premium:\n"
-    body += f"{PREMIUM_URL}\n\n"
-    body += f"Dealkly: {WEBSITE_LINK}\n"
-    body += f"Contact: {CONTACT_LINK}\n"
-
-    msg = MIMEMultipart()
+    subject = f"[Dealkly] {total} Watchlist Alert" if total == 1 else f"[Dealkly] {total} Watchlist Alerts"
+    
+    # Unique Message-ID to prevent Gmail threading
+    msg_id = f"<{uuid.uuid4().hex}.{datetime.now().strftime('%Y%m%d%H%M%S')}@dealkly.github.io>"
+    
+    msg = MIMEMultipart("alternative")
     msg["From"] = f"{SENDER_NAME} <{SENDER}>"
     msg["To"] = subscriber_email
     msg["Subject"] = subject
-    msg.attach(MIMEText(body, "plain"))
+    msg["Message-ID"] = msg_id
+    msg["Precedence"] = "bulk"
+    
+    # Required Unsubscribe Headers
+    msg["List-Unsubscribe"] = f"<{UNSUBSCRIBE_LINK}>"
+    msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+
+    html_body = build_email_html(matched_deals)
+    msg.attach(MIMEText(html_body, "html"))
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(SENDER, PASSWORD)
         server.send_message(msg)
         print(f"Watchlist alert sent to {subscriber_email}")
 
-
 def main():
-    watchlist = load_watchlist()
+    watchlist = load_json(WATCHLIST_FILE)
+    paid_users = load_json(PAID_FILE)
 
     if not watchlist:
         print("Watchlist is empty. No personalized alerts to send.")
         return
-
-    deals_df = load_todays_deals()
-
-    if deals_df.empty:
-        print("No deals scraped today. Watchlist check skipped.")
+        
+    if not paid_users:
+        print("No paid users found. Skipping.")
         return
 
-    notifications = check_watchlist(deals_df, watchlist)
+    today_df = load_csv(TODAY_CSV)
+    yesterday_df = load_csv(YESTERDAY_CSV)
 
-    if not notifications:
-        print("No watchlist matches today.")
+    if today_df.empty or yesterday_df.empty:
+        print("Missing CSV data (today or yesterday). Watchlist check skipped.")
         return
 
-    for email, matches in notifications:
-        send_watchlist_email(email, matches)
+    # Find all drops today for premium items
+    drops_df = find_premium_drops(today_df, yesterday_df)
 
+    if drops_df.empty:
+        print("No premium items dropped today.")
+        return
+
+    # Check each subscriber
+    for entry in watchlist:
+        email = entry.get("email")
+        keywords = entry.get("keywords", [])
+
+        if not email or not keywords:
+            continue
+            
+        # Only email people who are actually paying
+        if email not in paid_users:
+            continue
+
+        # Build safe regex pattern
+        escaped_keywords = [re.escape(kw) for kw in keywords]
+        pattern = "|".join(escaped_keywords)
+
+        # Find matches for this specific user
+        try:
+            matches = drops_df[drops_df["title"].str.contains(pattern, case=False, na=False)]
+        except Exception as e:
+            print(f"Watchlist matching error for {email}: {e}")
+            continue
+
+        if not matches.empty:
+            send_watchlist_email(email, matches)
 
 if __name__ == "__main__":
     main()
